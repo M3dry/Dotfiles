@@ -323,10 +323,10 @@ static const Layout layouts[] = {
 	{ C,                       KEY,      toggleview,     {.ui = 1 << TAG} }, \
 	{ M,                       KEY,      toggletag,      {.ui = 1 << TAG} }, \
 	{ A|S,                     KEY,      tag,            {.ui = 1 << TAG} }, \
-	{ M|A,                     KEY,      tagwith,        {.ui = 1 << TAG} }, \
+	{ C|A,                     KEY,      tagwith,        {.ui = 1 << TAG} }, \
 	{ M|S,                     KEY,      swaptags,       {.ui = 1 << TAG} }, \
-	{ A|C,                     KEY,      tagnextmon,     {.ui = 1 << TAG} }, \
-	{ A|C|S,                   KEY,      tagprevmon,     {.ui = 1 << TAG} },
+	{ A|M,                     KEY,      tagnextmon,     {.ui = 1 << TAG} }, \
+	{ A|M|S,                   KEY,      tagprevmon,     {.ui = 1 << TAG} },
 
 
 

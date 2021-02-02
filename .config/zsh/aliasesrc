@@ -19,6 +19,7 @@ alias mks="doas make install"
 alias smk="rm config.h && doas make install"
 alias te="trash-empty"
 alias config='/usr/bin/git --git-dir=$HOME/Dotfiles/ --work-tree=$HOME'
+alias Sg='git@github.com:m3dry/Dotfiles.git'
 alias doomsync="~/.emacs.d/bin/doom sync"
 alias doomupgrade="~/.emacs.d/bin/doom upgrade"
 
