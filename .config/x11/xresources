@@ -1,0 +1,67 @@
+! St
+*.alpha: 1
+*.font: mononoki Nerd Font:size=13
+
+! Sxiv
+Sxiv.background: #111111
+Sxiv.foreground: #f0f0f0
+Sxiv.font: mononoki Nerd Font:size=10
+
+! Xterm
+Xft.dpi: 96
+Xft.antialias: true
+Xft.hinting: true
+Xft.rgba: rgb
+Xft.autohint: true
+Xft.hintstyle: hintfull
+Xft.lcdfilter: lcdfilter
+
+XTerm*renderFont: true
+XTerm*faceName: xft:mononoki Nerd Font
+XTerm*faceSize: 12
+XTerm*utf8: 2
+XTerm*locale: true
+
+XTerm.vt100.translations: #override \n\
+  Ctrl Shift <Key> j: smaller-vt-font() \n\
+  Ctrl Shift <Key> k: larger-vt-font()
+XTerm*loginshell: true
+XTerm*savelines: 16384
+XTerm*charClass: 33:48,36-47:48,58-59:48,61:48,63-64:48,95:48,126:48
+
+! special
+*.foreground:   #f0f0f0
+*.background:   #111111
+*.cursorColor:  #f0f0f0
+
+! black
+*.color0:       #1c1f24
+*.color8:       #5b6268
+
+! red
+*.color1:       #ff6c6b
+*.color9:       #da8548
+
+! green
+*.color2:       #98be65
+*.color10:      #4db5db
+
+! yellow
+*.color3:       #da8548
+*.color11:      #ecbe7b
+
+! blue
+*.color4:       #51afef
+*.color12:      #3071db
+
+! magenta
+*.color5:       #c678dd
+*.color13:      #a9a1e1
+
+! cyan
+*.color6:       #5699af
+*.color14:      #46d9ff
+
+! white
+*.color7:       #202328
+*.color15:      #dfdfdf
