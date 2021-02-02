@@ -1,0 +1,30 @@
+[Default Applications]
+x-scheme-handler/http=librewolf.desktop
+x-scheme-handler/https=librewolf.desktop
+x-scheme-handler/ftp=librewolf.desktop
+x-scheme-handler/chrome=librewolf.desktop
+text/html=librewolf.desktop
+application/x-extension-htm=librewolf.desktop
+application/x-extension-html=librewolf.desktop
+application/x-extension-shtml=librewolf.desktop
+application/xhtml+xml=librewolf.desktop
+application/x-extension-xhtml=librewolf.desktop
+application/x-extension-xht=librewolf.desktop
+image/png=sxiv.desktop
+image/jpg=sxiv.desktop
+image/jpeg=sxiv.desktop
+image/image=sxiv.desktop
+x-scheme-handler/etcher=balena-etcher-electron.desktop
+
+[Added Associations]
+x-scheme-handler/http=firefox.desktop;brave.desktop;librewolf.desktop;
+x-scheme-handler/https=firefox.desktop;brave.desktop;librewolf.desktop;
+x-scheme-handler/ftp=firefox.desktop;brave.desktop;librewolf.desktop;
+x-scheme-handler/chrome=firefox.desktop;brave.desktop;librewolf.desktop;
+text/html=firefox.desktop;brave.desktop;librewolf.desktop;
+application/x-extension-htm=firefox.desktop;brave.desktop;librewolf.desktop;
+application/x-extension-html=firefox.desktop;brave.desktop;librewolf.desktop;
+application/x-extension-shtml=firefox.desktop;brave.desktop;librewolf.desktop;
+application/xhtml+xml=firefox.desktop;brave.desktop;librewolf.desktop;
+application/x-extension-xhtml=firefox.desktop;brave.desktop;librewolf.desktop;
+application/x-extension-xht=firefox.desktop;brave.desktop;librewolf.desktop;
