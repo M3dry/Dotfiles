@@ -3,6 +3,13 @@
 *.alphaUnfocused: 1
 *.font: mononoki Nerd Font:size=13
 
+! Dmenu
+dmenu.background: #000000
+dmenu.foreground: #f0f0f0
+dmenu.selbackground: #51afef
+dmenu.selforeground: #000000
+dmenu.font: mononoki Nerd Font:size=10
+
 ! Sxiv
 Sxiv.background: #111111
 Sxiv.foreground: #f0f0f0

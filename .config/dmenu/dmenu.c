@@ -7,6 +7,7 @@
 #include <strings.h>
 #include <time.h>
 #include <unistd.h>
+#include <stdbool.h>
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -289,8 +290,6 @@ grabkeyboard(void)
 static void
 match(void)
 {
-	if (dynamic && *dynamic)
-		refreshoptions();
 
 	if (fuzzy) {
 		fuzzymatch();
@@ -318,7 +317,7 @@ match(void)
 		for (i = 0; i < tokc; i++)
 			if (!fstrstr(item->text, tokv[i]))
 				break;
-		if (i != tokc && !(dynamic && *dynamic)) /* not all tokens match */
+		if (i != tokc) /* not all tokens match */
 			continue;
 		/* exact matches go first, then prefixes, then substrings */
 		if (!tokc || !fstrncmp(text, item->text, textsize))
@@ -408,7 +407,7 @@ keypress(XKeyEvent *ev)
 	Status status;
 	int i;
 	struct item *tmpsel;
-	Bool offscreen = False;
+	bool offscreen = false;
 
 	len = XmbLookupString(xic, ev, buf, sizeof buf, &ksym, &status);
 	switch (status) {
@@ -543,7 +542,7 @@ insert:
 				if (!tmpsel->left ||  tmpsel->left->right != tmpsel)
 					return;
 				if (tmpsel == curr)
-					offscreen = True;
+					offscreen = true;
 				tmpsel = tmpsel->left;
 			}
 			sel = tmpsel;
@@ -598,7 +597,7 @@ insert:
 					return;
 				tmpsel = tmpsel->right;
 				if (tmpsel == next)
-					offscreen = True;
+					offscreen = true;
 			}
 			sel = tmpsel;
 			if (offscreen) {
@@ -753,7 +752,10 @@ setup(void)
 #endif
 	/* init appearance */
 	for (j = 0; j < SchemeLast; j++)
-		scheme[j] = drw_scm_create(drw, colors[j], 2);
+		scheme[j] = drw_scm_create(drw, (const char**)colors[j], 2);
+	for (j = 0; j < SchemeOut; ++j)
+		for (i = 0; i < 2; ++i)
+			free(colors[j][i]);
 
 	clip = XInternAtom(dpy, "CLIPBOARD",   False);
 	utf8 = XInternAtom(dpy, "UTF8_STRING", False);
@@ -870,7 +872,6 @@ usage(void)
 		"[-l lines] [-p prompt] [-fn font] [-m monitor]"
 		"\n             [-nb color] [-nf color] [-sb color] [-sf color] [-w windowid]"
 		"\n            "
-		" [ -dy command]"
 		" [-bw width]"
 		" [-it text]"
 		" [-h height]"
@@ -954,8 +955,6 @@ main(int argc, char *argv[])
 			embed = argv[++i];
 		else if (!strcmp(argv[i], "-ps"))   /* preselected item */
 			preselected = atoi(argv[++i]);
-		else if (!strcmp(argv[i], "-dy"))  /* dynamic command to run */
-			dynamic = argv[++i];
 		else if (!strcmp(argv[i], "-bw"))  /* border width around dmenu */
 			border_width = atoi(argv[++i]);
 		else if (!strcmp(argv[i], "-it")) {   /* adds initial text */
@@ -978,8 +977,11 @@ main(int argc, char *argv[])
 		    parentwin);
 
 	drw = drw_create(dpy, screen, root, wa.width, wa.height);
-	if (!drw_fontset_create(drw, fonts, LENGTH(fonts)))
+	readxresources();
+	if (!drw_fontset_create(drw, (const char**)fonts, LENGTH(fonts)))
 		die("no fonts could be loaded.");
+
+	free(fonts[0]);
 	lrpad = drw->fonts->h;
 
 #ifdef __OpenBSD__
@@ -989,11 +991,9 @@ main(int argc, char *argv[])
 
 	if (fast && !isatty(0)) {
 		grabkeyboard();
-		if (!(dynamic && *dynamic))
-			readstdin();
+		readstdin();
 	} else {
-		if (!(dynamic && *dynamic))
-			readstdin();
+		readstdin();
 		grabkeyboard();
 	}
 	setup();
