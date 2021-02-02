@@ -371,6 +371,8 @@ static Key keys[] = {
 	{ A|S,                     XK_d,          spawn,                  SHCMD("calc") },
 	{ A|S,                     XK_v,          spawn,                  SHCMD("manview") },
 	{ A,                       XK_z,          spawn,                  SHCMD("music-changer cmus") },
+	{ A|S,                     XK_p,          spawn,                  SHCMD("passmenu -l 3 -g 5 -p 'Run:'") },
+	{ A|S,                     XK_a,          spawn,                  SHCMD("allmenu") },
 	{ A|C,                     XK_q,          spawn,                  SHCMD("shut") },
 	{ A|C,                     XK_c,          spawn,                  SHCMD("clipmenu -F -l 20 -g 5 -p 'Copy: '") },
   /* MultiMedia keys */
