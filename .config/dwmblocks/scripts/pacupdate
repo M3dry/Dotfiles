@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo -e 📦  $(checkupdates | wc -l) 
+
+case $BUTTON in
+  1) st -e doas pacman -Syu;;
+  2) st -e nvim .local/bin/pacupdate;;
+  4) st -e nvim .config/dwmblocks/blocks.h;;
+  5) st -e nvim .config/dwm/config.def.h;;
+esac

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+echo  $(nvidia-settings -q GPUUtilization -t | awk -F'=' '{print $2}' | sed 's/, memory//g')%
+
+case $BUTTON in
+  2) st -e nvim .local/bin/gpu;;
+  4) st -e nvim .config/dwmblocks/blocks.h;;
+  5) st -e nvim .config/dwm/config.def.h;;
+esac

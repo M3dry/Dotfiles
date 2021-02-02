@@ -1,0 +1,44 @@
+--- dwmblocks.c
++++ dwmblocks.c
+@@ -14,6 +14,7 @@ typedef struct {
+ 	unsigned int signal;
+ } Block;
+ void sighandler(int num);
++void buttonhandler(int sig, siginfo_t *si, void *ucontext);
+ void getcmds(int time);
+ #ifndef __OpenBSD__
+ void getsigcmds(int signal);
+@@ -33,15 +34,32 @@ static int screen;
+ static Window root;
+ static char statusbar[LENGTH(blocks)][CMDLENGTH] = {0};
+ static char statusstr[2][256];
++static char button[] = "\0";
+ static int statusContinue = 1;
+ static void (*writestatus) () = setroot;
+ 
+ //opens process *cmd and stores output in *output
+ void getcmd(const Block *block, char *output)
+ {
++	if (block->signal)
++	{
++		output[0] = block->signal;
++		output++;
++	}
+ 	strcpy(output, block->icon);
+ 	char *cmd = block->command;
+-	FILE *cmdf = popen(cmd,"r");
++	FILE *cmdf;
++	if (*button)
++	{
++		setenv("BUTTON", button, 1);
++		cmdf = popen(cmd,"r");
++		*button = '\0';
++		unsetenv("BUTTON");
++	}
++	else
++	{
++		cmdf = popen(cmd,"r");
++	}
+ 	if (!cmdf)
+ 		return;
+ 	char c;

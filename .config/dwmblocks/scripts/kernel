@@ -1,0 +1,10 @@
+#! /bin/bash 
+
+echo -e 🐧  $(uname -r)
+
+case $BUTTON in
+  1) ;;
+  2) st -e nvim .local/bin/kernel;;
+  4) st -e nvim .config/dwmblocks/blocks.h;;
+  5) st -e nvim .config/dwm/config.def.h;;
+esac

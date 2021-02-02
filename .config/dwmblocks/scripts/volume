@@ -1,0 +1,21 @@
+#!/bin/bash 
+
+case $BUTTON in
+  1) pulsemixer --id sink-1 --toggle-mute;;
+  2) st -e nvim .local/bin/volume;;
+  3) st -e pulsemixer;;
+  4) st -e nvim .config/dwmblocks/blocks.h;;
+  5) st -e nvim .config/dwm/config.def.h;;
+esac
+[ $(pamixer --get-mute) = true ] && echo 🔇 && exit
+vol=$(pamixer --get-volume)
+
+if [ "$vol" -gt "50" ]; then
+	icon="🔊"
+elif [ "$vol" -lt "10" ]; then
+	icon="🔈"
+else
+	icon="🔉"
+fi
+echo "$icon $vol%"
+

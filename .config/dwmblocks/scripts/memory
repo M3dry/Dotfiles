@@ -1,0 +1,9 @@
+#! /bin/bash
+
+echo -e 🧠  $(free -h | awk '/^Mem:/ {print $3 "/" $2}')
+
+case $BUTTON in
+  2) st -e nvim .local/bin/memory;;
+  4) st -e nvim .config/dwmblocks/blocks.h;;
+  5) st -e nvim .config/dwm/config.def.h;;
+esac
