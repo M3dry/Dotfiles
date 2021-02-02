@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<eww>
+  <definitions>
+    <def name="time-date">
+      <box orientation="h" class="time-date" halign="center" space-evenly="false">
+        {{time}}
+      </box>
+    </def>
+    <def name="volume">
+      <box orientation="h" class="slider-vol" space-evenly="false">
+        <box class="label-vol"></box>
+        <scale min="0" active="false" max="100" value="{{vol}}"/>
+      </box>
+    </def>
+    <def name="ram">
+      <box orientation="h" class="slider-ram" space-evenly="false">
+        <box class="label-ram">﬙</box>
+        <scale min="0" active="false" max="16397436" value="{{ram}}"/>
+      </box>
+    </def>
+    <def name="temp">
+      <box orientation="h" class="slider-temp" space-evenly="false">
+        <box class="label-temp"></box>
+        <scale min="0" active="false" max="100" value="{{temp}}"/>
+      </box>
+    </def>
+    <def name="disk">
+      <box orientation="h" class="slider-disk" space-evenly="false">
+        <box class="label-disk"></box>
+        <scale min="0" active="false" max="490899648" value="{{disk}}"/>
+      </box>
+    </def>
+    <def name="uptime">
+      <box orientation="h" class="label-upt" halign="center" space-evenly="false">
+         {{upt}}
+      </box>
+    </def>
+    <def name="space">
+      <box orientation="h" class="label-space" halign="center" space-evenly="false">
+        {{space}}
+      </box>
+    </def>
+  </definitions>
+  <variables>
+    <script-var name="time" interval="10s">date +'%H:%M %d %m'</script-var>
+    <script-var name="vol" interval="100ms">pamixer --get-volume</script-var>
+    <script-var name="ram" interval="5s">free | awk '/^Mem:/ {print $3 "/" $2}' | sed 's/\/.*//;'</script-var>
+    <script-var name="temp" interval="5s">sensors | grep 'Tdie' | sed 's/Tdie.*+//g ; s/°C// ; s/\..*//'</script-var>
+    <script-var name="disk" interval="5s">df /dev/nvme0n1p2 | awk 'NR==2{print $3}'</script-var>
+    <script-var name="upt" interval="60s">uptime --pretty | sed -e 's/up //g' -e 's/ days/d/g' -e 's/ day/d/g' -e 's/ hours/h/g' -e 's/ hour/h/g' -e 's/ minutes/m/g' -e 's/, / /g'</script-var>
+    <script-var name="space">echo " "</script-var>
+  </variables>
+  <windows>
+    <window name="status" stacking="bg">
+      <geometry x="10%" y="5%"/>
+      <widget>
+        <box class="status" orientation="v" space-evenly="false">
+          <space/>
+          <time-date/>
+          <uptime/>
+          <volume/>
+          <ram/>
+          <temp/>
+          <disk/>
+          <space/>
+        </box>
+      </widget>
+    </window>
+  </windows>
+</eww>
