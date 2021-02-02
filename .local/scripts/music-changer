@@ -1,0 +1,61 @@
+#!/bin/bash
+
+cmuschoice() {
+    title=$(cmus-remote -Q | rg "title" | sed 's/tag title //')
+    album=$(cmus-remote -Q | rg "album" | head -n 1 | sed 's/tag album //')
+    artist=$(cmus-remote -Q | rg "artist" | head -n 1 | sed 's/tag artist //')
+    number=$(cmus-remote -Q | rg "tracknumber" | head -n 1| sed 's/tag tracknumber //')
+    volume=$(cmus-remote -Q | rg "vol_right" | sed 's/set vol_right //')
+    [ $(cmus-remote -C "set shuffle?" | sed "s/.*=// ; s/'//") = "true" ] && shuffle="🔀"
+    [ $(cmus-remote -C "set repeat_current?" | sed "s/.*=// ; s/'//") = "true" ] && repeat="🔂"
+    [ $(cmus-remote -Q | rg "status" | sed "s/status //") = "playing" ] && status="⏸" || status="▶"
+    info=$(echo "$artist - $title/$album:$number 🔈$volume% $shuffle$status$repeat")
+    choice=$(echo -e "play/pause\nqueue\nplay song\nrepeat current\n🔈${volume}%\nnext\nprev\nshuffle" | dmenu -p "$info")
+
+    case $choice in
+        "") exit 0;;
+        play/pause) [ "$status" = "⏸" ] && cmus-remote -u || cmus-remote -p;;
+        queue) Cqueue;;
+        play\ song) Cplay;;
+        repeat\ current) cmus-remote -C "toggle repeat_current";;
+        🔈$volume%) dmenu < /dev/null -p "$info" | xargs -I {} cmus-remote -v '{}'%;;
+        next) cmus-remote -n;;
+        prev) cmus-remote -r;;
+        shuffle) cmus-remote -S;;
+    esac
+}
+
+Cqueue() {
+    cd "/home/m3/my-stuff/Music/"
+    whatD=$(ls | dmenu -F -g 10 -l 8 -p "$info")
+    [ -z $whatD ] && exit 0
+    cd "/home/m3/my-stuff/Music/$whatD"
+    artist=$(ls | sed "s/ -.*//" | head -n 1)
+    whatF=$(ls | sed "s/.*- // ; s/.mp3//" | dmenu -F -g 10 -l 8 -p "$info")
+    [ -z $whatF ] && exit 0
+    cmus-remote -q "$artist - $whatF.mp3"
+}
+
+Cplay() {
+    cd "/home/m3/my-stuff/Music/"
+    whatD=$(ls | dmenu -F -g 10 -l 8 -p "$info")
+    [ -z $whatD ] && exit 0
+    cd "/home/m3/my-stuff/Music/$whatD"
+    artist=$(ls | sed "s/ -.*//" | head -n 1)
+    whatF=$(ls | sed "s/.*- // ; s/.mp3//" | dmenu -F -g 10 -l 8 -p "$info")
+    [ -z $whatF ] && exit 0
+    cmus-remote -f "$artist - $whatF.mp3"
+}
+
+spotchoice() {
+    info=$(playerctl --player spotify metadata --format "{{ artist }} - {{ title }}/{{ album }}")
+    choice=$(echo -e "play/pause\nreplay song\nnext\nprev" | dmenu -p "Now playing $info")
+    case $choice in
+        play/pause) playerctl --player spotify play-pause;;
+        replay\ song) playerctl --player spotify previous && playerctl --player spotify play;;
+        next) playerctl --player spotify next;;
+        prev) playerctl --player spotify previous && playerctl --player spotify previous;;
+    esac
+}
+
+[ "$1" = "cmus" ] && cmuschoice && exit 0 || spotchoice && exit 0

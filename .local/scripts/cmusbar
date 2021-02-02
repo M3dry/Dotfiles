@@ -1,0 +1,14 @@
+#!/bin/bash
+
+[ $(cmus-remote -C "set shuffle?" | sed "s/.*=// ; s/'//") = "true" ] && shuffle="🔀"
+[ $(cmus-remote -C "set repeat_current?" | sed "s/.*=// ; s/'//") = "true" ] && repeat="🔂"
+[ $(cmus-remote -Q | rg "status" | sed "s/status //") = "playing" ] && status="⏸" || status="▶"
+
+echo "$(cmus-remote -Q | rg "title" | sed 's/tag title //'):$(cmus-remote -Q | rg "tracknumber" | head -n 1| sed 's/tag tracknumber //') $shuffle$status$repeat"
+
+case $BUTTON in
+    1) [ "$status" = "⏸" ] && cmus-remote -u || cmus-remote -p;;
+    2) $TERMINAL nvim .local/bin/cmusbar;;
+    3) cmus-remote -S;;
+    4) $TERMINAL nvim .config/dwmblocks/blocks.h;;
+esac
