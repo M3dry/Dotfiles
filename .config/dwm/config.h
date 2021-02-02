@@ -323,10 +323,10 @@ static const Layout layouts[] = {
 	{ C,                       KEY,      toggleview,     {.ui = 1 << TAG} }, \
 	{ M,                       KEY,      toggletag,      {.ui = 1 << TAG} }, \
 	{ A|S,                     KEY,      tag,            {.ui = 1 << TAG} }, \
-	{ M|A,                     KEY,      tagwith,        {.ui = 1 << TAG} }, \
+	{ C|A,                     KEY,      tagwith,        {.ui = 1 << TAG} }, \
 	{ M|S,                     KEY,      swaptags,       {.ui = 1 << TAG} }, \
-	{ A|C,                     KEY,      tagnextmon,     {.ui = 1 << TAG} }, \
-	{ A|C|S,                   KEY,      tagprevmon,     {.ui = 1 << TAG} },
+	{ A|M,                     KEY,      tagnextmon,     {.ui = 1 << TAG} }, \
+	{ A|M|S,                   KEY,      tagprevmon,     {.ui = 1 << TAG} },
 
 
 
@@ -371,7 +371,7 @@ static Key keys[] = {
 	{ A|S,                     XK_d,          spawn,                  SHCMD("calc") },
 	{ A|S,                     XK_v,          spawn,                  SHCMD("manview") },
 	{ A,                       XK_z,          spawn,                  SHCMD("music-changer cmus") },
-	{ A|S,                     XK_p,          spawn,                  SHCMD("passmenu -l 3 -g 5 -p 'Run:'") },
+	{ A|S,                     XK_p,          spawn,                  SHCMD("passmenu2 -F -p 'Passwords:'") },
 	{ A|S,                     XK_a,          spawn,                  SHCMD("allmenu") },
 	{ A|C,                     XK_q,          spawn,                  SHCMD("shut") },
 	{ A|C,                     XK_c,          spawn,                  SHCMD("clipmenu -F -l 20 -g 5 -p 'Copy: '") },
