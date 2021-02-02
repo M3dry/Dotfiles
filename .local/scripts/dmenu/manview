@@ -1,0 +1,5 @@
+#!/bin/bash
+
+manp=$(man -k . | sed 's/(.*).*//' | dmenu -l 5 -g 10 -F -p "view manpages: ")
+
+[ $manp != "" ] && $TERMINAL man $manp
