@@ -161,16 +161,19 @@ static const char *const autostart[] = {
     "zsh", "-c", "eww daemon", NULL,
     "zsh", "-c", "setxkbmap us,cz ,qwerty -option 'caps:escape' 'grp:shifts_toggle'", NULL,
     "zsh", "-c", "lxsession", NULL,
+    "zsh", "-c", "xrdb .config/x11/xresources", NULL,
     "zsh", "-c", "sleep 3 && eww open status", NULL,
     NULL /* terminate */
 };
 
 const char *spcmd1[] = {"st", "-n", "spterm", "-t", "stSCP", "-g", "144x41", NULL };
 const char *spcmd2[] = {"st", "-n", "spmus", "-t", "cmusSCP", "-g", "144x41", "-e", "cmus", NULL };
+const char *spcmd3[] = {"qalculate-gtk", "--title", "spcal", NULL };
 static Sp scratchpads[] = {
    /* name          cmd  */
    {"spterm",      spcmd1},
    {"spmus",       spcmd2},
+   {"spcal",       spcmd3},
 };
 
 /* Tags
@@ -257,6 +260,7 @@ static const Rule rules[] = {
 	// Scratchpads
 	RULE(.instance = "spterm", .tags = SPTAG(0), .isfloating = 1, .iscentered = 1)
 	RULE(.instance = "spmus", .tags = SPTAG(1), .isfloating = 1, .iscentered = 1)
+	RULE(.title = "spcal", .tags = SPTAG(2), .isfloating = 1, .iscentered = 1)
 };
 
 static const MonitorRule monrules[] = {
@@ -437,6 +441,7 @@ static Key keys[] = {
 	{ A,                       XK_space,      togglefloating,         {0} },
 	{ A,                       XK_u,          togglescratch,          {.ui = 0 } },
     { A,                       XK_i,          togglescratch,          {.ui = 1 } },
+    { A,                       XK_y,          togglescratch,          {.ui = 2 } },
 	{ A|S,                     XK_space,      unfloatvisible,         {0} },
 	{ A,                       XK_f,          togglefullscreen,       {0} },
 	{ A|C,                     XK_f,          togglefakefullscreen,   {0} },
