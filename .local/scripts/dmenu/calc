@@ -1,22 +1,7 @@
-#!/usr/bin/env bash
+#!/usr/bin/bash
 
-answer=$(echo "$1" | bc -l | sed '/\./ s/\.\{0,1\}0\{1,\}$//')
-menu=$(command -v dmenu)
-if [ $1 != "" ]; then
-    choice="$1 = "
-else
-    choice=
-fi
-
-while [[ $# -gt 0 && $1 != "--" ]]; do
-    shift
+while true; do
+    answer=$(dmenu < /dev/null -p "$answer" | sed "s/@/$equal/g" | qalc | tail -n 3 | head -n 1 | sed "s/\x1b\[[0-9;]*m//g")
+    equal=$(echo $answer | sed "s/.*= //")
+    [ $answer = ">" ] && exit
 done
-[[ $1 == "--" ]] && shift
-
-# Actions
-action=$(echo -e "Copy to clipboard\nClear\nClose" | $menu "$@" -p "$choice$answer")
-case $action in
-    "Copy to clipboard") echo -n "$answer" | xclip -selection clipboard ;;
-    "") ;;
-    *) $0 "$answer $action" "--dmenu=$menu" "--" "$@" ;;
-esac
