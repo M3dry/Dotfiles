@@ -38,9 +38,12 @@ XTerm*savelines: 16384
 XTerm*charClass: 33:48,36-47:48,58-59:48,61:48,63-64:48,95:48,126:48
 
 ! special
-*.foreground:   #f0f0f0
-*.background:   #111111
-*.cursorColor:  #f0f0f0
+*.foreground:    #f0f0f0
+*.background:    #111111
+*.altbackground: #111111
+*.cursorColor:   #f0f0f0
+*.selectionbg:   #292d3e
+*.selectionfg:   #fff000
 
 ! black
 *.color0:       #1c1f24
