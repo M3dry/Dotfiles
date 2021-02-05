@@ -1,11 +1,15 @@
 --- config.def.h
 +++ config.def.h
-@@ -199,6 +199,8 @@ static Shortcut shortcuts[] = {
- 	{ TERMMOD,              XK_Y,           selpaste,       {.i =  0} },
- 	{ ShiftMask,            XK_Insert,      selpaste,       {.i =  0} },
- 	{ TERMMOD,              XK_Num_Lock,    numlock,        {.i =  0} },
-+	{ ShiftMask,            XK_Page_Up,     kscrollup,      {.i = -1} },
-+	{ ShiftMask,            XK_Page_Down,   kscrolldown,    {.i = -1} },
- };
+@@ -6,6 +6,12 @@
+  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
+  */
+ char font[] = "Liberation Mono:pixelsize=12:antialias=true:autohint=true";
++
++/* disable bold, italic and roman fonts globally */
++int disablebold = 0;
++int disableitalic = 0;
++int disableroman = 0;
++
+ int borderpx = 2;
  
  /*

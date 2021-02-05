@@ -122,7 +122,7 @@ let g:fern#renderer = "nerdfont"
 " => Colors and Theming
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 highlight LineNr              guifg=#b7b7b7    guibg=none          gui=none
-highlight CursorLineNr        guifg=#ecbe7b       guibg=#292d3e       gui=none
+highlight CursorLineNr        guifg=#ecbe7b    guibg=#292d3e       gui=none
 highlight VertSplit           guifg=#1c1f24    guibg=#5b6268       gui=none
 highlight Title               guifg=#ecbe7b    guibg=none          gui=none
 highlight Statement           guifg=#46d9ff    guibg=none          gui=none
@@ -131,7 +131,7 @@ highlight StatusLine          guifg=#202328    guibg=#5b6268       gui=none
 highlight StatusLineNC        guifg=#202328    guibg=#5b6268       gui=none
 highlight NERDTreeClosable    guifg=#98be65
 highlight NERDTreeOpenable    guifg=#5b6268
-highlight Comment             guifg=#5b6268    guibg=none          gui=none
+highlight Comment             guifg=#5b6268    guibg=none          gui=italic
 highlight Constant            guifg=#a9a1e1    guibg=none          gui=none
 highlight MatchParen          guifg=#000000    guibg=#51afef       gui=none
 highlight Type                guifg=#ecbe7b    guibg=none          gui=none

@@ -1,10 +1,26 @@
 --- x.c
 +++ x.c
-@@ -56,6 +56,7 @@ static void selpaste(const Arg *);
- static void zoom(const Arg *);
- static void zoomabs(const Arg *);
- static void zoomreset(const Arg *);
-+static void invert(const Arg *);
+@@ -833,17 +838,20 @@ xloadfonts(char *fontstr, double fontsize)
+ 	win.ch = ceilf(dc.font.height * chscale);
  
- /* config.h for applying patches and the configuration. */
- #include "config.h"
+ 	FcPatternDel(pattern, FC_SLANT);
+-	FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ITALIC);
++	if (!disableitalic)
++		FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ITALIC);
+ 	if (xloadfont(&dc.ifont, pattern))
+ 		die("st: can't open font %s\n", fontstr);
+ 
+ 	FcPatternDel(pattern, FC_WEIGHT);
+-	FcPatternAddInteger(pattern, FC_WEIGHT, FC_WEIGHT_BOLD);
++	if (!disablebold)
++		FcPatternAddInteger(pattern, FC_WEIGHT, FC_WEIGHT_BOLD);
+ 	if (xloadfont(&dc.ibfont, pattern))
+ 		die("st: can't open font %s\n", fontstr);
+ 
+ 	FcPatternDel(pattern, FC_SLANT);
+-	FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ROMAN);
++	if (!disableroman)
++		FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ROMAN);
+ 	if (xloadfont(&dc.bfont, pattern))
+ 		die("st: can't open font %s\n", fontstr);
+ 

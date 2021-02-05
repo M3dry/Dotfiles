@@ -8,6 +8,11 @@
 static char *font = "mononoki Nerd Font:pixelsize=17:antialias=true:autohint=true";
 static char *font2[] = { "JoyPixels:pixelsize=15:antialias=true:autohint=true" };
 
+/* disable bold, italic and roman fonts globally */
+int disablebold = 0;
+int disableitalic = 0;
+int disableroman = 0;
+
 static int borderpx = 2;
 
 /*
@@ -136,8 +141,6 @@ static const char *colorname[] = {
   [256] = "#111111", /* background */
   [257] = "#f0f0f0", /* foreground */
   [258] = "#111111", /* altbackground */
-  [259] = "#292d3e", /* altbackground */
-  [260] = "#ffffff", /* altbackground */
 };
 
 
@@ -150,13 +153,6 @@ unsigned int defaultbg = 256;
 static unsigned int defaultcs = 257;
 static unsigned int defaultrcs = 257;
 unsigned int bg = 256, bgUnfocused = 258;
-
-/* Colors used for selection */
-unsigned int selectionbg = 259;
-unsigned int selectionfg = 260;
-/* If 0 use selectionfg as foreground in order to have a uniform foreground-color */
-/* Else if 1 keep original foreground-color of each cell => more colors :) */
-static int ignoreselfg = 0;
 
 /*
  * Default shape of cursor
@@ -220,8 +216,6 @@ ResourcePref resources[] = {
 		{ "foreground",   STRING,  &colorname[257] },
 		{ "cursorColor",  STRING,  &colorname[257] },
 		{ "altbackground",STRING,  &colorname[258] },
-		{ "selectionbg",  STRING,  &colorname[259] },
-		{ "selectionfg",  STRING,  &colorname[260] },
 		{ "termname",     STRING,  &termname },
 		{ "shell",        STRING,  &shell },
 		{ "blinktimeout", INTEGER, &blinktimeout },
