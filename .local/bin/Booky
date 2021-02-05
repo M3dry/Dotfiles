@@ -1,0 +1,13 @@
+#!/bin/bash
+
+bookys="$HOME/bookys"
+conf="$HOME/.config/booky/config"
+source $conf
+
+dme() {
+  dmenu -n -l "$lines" -g "$columns" -h "$height" -bw "$border" -p "$prompt" -fn "$font" -X "$X" -Y "$Y" -W "$width"
+}
+
+choice=$(rg "$2" "$bookys" | sed "s/$2// ; s/$2.*//" | dme)
+[ ! -z $choice ] && $1 $(rg "$2$choice$2" "$bookys" | sed "s/.*$2//;")
+
