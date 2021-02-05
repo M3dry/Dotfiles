@@ -1,6 +1,6 @@
 #!/bin/bash
 
-bookys="$HOME/bookys"
+bookys="$HOME/.config/booky/bookys"
 conf="$HOME/.config/booky/config"
 source $conf
 
