@@ -9,7 +9,7 @@ static const unsigned int gappov         = 3;   /* vert outer gap between window
 static const int smartgaps               = 1;   /* 1 means no outer gap when there is only one window */
 static const int showbar                 = 1;   /* 0 means no bar */
 static const int topbar                  = 1;   /* 0 means bottom bar */
-static const int bar_height              = 18;  /* 0 means derive from font, >= 1 explicit height */
+static const int bar_height              = 20;  /* 0 means derive from font, >= 1 explicit height */
 static const int vertpad                 = 0;   /* vertical padding of bar */
 static const int sidepad                 = 0;   /* horizontal padding of bar */
 static const int focusonwheel            = 0;
@@ -357,7 +357,6 @@ static Key keys[] = {
 	{ A,                       XK_b,          spawn,                  SHCMD("freetube") },
 	{ A,                       XK_o,          spawn,                  SHCMD("chromium") },
 	{ A,                       XK_Escape,     spawn,                  SHCMD("xkill") },
-	{ C|A,                     XK_s,          spawn,                  SHCMD("spotify") },
 	{ C|A,                     XK_d,          spawn,                  SHCMD("discord") },
 	{ A|S,                     XK_u,          spawn,                  SHCMD("scrot '%Y-%m-%d_%H:%M.png' -e 'mv $f ~/my-stuff/pictures/snips/'") },
 	{ A,                       XK_p,          spawn,                  SHCMD("pcmanfm") },
@@ -445,7 +444,7 @@ static Key keys[] = {
 	{ A|S,                     XK_space,      unfloatvisible,         {0} },
 	{ A,                       XK_f,          togglefullscreen,       {0} },
 	{ A|C,                     XK_f,          togglefakefullscreen,   {0} },
-	{ M|C,                     XK_s,          togglesticky,           {0} },
+	{ C,                       XK_s,          togglesticky,           {0} },
 	{ M,                       XK_comma,      focusmon,               {.i = -1 } },
 	{ M,                       XK_period,     focusmon,               {.i = +1 } },
 	{ M|S,                     XK_comma,      tagmon,                 {.i = -1 } },
