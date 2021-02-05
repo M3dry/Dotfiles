@@ -79,11 +79,7 @@ export VISUAL="nvim"
 export TERMINAL="st"
 export BROWSER="librewolf"
 export XENVIRONMENT="${HOME}/.config/x11/xresources"
-export PAGER="/bin/sh -c \"unset PAGER;col -b -x | \
-    nvim -R -c 'set ft=man nomod nolist' -c 'map q :q<CR>' \
-    -c 'map <SPACE> <C-D>' -c 'map b <C-U>' \
-    -c 'nmap K :Man <C-R>=expand(\\\"<cword>\\\")<CR><CR>' -\""
-export PASSWORD_STORE_DIR="/home/m3/my-stuff/pass"
+export PASSWORD_STORE_DIR="${HOME}/my-stuff/pass"
 
 # Load syntax highlighting; should be last.
 source /home/m3/.config/zsh/aliasesrc
