@@ -108,7 +108,7 @@ char *termname = "st-256color";
 unsigned int tabspaces = 4;
 
 /* bg opacity */
-float alpha = 1, alphaUnfocused = 0.8;
+float alpha = 1, alphaUnfocused = 1;
 
 /* Terminal colors (16 first used in escape sequence) */
 static const char *colorname[] = {
@@ -135,6 +135,9 @@ static const char *colorname[] = {
   /* special colors */
   [256] = "#111111", /* background */
   [257] = "#f0f0f0", /* foreground */
+  [258] = "#111111", /* altbackground */
+  [259] = "#292d3e", /* altbackground */
+  [260] = "#ffffff", /* altbackground */
 };
 
 
@@ -146,7 +149,14 @@ unsigned int defaultfg = 257;
 unsigned int defaultbg = 256;
 static unsigned int defaultcs = 257;
 static unsigned int defaultrcs = 257;
-unsigned int bg = 256, bgUnfocused = 256;
+unsigned int bg = 256, bgUnfocused = 258;
+
+/* Colors used for selection */
+unsigned int selectionbg = 259;
+unsigned int selectionfg = 260;
+/* If 0 use selectionfg as foreground in order to have a uniform foreground-color */
+/* Else if 1 keep original foreground-color of each cell => more colors :) */
+static int ignoreselfg = 0;
 
 /*
  * Default shape of cursor
@@ -209,6 +219,9 @@ ResourcePref resources[] = {
 		{ "background",   STRING,  &colorname[256] },
 		{ "foreground",   STRING,  &colorname[257] },
 		{ "cursorColor",  STRING,  &colorname[257] },
+		{ "altbackground",STRING,  &colorname[258] },
+		{ "selectionbg",  STRING,  &colorname[259] },
+		{ "selectionfg",  STRING,  &colorname[260] },
 		{ "termname",     STRING,  &termname },
 		{ "shell",        STRING,  &shell },
 		{ "blinktimeout", INTEGER, &blinktimeout },
@@ -218,15 +231,13 @@ ResourcePref resources[] = {
 		{ "cwscale",      FLOAT,   &cwscale },
 		{ "chscale",      FLOAT,   &chscale },
 		{ "alpha",        FLOAT,   &alpha },
-		{ "alphaUnfocused",FLOAT,   &alphaUnfocused },
+		{ "alphaUnfocused",FLOAT,  &alphaUnfocused },
 };
 
 /*
  * Internal mouse shortcuts.
  * Beware that overloading Button1 will disable the selection.
  */
-
-/* Internal keyboard shortcuts. */
 #define MODKEY Mod1Mask|ControlMask
 #define TERMMOD (ControlMask|ShiftMask)
 static MouseShortcut mshortcuts[] = {

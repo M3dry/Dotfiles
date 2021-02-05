@@ -71,9 +71,9 @@ static void clippaste(const Arg *);
 static void numlock(const Arg *);
 static void selpaste(const Arg *);
 static void zoom(const Arg *);
+static void invert(const Arg *);
 static void zoomabs(const Arg *);
 static void zoomreset(const Arg *);
-static void invert(const Arg *);
 static void ttysend(const Arg *);
 
 /* config.h for applying patches and the configuration. */
@@ -1368,8 +1368,6 @@ xinit(int cols, int rows)
 	xsel.xtarget = XInternAtom(xw.dpy, "UTF8_STRING", 0);
 	if (xsel.xtarget == None)
 		xsel.xtarget = XA_STRING;
-
-	boxdraw_xinit(xw.dpy, xw.cmap, xw.draw, xw.vis);
 }
 
 int
@@ -1416,13 +1414,8 @@ xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len, int x
 			yp = winy + font->ascent;
 		}
 
-		if (mode & ATTR_BOXDRAW) {
-			/* minor shoehorning: boxdraw uses only this ushort */
-			glyphidx = boxdrawindex(&glyphs[i]);
-		} else {
-			/* Lookup character index with default font. */
-			glyphidx = XftCharIndex(xw.dpy, font->match, rune);
-		}
+		/* Lookup character index with default font. */
+		glyphidx = XftCharIndex(xw.dpy, font->match, rune);
 		if (glyphidx) {
 			specs[numspecs].font = font->match;
 			specs[numspecs].glyph = glyphidx;
@@ -1595,6 +1588,12 @@ xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len, int x, i
 		bg = temp;
 	}
 
+	if (base.mode & ATTR_SELECTED) {
+		bg = &dc.col[selectionbg];
+		if (!ignoreselfg)
+			fg = &dc.col[selectionfg];
+	}
+
 	if (base.mode & ATTR_BLINK && win.mode & MODE_BLINK)
 		fg = bg;
 
@@ -1633,12 +1632,8 @@ xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len, int x, i
 	r.width = width;
 	XftDrawSetClipRectangles(xw.draw, winx, winy, &r, 1);
 
-	if (base.mode & ATTR_BOXDRAW) {
-		drawboxes(winx, winy, width / len, win.ch, fg, bg, specs, len);
-	} else {
-		/* Render the glyphs. */
-		XftDrawGlyphFontSpec(xw.draw, fg, specs, len);
-	}
+	/* Render the glyphs. */
+	XftDrawGlyphFontSpec(xw.draw, fg, specs, len);
 
 	/* Render underline and strikethrough. */
 	if (base.mode & ATTR_UNDERLINE) {
@@ -1672,7 +1667,7 @@ xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og)
 
 	/* remove the old cursor */
 	if (selected(ox, oy))
-		og.mode ^= ATTR_REVERSE;
+                og.mode ^= ATTR_SELECTED;
 	xdrawglyph(og, ox, oy);
 
 	if (IS_SET(MODE_HIDE))
@@ -1681,27 +1676,17 @@ xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og)
 	/*
 	 * Select the right color for the right mode.
 	 */
-	g.mode &= ATTR_BOLD|ATTR_ITALIC|ATTR_UNDERLINE|ATTR_STRUCK|ATTR_WIDE|ATTR_BOXDRAW;
+	g.mode &= ATTR_BOLD|ATTR_ITALIC|ATTR_UNDERLINE|ATTR_STRUCK|ATTR_WIDE;
 
 	if (IS_SET(MODE_REVERSE)) {
 		g.mode |= ATTR_REVERSE;
+                g.fg = defaultcs;
 		g.bg = defaultfg;
-		if (selected(cx, cy)) {
-			drawcol = dc.col[defaultcs];
-			g.fg = defaultrcs;
-		} else {
-			drawcol = dc.col[defaultrcs];
-			g.fg = defaultcs;
-		}
+                drawcol = dc.col[defaultrcs];
 	} else {
-		if (selected(cx, cy)) {
-			g.fg = defaultfg;
-			g.bg = defaultrcs;
-		} else {
-			g.fg = defaultbg;
-			g.bg = defaultcs;
-		}
-		drawcol = dc.col[g.bg];
+                g.fg = defaultbg;
+                g.bg = defaultcs;
+                drawcol = dc.col[defaultcs];
 	}
 
 	/* draw the new one */
@@ -1806,7 +1791,7 @@ xdrawline(Line line, int x1, int y1, int x2)
 		if (new.mode == ATTR_WDUMMY)
 			continue;
 		if (selected(x, y1))
-			new.mode ^= ATTR_REVERSE;
+			new.mode ^= ATTR_SELECTED;
 		if (i > 0 && ATTRCMP(base, new)) {
 			xdrawglyphfontspecs(specs, base, i, ox, y1);
 			specs += i;

@@ -14,7 +14,6 @@
 #include <X11/keysym.h>
 #include <X11/Xft/Xft.h>
 #include <X11/XKBlib.h>
-#include <X11/Xresource.h>
 
 char *argv0;
 #include "arg.h"
@@ -47,19 +46,6 @@ typedef struct {
 	signed char appcursor; /* application cursor */
 } Key;
 
-/* Xresources preferences */
-enum resource_type {
-	STRING = 0,
-	INTEGER = 1,
-	FLOAT = 2
-};
-
-typedef struct {
-	char *name;
-	enum resource_type type;
-	void *dst;
-} ResourcePref;
-
 /* X modifiers */
 #define XK_ANY_MOD    UINT_MAX
 #define XK_NO_MOD     0
@@ -71,6 +57,7 @@ static void clippaste(const Arg *);
 static void numlock(const Arg *);
 static void selpaste(const Arg *);
 static void zoom(const Arg *);
+static void invert(const Arg *);
 static void zoomabs(const Arg *);
 static void zoomreset(const Arg *);
 static void ttysend(const Arg *);
@@ -273,7 +260,27 @@ static char *opt_title = NULL;
 
 static int focused = 0;
 
+static int invertcolors = 0;
 static int oldbutton = 3; /* button event on startup: 3 = release */
+
+void
+invert(const Arg *dummy)
+{
+	invertcolors = !invertcolors;
+	redraw();
+}
+
+Color
+invertedcolor(Color *clr) {
+	XRenderColor rc;
+	Color inverted;
+	rc.red = ~clr->color.red;
+	rc.green = ~clr->color.green;
+	rc.blue = ~clr->color.blue;
+	rc.alpha = clr->color.alpha;
+	XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &rc, &inverted);
+	return inverted;
+}
 
 void
 clipcopy(const Arg *dummy)
@@ -854,16 +861,19 @@ xsetcolorname(int x, const char *name)
 void
 xclear(int x1, int y1, int x2, int y2)
 {
-	XftDrawRect(xw.draw,
-			&dc.col[IS_SET(MODE_REVERSE)? defaultfg : defaultbg],
-			x1, y1, x2-x1, y2-y1);
+	Color c;
+	c = dc.col[IS_SET(MODE_REVERSE)? defaultfg : defaultbg];
+	if (invertcolors) {
+		c = invertedcolor(&c);
+	}
+	XftDrawRect(xw.draw, &c, x1, y1, x2-x1, y2-y1);
 }
 
 void
 xhints(void)
 {
-	XClassHint class = {opt_name ? opt_name : "st",
-	                    opt_class ? opt_class : "St"};
+	XClassHint class = {opt_name ? opt_name : termname,
+	                    opt_class ? opt_class : termname};
 	XWMHints wm = {.flags = InputHint, .input = 1};
 	XSizeHints *sizeh;
 
@@ -1235,6 +1245,8 @@ xinit(int cols, int rows)
 	XWindowAttributes attr;
 	XVisualInfo vis;
 
+	if (!(xw.dpy = XOpenDisplay(NULL)))
+		die("can't open display\n");
 	xw.scr = XDefaultScreen(xw.dpy);
 
 	if (!(opt_embed && (parent = strtol(opt_embed, NULL, 0)))) {
@@ -1344,8 +1356,6 @@ xinit(int cols, int rows)
 	xsel.xtarget = XInternAtom(xw.dpy, "UTF8_STRING", 0);
 	if (xsel.xtarget == None)
 		xsel.xtarget = XA_STRING;
-
-	boxdraw_xinit(xw.dpy, xw.cmap, xw.draw, xw.vis);
 }
 
 int
@@ -1392,13 +1402,8 @@ xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len, int x
 			yp = winy + font->ascent;
 		}
 
-		if (mode & ATTR_BOXDRAW) {
-			/* minor shoehorning: boxdraw uses only this ushort */
-			glyphidx = boxdrawindex(&glyphs[i]);
-		} else {
-			/* Lookup character index with default font. */
-			glyphidx = XftCharIndex(xw.dpy, font->match, rune);
-		}
+		/* Lookup character index with default font. */
+		glyphidx = XftCharIndex(xw.dpy, font->match, rune);
 		if (glyphidx) {
 			specs[numspecs].font = font->match;
 			specs[numspecs].glyph = glyphidx;
@@ -1571,11 +1576,24 @@ xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len, int x, i
 		bg = temp;
 	}
 
+	if (base.mode & ATTR_SELECTED) {
+		bg = &dc.col[selectionbg];
+		if (!ignoreselfg)
+			fg = &dc.col[selectionfg];
+	}
+
 	if (base.mode & ATTR_BLINK && win.mode & MODE_BLINK)
 		fg = bg;
 
 	if (base.mode & ATTR_INVISIBLE)
 		fg = bg;
+
+	if (invertcolors) {
+		revfg = invertedcolor(fg);
+		revbg = invertedcolor(bg);
+		fg = &revfg;
+		bg = &revbg;
+	}
 
 	/* Intelligent cleaning up of the borders. */
 	if (x == 0) {
@@ -1602,12 +1620,8 @@ xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len, int x, i
 	r.width = width;
 	XftDrawSetClipRectangles(xw.draw, winx, winy, &r, 1);
 
-	if (base.mode & ATTR_BOXDRAW) {
-		drawboxes(winx, winy, width / len, win.ch, fg, bg, specs, len);
-	} else {
-		/* Render the glyphs. */
-		XftDrawGlyphFontSpec(xw.draw, fg, specs, len);
-	}
+	/* Render the glyphs. */
+	XftDrawGlyphFontSpec(xw.draw, fg, specs, len);
 
 	/* Render underline and strikethrough. */
 	if (base.mode & ATTR_UNDERLINE) {
@@ -1641,7 +1655,7 @@ xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og)
 
 	/* remove the old cursor */
 	if (selected(ox, oy))
-		og.mode ^= ATTR_REVERSE;
+                og.mode ^= ATTR_SELECTED;
 	xdrawglyph(og, ox, oy);
 
 	if (IS_SET(MODE_HIDE))
@@ -1650,27 +1664,17 @@ xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og)
 	/*
 	 * Select the right color for the right mode.
 	 */
-	g.mode &= ATTR_BOLD|ATTR_ITALIC|ATTR_UNDERLINE|ATTR_STRUCK|ATTR_WIDE|ATTR_BOXDRAW;
+	g.mode &= ATTR_BOLD|ATTR_ITALIC|ATTR_UNDERLINE|ATTR_STRUCK|ATTR_WIDE;
 
 	if (IS_SET(MODE_REVERSE)) {
 		g.mode |= ATTR_REVERSE;
+                g.fg = defaultcs;
 		g.bg = defaultfg;
-		if (selected(cx, cy)) {
-			drawcol = dc.col[defaultcs];
-			g.fg = defaultrcs;
-		} else {
-			drawcol = dc.col[defaultrcs];
-			g.fg = defaultcs;
-		}
+                drawcol = dc.col[defaultrcs];
 	} else {
-		if (selected(cx, cy)) {
-			g.fg = defaultfg;
-			g.bg = defaultrcs;
-		} else {
-			g.fg = defaultbg;
-			g.bg = defaultcs;
-		}
-		drawcol = dc.col[g.bg];
+                g.fg = defaultbg;
+                g.bg = defaultcs;
+                drawcol = dc.col[defaultcs];
 	}
 
 	/* draw the new one */
@@ -1775,7 +1779,7 @@ xdrawline(Line line, int x1, int y1, int x2)
 		if (new.mode == ATTR_WDUMMY)
 			continue;
 		if (selected(x, y1))
-			new.mode ^= ATTR_REVERSE;
+			new.mode ^= ATTR_SELECTED;
 		if (i > 0 && ATTRCMP(base, new)) {
 			xdrawglyphfontspecs(specs, base, i, ox, y1);
 			specs += i;
@@ -2137,59 +2141,6 @@ run(void)
 	}
 }
 
-int
-resource_load(XrmDatabase db, char *name, enum resource_type rtype, void *dst)
-{
-	char **sdst = dst;
-	int *idst = dst;
-	float *fdst = dst;
-
-	char fullname[256];
-	char fullclass[256];
-	char *type;
-	XrmValue ret;
-
-	snprintf(fullname, sizeof(fullname), "%s.%s",
-			opt_name ? opt_name : "st", name);
-	snprintf(fullclass, sizeof(fullclass), "%s.%s",
-			opt_class ? opt_class : "St", name);
-	fullname[sizeof(fullname) - 1] = fullclass[sizeof(fullclass) - 1] = '\0';
-
-	XrmGetResource(db, fullname, fullclass, &type, &ret);
-	if (ret.addr == NULL || strncmp("String", type, 64))
-		return 1;
-
-	switch (rtype) {
-	case STRING:
-		*sdst = ret.addr;
-		break;
-	case INTEGER:
-		*idst = strtoul(ret.addr, NULL, 10);
-		break;
-	case FLOAT:
-		*fdst = strtof(ret.addr, NULL);
-		break;
-	}
-	return 0;
-}
-
-void
-config_init(void)
-{
-	char *resm;
-	XrmDatabase db;
-	ResourcePref *p;
-
-	XrmInitialize();
-	resm = XResourceManagerString(xw.dpy);
-	if (!resm)
-		return;
-
-	db = XrmGetStringDatabase(resm);
-	for (p = resources; p < resources + LEN(resources); p++)
-		resource_load(db, p->name, p->type, p->dst);
-}
-
 void
 usage(void)
 {
@@ -2266,11 +2217,6 @@ run:
 
 	setlocale(LC_CTYPE, "");
 	XSetLocaleModifiers("");
-
-	if(!(xw.dpy = XOpenDisplay(NULL)))
-		die("Can't open display\n");
-
-	config_init();
 	cols = MAX(cols, 1);
 	rows = MAX(rows, 1);
 	defaultbg = MAX(LEN(colorname), 256);
