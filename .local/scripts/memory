@@ -1,8 +1,0 @@
-#! /bin/bash
-
-echo -e 🧠  $(free -h | awk '/^Mem:/ {print $3 "/" $2}')
-
-case $BUTTON in
-  2) $TERMINAL nvim .local/bin/memory;;
-  4) $TERMINAL nvim .config/dwmblocks/blocks.h;;
-esac

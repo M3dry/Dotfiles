@@ -1,8 +1,0 @@
-#! /bin/bash 
-
-echo -e 🐧  $(uname -r)
-
-case $BUTTON in
-  2) $TERMINAL nvim .local/bin/kernel;;
-  4) $TERMINAL nvim .config/dwmblocks/blocks.h;;
-esac

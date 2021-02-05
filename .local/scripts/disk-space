@@ -1,9 +1,0 @@
-#!/bin/bash
-
-echo -e 💿  $(df /dev/nvme0n1p2 -h | awk 'NR==2{print $3"/"$2" ["$4"|"$5"]"}')
-
-case $BUTTON in
-  1) notify-send " 💿  all mounted disks" "$(lsblk)";;
-  2) $TERMINAL nvim .local/bin/disk-space;;
-  4) $TERMINAL nvim .config/dwmblocks/blocks.h;;
-esac

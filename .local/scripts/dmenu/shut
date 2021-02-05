@@ -1,6 +1,0 @@
-#!/bin/bash
-
-what=$(echo -e "shutdown\nreboot" | dmenu)
-
-[ $what = "shutdown" ] && prompt "Shutdown system?" "shutdown now"
-[ $what = "reboot" ] && prompt "Reboot system?" "reboot"
