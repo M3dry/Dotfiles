@@ -1,6 +1,6 @@
 #!/bin/bash
 
 ueberzug layer --parser bash 0< <(
-    declare -Ap a_command=([action]="add" [identifier]="img0" [x]="50" [y]="15" [path]="$1")
+    declare -Ap a_command=([action]="add" [identifier]="img0" [x]="0" [y]="0" [path]="$1")
     read
 )
