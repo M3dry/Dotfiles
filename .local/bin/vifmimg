@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 readonly ID_PREVIEW="preview"
 
-#AUTO_REMOVE="yes"
+AUTO_REMOVE="yes"
 # By enabling this option the script will remove the preview file after it is drawn
 # and by doing so the preview will always be up-to-date with the file.
 # This however, requires more CPU and therefore affects the overall performance.

@@ -631,6 +631,10 @@ insert:
 	}
 
 draw:
+if (incremental) {
+		puts(text);
+		fflush(stdout);
+	}
 	drawmenu();
 }
 
@@ -868,6 +872,7 @@ usage(void)
 	fputs("usage: dmenu [-bv"
 		"c"
 		"f"
+		"r"
 		"s"
 		"n"
 		"F"
@@ -908,6 +913,8 @@ main(int argc, char *argv[])
 		} else if (!strcmp(argv[i], "-s")) { /* case-sensitive item matching */
 			fstrncmp = strncmp;
 			fstrstr = strstr;
+        } else if (!strcmp(argv[i], "-r")) { /* incremental */
+			incremental = !incremental;
 		} else if (!strcmp(argv[i], "-n")) { /* instant select only match */
 			instant = !instant;
 		} else if (!strcmp(argv[i], "-F")) { /* disable/enable fuzzy matching, depends on default */

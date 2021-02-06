@@ -33,14 +33,14 @@ dmenu.selforeground: #000000
 dmenu.font: mononoki Nerd Font:size=12
 
 ! St
-*.alpha: 1
-*.alphaUnfocused: 1
-*.font: mononoki Nerd Font:size=13
+st.alpha: 1
+st.alphaUnfocused: 1
+st.font: mononoki Nerd Font:size=13
 
 ! special
 *.foreground:    #f0f0f0
 *.background:    #161616
-*.altbackground: #161616
+st.altbackground: #161616
 *.cursorColor:   #f0f0f0
 
 ! black
@@ -92,7 +92,7 @@ dwm.titleselfgcolor: #ffffff
 dwm.titleselbgcolor: #51afef
 dwm.titleselbordercolor: #292d3e
 dwm.titleselfloatcolor: #51afef
-dwm.tagsnormfgcolor: #ff0000
+dwm.tagsnormfgcolor: #ff6c6b
 dwm.tagsnormbgcolor: #000000
 dwm.tagsnormbordercolor: #292d3e
 dwm.tagsnormfloatcolor: #292d3e

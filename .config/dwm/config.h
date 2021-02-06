@@ -250,7 +250,7 @@ static const Rule rules[] = {
 	RULE(.wintype = WTYPE "SPLASH", .isfloating = 1)
 	RULE(.class = "Brave", .tags = 1)
 	// Swallow
-	RULE(.instance = "st-tabbed", .isterminal = 1)
+	RULE(.instance = "st", .isterminal = 1)
 	RULE(.class = "Alacritty", .isterminal = 1)
 	RULE(.class = "XTerm", .isterminal = 1)
 	// noSwallow
@@ -346,7 +346,7 @@ static Key on_empty_keys[] = {
 static Key keys[] = {
 	/* modifier                     key            function                argument */
   /* Spawing preograms*/
-	{ A,                       XK_Return,     spawn,                  SHCMD("tabbed -n st-tabbed -r 2 $TERMINAL -w ''") },
+	{ A,                       XK_Return,     spawn,                  SHCMD("$TERMINAL") },
 	{ A|S,                     XK_c,          spawn,                  SHCMD("st htop") },
 	{ A|S,                     XK_z,          spawn,                  SHCMD("playerctl play-pause") },
 	{ A,                       XK_e,          spawn,                  SHCMD("$TERMINAL $EDITOR") },
@@ -360,7 +360,7 @@ static Key keys[] = {
 	{ C|A,                     XK_d,          spawn,                  SHCMD("discord") },
 	{ A|S,                     XK_u,          spawn,                  SHCMD("scrot '%Y-%m-%d_%H:%M.png' -e 'mv $f ~/my-stuff/pictures/snips/'") },
 	{ A,                       XK_p,          spawn,                  SHCMD("pcmanfm") },
-	{ A,                       XK_a,          spawn,                  SHCMD("$TERMINAL -T 'vifm' -n 'st-tabbed' vifmrun") },
+	{ A,                       XK_a,          spawn,                  SHCMD("$TERMINAL vifmrun") },
 	{ C,                       XK_m,          spawn,                  SHCMD("multimc") },
 	{ M|C|A,                   XK_l,          spawn,                  SHCMD("slock") },
 	{ C|A,                     XK_z,          spawn,                  SHCMD("playerctl play-pause") },

@@ -7,6 +7,7 @@ static int center = 0;                      /* -c  option; if 0, dmenu won't be 
 static int min_width = 500;                 /* minimum width when centered */
 static int colorprompt = 0;                 /* -p  option; if 1, prompt uses SchemeSel, otherwise SchemeNorm */
 static int fuzzy = 0;                      /* -F  option; if 0, dmenu doesn't use fuzzy matching     */
+static int incremental = 0;                 /* -r  option; if 1, outputs text each time a key is pressed */
 /* -fn option overrides fonts[0]; default X11 font or font set */
 static const char *fonts[] = {
 	"mononoki nerd font:pixelsize=13:antialias=true:autohint=true",
