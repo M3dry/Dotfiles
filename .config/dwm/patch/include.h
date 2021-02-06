@@ -29,6 +29,7 @@
 #include "floatpos.h"
 #include "focusadjacenttag.h"
 #include "focusmaster.h"
+#include "inplacerotate.h"
 #include "keymodes.h"
 #include "killunsel.h"
 #include "moveresize.h"
@@ -57,6 +58,7 @@
 #include "vanitygaps.h"
 #include "warp.h"
 #include "zoomswap.h"
+#include "xrdb.h"
 /* Layouts */
 #include "layout_flextile-deluxe.h"
 #include "layout_nrowgrid.h"

@@ -1,5 +1,5 @@
 static const unsigned int borderpx       = 2;   /* border pixel of windows */
-static const unsigned int borderpxB      = 0;   /* border pixel of windows */
+static const unsigned int borderpxB      = 0;   /* border pixel of bar */
 static const unsigned int snap           = 0;   /* snap pixel */
 static const int swallowfloating         = 1;   /* 1 means swallow floating windows by default */
 static const unsigned int gappih         = 3;   /* horiz inner gap between windows */
@@ -256,11 +256,11 @@ static const Rule rules[] = {
 	// noSwallow
 	RULE(.title = "Event Tester", .noswallow = 1)
 	RULE(.class = "Xephyr", .noswallow = 1, .isfloating = 1, .iscentered = 1)
-	RULE(.class = "Gimp", .tags = 1 << 8, .isfloating = 1, .switchtag = 3, .noswallow = 1)
+	RULE(.class = "Gimp", .tags = 1 << 8, .isfloating = 1, .switchtag = 3, .noswallow = 1, .floatpos = "50% 50% 100% 100%")
 	// Scratchpads
 	RULE(.instance = "spterm", .tags = SPTAG(0), .isfloating = 1, .iscentered = 1)
 	RULE(.instance = "spmus", .tags = SPTAG(1), .isfloating = 1, .iscentered = 1)
-	RULE(.title = "spcal", .tags = SPTAG(2), .isfloating = 1, .iscentered = 1)
+	RULE(.title = "spcal", .tags = SPTAG(2), .isfloating = 1, .iscentered = 1, .floatpos = "50% 50% 50% 50%")
 };
 
 static const MonitorRule monrules[] = {
@@ -302,14 +302,14 @@ static const int resizehints = 0;    /* 1 means respect size hints in tiled resi
 
 static const Layout layouts[] = {
 	/* symbol     arrange function, { nmaster, nstack, layout, master axis, stack axis, secondary stack axis, symbol func } */
-	{ "(@)",      flextile,         { -1, -1, NO_SPLIT, SPIRAL, SPIRAL, 0, NULL } }, // fibonacci spiral
 	{ "[]=",      flextile,         { -1, -1, SPLIT_VERTICAL, TOP_TO_BOTTOM, TOP_TO_BOTTOM, 0, NULL } }, // default tile layout
+	{ "(@)",      flextile,         { -1, -1, SPLIT_VERTICAL, 0, SPIRAL, 0, NULL } }, // fibonacci spiral
  	{ "><>",      NULL,             {0} },    /* no layout function means floating behavior */
 	{ "[D]",      flextile,         { -1, -1, SPLIT_VERTICAL, TOP_TO_BOTTOM, MONOCLE, 0, NULL } }, // deck
 	{ "[::",      flextile,         { -1, -1, SPLIT_VERTICAL, GAPPLESSGRID, GAPPLESSGRID, 0, NULL } }, // gappless grid
 	{ ":::",      nrowgrid, }, // nrowgrid grid
 	{ "TTT",      flextile,         { -1, -1, SPLIT_HORIZONTAL, LEFT_TO_RIGHT, LEFT_TO_RIGHT, 0, NULL } }, // bstack
-	{ "|M|",      flextile,         { -1, -1, SPLIT_CENTERED_VERTICAL, LEFT_TO_RIGHT, TOP_TO_BOTTOM, TOP_TO_BOTTOM, NULL } }, // centeredmaster
+	{ "|M|",      flextile,         { -1, -1, SPLIT_CENTERED_VERTICAL, TOP_TO_BOTTOM, TOP_TO_BOTTOM, TOP_TO_BOTTOM, NULL } }, // centeredmaster
 	{ "[M]",      flextile,         { -1, -1, NO_SPLIT, MONOCLE, MONOCLE, 0, NULL } }, // monocle
 	{ NULL,       NULL,             {0} },
 };
@@ -385,6 +385,7 @@ static Key keys[] = {
 	{ 0, XF86XK_AudioLowerVolume, spawn,               SHCMD("pamixer --allow-boost -d 1 ; pkill -rtmin+7 dwmblocks") },
 	{ 0, XF86XK_AudioRaiseVolume, spawn,               SHCMD("pamixer --allow-boost -i 1 ; pkill -rtmin+7 dwmblocks") },
   /* DWM keybindings */
+	{ A,                       XK_F5,         xrdb,                   {.v = NULL } },
 	{ M|S,                     XK_u,          setkeymode,             {.ui = COMMANDMODE} },
 	{ A,                       XK_n,          togglebar,              {0} },
 	{ C|A,                     XK_space,      focusmaster,            {0} },
@@ -427,8 +428,8 @@ static Key keys[] = {
 	{ M|S,                     XK_Escape,     quit,                   {0} },
 	{ M|C|S,                   XK_q,          quit,                   {1} },
 	/* Layouts */
-	{ A,                       XK_v,          setlayout,              {.v = &layouts[0]} },
-	{ A,                       XK_t,          setlayout,              {.v = &layouts[1]} },
+	{ A,                       XK_t,          setlayout,              {.v = &layouts[0]} },
+	{ A,                       XK_v,          setlayout,              {.v = &layouts[1]} },
 	{ A|S,                     XK_f,          setlayout,              {.v = &layouts[2]} },
 	{ A,                       XK_d,          setlayout,              {.v = &layouts[3]} },
 	{ A,                       XK_g,          setlayout,              {.v = &layouts[4]} },

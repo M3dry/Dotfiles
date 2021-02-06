@@ -2472,7 +2472,7 @@ tagwith(const Arg *arg)
 			if (tagmask & 1)
 				selmon->pertag->prevclient[tagindex] = NULL;
 		arrange(selmon);
-    view(arg);
+        view(arg);
 	}
 }
 
@@ -3109,6 +3109,8 @@ main(int argc, char *argv[])
 	if (!(xcon = XGetXCBConnection(dpy)))
 		die("dwm: cannot get xcb connection\n");
 	checkotherwm();
+	XrmInitialize();
+	loadxrdb();
 	autostart_exec();
 	setup();
 #ifdef __OpenBSD__

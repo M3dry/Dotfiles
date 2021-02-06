@@ -28,6 +28,7 @@
 #include "floatpos.c"
 #include "focusadjacenttag.c"
 #include "focusmaster.c"
+#include "inplacerotate.c"
 #include "keymodes.c"
 #include "killunsel.c"
 #include "moveresize.c"
@@ -56,6 +57,7 @@
 #include "vanitygaps.c"
 #include "warp.c"
 #include "zoomswap.c"
+#include "xrdb.c"
 #include "dragmfact.c"
 /* Layouts */
 #include "layout_flextile-deluxe.c"
