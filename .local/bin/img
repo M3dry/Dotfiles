@@ -1,6 +1,23 @@
 #!/bin/bash
 
+lin=$(tput lines)
+col=$(($(tput cols) - 1))
+
 ueberzug layer --parser bash 0< <(
-    declare -Ap a_command=([action]="add" [identifier]="img0" [x]="0" [y]="0" [path]="$1")
+    declare -Ap a_command=([action]="add" [identifier]="test" [x]="0" [y]="0" [height]="$lin" [width]="$col" [path]="$1")
     read
 )
+
+# # while true; do
+#     lin=$(tput lines)
+#     col=$(($(tput cols) - 1))
+
+#     ueberzug layer --parser bash 0< <(
+#         declare -Ap a_command=([action]="add" [identifier]="test" [x]="0" [y]="0" [height]="$lin" [width]="$col" [path]="$1")
+
+#         # while true; do
+#         #     [ $(tput lines) != $lin ] && break
+#         #     [ $(($(tput cols) - 1)) != $col ] && break
+#         # done
+#     )
+# done
