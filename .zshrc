@@ -1,6 +1,6 @@
 # Enable colors and change prompt:
 autoload -U colors && colors	# Load colors
-PS1=" %{$fg[yellow]%}%~%{$fg[cyan]%} > "
+PS1=" %{$fg[yellow]%}%~%{$fg[cyan]%} λ "
 setopt autocd
 stty stop undef
 setopt interactive_comments

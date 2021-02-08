@@ -2,9 +2,9 @@
 
 cmuschoice() {
     title=$(cmus-remote -Q | rg "title" | sed 's/tag title //')
-    album=$(cmus-remote -Q | rg "album" | head -n 1 | sed 's/tag album //')
-    artist=$(cmus-remote -Q | rg "artist" | head -n 1 | sed 's/tag artist //')
-    number=$(cmus-remote -Q | rg "tracknumber" | head -n 1| sed 's/tag tracknumber //')
+    album=$(cmus-remote -Q | rg "album " | sed 's/tag album //')
+    artist=$(cmus-remote -Q | rg "artist " | sed 's/tag artist //')
+    number=$(cmus-remote -Q | rg "tracknumber" | sed 's/tag tracknumber //')
     volume=$(cmus-remote -Q | rg "vol_right" | sed 's/set vol_right //')
     [ $(cmus-remote -C "set shuffle?" | sed "s/.*=// ; s/'//") = "true" ] && shuffle="🔀"
     [ $(cmus-remote -C "set repeat_current?" | sed "s/.*=// ; s/'//") = "true" ] && repeat="🔂"

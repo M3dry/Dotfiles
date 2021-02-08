@@ -392,7 +392,6 @@ static Key keys[] = {
 	{ A,                       XK_s,          swapfocus,              {.i = -1 } },
 	{ A|S,                     XK_h,          switchcol,              {0} },
 	{ A,                       XK_apostrophe, zoom,                   {0} },
-	{ A,                       XK_Tab,        goback,                 {0} },
 	{ A,                       XK_j,          focusstack,             {.i = +2 } },
 	{ A,                       XK_k,          focusstack,             {.i = -2 } },
 	{ M|A,                     XK_j,          focusstack,             {.i = +1 } },
@@ -423,7 +422,7 @@ static Key keys[] = {
 	{ M|S,                     XK_minus,      incrgaps,               {.i = -1 } },
 	{ M|S,                     XK_0,          togglegaps,             {0} },
 	{ M|C,                     XK_0,          defaultgaps,            {0} },
-	/* { A,                       XK_Tab,        view,                   {0} }, */
+	{ A,                       XK_Tab,        view,                   {0} },
 	{ A,                       XK_q,          killclient,             {0} },
 	{ A|S,                     XK_q,          killunsel,              {0} },
 	{ M|S,                     XK_Escape,     quit,                   {0} },

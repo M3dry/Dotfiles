@@ -146,27 +146,16 @@ highlight PmenuSel            guifg=#617fdf    guibg=#1e1e1e       gui=none
 highlight PmenuSbar           guifg=#b7b7b7    guibg=#f8f87a       gui=none
 highlight PmenuThumb          guifg=#b7b7b7    guibg=#51a0e4       gui=none
 highlight CursorLine          guifg=none       guibg=#292d3e       gui=none
-highlight CursorColumn        guifg=none       guibg=#2e302b       gui=none
+highlight CursorColumn        guifg=none       guibg=#292d3e       gui=none
 highlight Folded              guifg=#308ac3    guibg=none          gui=none
 highlight EndOfBuffer         guifg=#292d3e    guibg=none          gui=none
 highlight QuickScopePrimary   guifg=#ff79c6    guibg=none          gui=underline
 highlight QuickScopeSecondary guifg=#ffffff    guibg=none          gui=underline
-highlight DiffAdd             guifg=#98be65    guibg=none          gui=none
-highlight DiffChange          guifg=#46d9ff    guibg=none          gui=none
-highlight DiffDelete          guifg=#ff6c6b    guibg=none          gui=none
-highlight DiffText            guifg=#dfdfdf    guibg=none          gui=none
 
 let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
 let g:cpp_no_function_highlight = 1
 let g:cpp_attributes_highlight = 1
 let g:cpp_member_highlight = 1
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => VimWiki
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:vimwiki_list = [{'path': '~/my-stuff/Documents/',}]
-let g:vimwiki_folding = 'list'
-nmap <Leader>cc <Plug>VimwikiToggleListItem
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Mouse Scrolling
@@ -230,7 +219,6 @@ noremap k gk
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Other Stuff
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:python_highlight_all = 1
 
 au! BufRead,BufWrite,BufWritePost,BufNewFile *.org
 au BufEnter *.org            call org#SetOrgFileType()
@@ -240,6 +228,7 @@ set guioptions-=T  "remove toolbar
 set guioptions-=r  "remove right-hand scroll bar
 set guioptions-=L  "remove left-hand scroll bar
 
+ab #! #!/bin/bash
 
 let g:cursorhold_updatetime = 100
 

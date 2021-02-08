@@ -1,26 +1,13 @@
---- x.c
-+++ x.c
-@@ -833,17 +838,20 @@ xloadfonts(char *fontstr, double fontsize)
- 	win.ch = ceilf(dc.font.height * chscale);
+--- x.c	2020-06-19 14:59:45.000000000 +0530
++++ x.c	2020-07-20 03:39:56.260922736 +0530
+@@ -1102,10 +1105,8 @@ void
+ xinit(int cols, int rows)
+ {
+ 	XGCValues gcvalues;
+-	Cursor cursor;
+ 	Window parent;
+ 	pid_t thispid = getpid();
+-	XColor xmousefg, xmousebg;
  
- 	FcPatternDel(pattern, FC_SLANT);
--	FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ITALIC);
-+	if (!disableitalic)
-+		FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ITALIC);
- 	if (xloadfont(&dc.ifont, pattern))
- 		die("st: can't open font %s\n", fontstr);
- 
- 	FcPatternDel(pattern, FC_WEIGHT);
--	FcPatternAddInteger(pattern, FC_WEIGHT, FC_WEIGHT_BOLD);
-+	if (!disablebold)
-+		FcPatternAddInteger(pattern, FC_WEIGHT, FC_WEIGHT_BOLD);
- 	if (xloadfont(&dc.ibfont, pattern))
- 		die("st: can't open font %s\n", fontstr);
- 
- 	FcPatternDel(pattern, FC_SLANT);
--	FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ROMAN);
-+	if (!disableroman)
-+		FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ROMAN);
- 	if (xloadfont(&dc.bfont, pattern))
- 		die("st: can't open font %s\n", fontstr);
- 
+ 	if (!(xw.dpy = XOpenDisplay(NULL)))
+ 		die("can't open display\n");

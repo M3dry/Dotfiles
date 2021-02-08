@@ -3,7 +3,7 @@
 echo 🕙 $(date +'%H:%M:%S') 📅 $(date +'%d %m')
 
 case $BUTTON in
-  1) notify-send " " "$(cal --color=always | sed "s/..7m/<b><span color=\"#51afef\">/;s/..27m/<\/span><\/b>/")";;
+  1) notify-send " " "$(cal --color=always | sed "s/..7m/<b><span color=\"#ff0000\">/;s/..27m/<\/span><\/b>/")";;
   2) $TERMINAL nvim .local/bin/clock;;
   3) notify-send "Appointments" "$(calcurse -d7)" ;;
   4) $TERMINAL nvim .config/dwmblocks/blocks.h;;

@@ -380,7 +380,6 @@ static Atom getatomprop(Client *c, Atom prop);
 static int getrootptr(int *x, int *y);
 static long getstate(Window w);
 static int gettextprop(Window w, Atom atom, char *text, unsigned int size);
-static void goback(const Arg *arg);
 static void grabbuttons(Client *c, int focused);
 static void grabdefkeys(void);
 static void incnmaster(const Arg *arg);
@@ -484,7 +483,7 @@ static Cur *cursor[CurLast];
 static Clr **scheme;
 static Display *dpy;
 static Drw *drw;
-static Monitor *mons, *selmon, *prevmon;
+static Monitor *mons, *selmon;
 static Window root, wmcheckwin;
 
 /* configuration, allows nested code to access above variables */
@@ -698,7 +697,6 @@ buttonpress(XEvent *e)
 		&& (focusonwheel || (ev->button != Button4 && ev->button != Button5))
 	) {
 		unfocus(selmon->sel, 1, NULL);
-		prevmon = selmon;
 		selmon = m;
 		focus(NULL);
 	}
@@ -1316,10 +1314,8 @@ focus(Client *c)
 	if (selmon->sel && selmon->sel != c)
 		unfocus(selmon->sel, 0, c);
 	if (c) {
-		if (c->mon != selmon) {
-			prevmon = selmon;
+		if (c->mon != selmon)
 			selmon = c->mon;
-		}
 		if (c->isurgent)
 			seturgent(c, 0);
 		detachstack(c);
@@ -1359,7 +1355,6 @@ focusmon(const Arg *arg)
 	if ((m = dirtomon(arg->i)) == selmon)
 		return;
 	unfocus(selmon->sel, 0, NULL);
-	prevmon = selmon;
 	selmon = m;
 	focus(NULL);
 	warp(selmon->sel);
@@ -1468,20 +1463,6 @@ gettextprop(Window w, Atom atom, char *text, unsigned int size)
 	text[size - 1] = '\0';
 	XFree(name.value);
 	return 1;
-}
-
-void
-goback(const Arg *arg)
-{
-	if (prevmon == NULL) {
-		Arg a = {0};
-		view(&a);
-	} else if (prevmon != selmon) {
-		Monitor *p = selmon;
-		selmon = prevmon;
-		focus(NULL);
-		prevmon = p;
-	}
 }
 
 void
@@ -1781,7 +1762,6 @@ movemouse(const Arg *arg)
 			m->tagset[m->seltags] |= (c->tags & SPTAGMASK);
 		}
 		sendmon(c, m);
-		prevmon = selmon;
 		selmon = m;
 		focus(NULL);
 	}
@@ -1992,7 +1972,6 @@ resizemouse(const Arg *arg)
 			m->tagset[m->seltags] |= (c->tags & SPTAGMASK);
 		}
 		sendmon(c, m);
-		prevmon = selmon;
 		selmon = m;
 		focus(NULL);
 	}
@@ -2604,7 +2583,6 @@ toggleview(const Arg *arg)
 	focus(selected);
 
 	if (newtagset) {
-		prevmon = NULL;
 		selmon->tagset[selmon->seltags] = newtagset;
 
 		if (newtagset == ~SPTAGMASK)
@@ -2988,7 +2966,6 @@ view(const Arg *arg)
 		view(&((Arg) { .ui = 0 }));
 		return;
     }
-	prevmon = NULL;
 	selmon->seltags ^= 1; /* toggle sel tagset */
 	pertagview(arg);
 	Client *unmodified = selmon->pertag->prevclient[selmon->pertag->curtag];
