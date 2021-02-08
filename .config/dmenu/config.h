@@ -5,7 +5,7 @@ static int topbar = 1;                      /* -b  option; if 0, dmenu appears a
 static int instant = 0;                     /* -n  option; if 1, selects matching item without the need to press enter */
 static int center = 0;                      /* -c  option; if 0, dmenu won't be centered on the screen */
 static int min_width = 500;                 /* minimum width when centered */
-static int colorprompt = 0;                 /* -p  option; if 1, prompt uses SchemeSel, otherwise SchemeNorm */
+static int colorprompt = 1;                 /* -p  option; if 1, prompt uses SchemeSel, otherwise SchemeNorm */
 static int fuzzy = 0;                      /* -F  option; if 0, dmenu doesn't use fuzzy matching     */
 static int incremental = 0;                 /* -r  option; if 1, outputs text each time a key is pressed */
 /* -fn option overrides fonts[0]; default X11 font or font set */

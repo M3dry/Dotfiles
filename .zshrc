@@ -1,6 +1,7 @@
 # Enable colors and change prompt:
 autoload -U colors && colors	# Load colors
-PS1=" %{$fg[yellow]%}%~%{$fg[cyan]%} λ "
+PS1="%{$fg[blue]%}[%{$fg[yellow]%}%n%{$fg[red]%}@%{$fg[cyan]%}%M %{$fg[yellow]%}%~%{$fg[blue]%}] %{$fg[green]%}%T %{$fg[red]%}Ret: %?
+%{$fg[blue]%} λ "
 setopt autocd
 stty stop undef
 setopt interactive_comments
@@ -68,3 +69,4 @@ export PASSWORD_STORE_DIR="${HOME}/my-stuff/pass"
 # Load syntax highlighting; should be last.
 source /home/m3/.config/zsh/aliasesrc
 source /usr/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh 2>/dev/null
+eval "$(starship init zsh)"

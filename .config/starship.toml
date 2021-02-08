@@ -1,0 +1,22 @@
+add_newline = false
+
+format = """
+ $time $cmd_duration $directory [$character](bold blue) """
+
+[character]
+success_symbol = "[λ](bold #51afef)"
+error_symbol = "[λ](bold #e53e19)"
+vicmd_symbol = "[λ](bold #37e00d)"
+
+[directory]
+read_only = " 📕"
+format = "[$path](bold #ecbe7b)[$read_only](bold #ff6c6b)"
+
+[cmd_duration]
+min_time = 0
+format = "[took](bold #ffffff) [$duration](bold #ecbe7b)"
+
+[time]
+disabled = false
+format = '[$time](bold #ecbe7b)'
+time_format = "%R"
