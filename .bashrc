@@ -88,4 +88,14 @@ export PATH="$HOME/.local/bin${PATH:+:${PATH}}"
 export EDITOR="nvim"
 export TERMINAL="st"
 export BROWSER="librewolf"
+
+# Vi mode
+set -o vi
+
+# Starship
+function set_win_title(){
+    echo -ne "\033]0; $USER@$HOSTNAME $PWD \007"
+}
+
+starship_precmd_user_func="set_win_title"
 eval "$(starship init bash)"

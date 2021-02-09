@@ -55,7 +55,6 @@ bindkey '^[[P' delete-char
 
 # Edit line in vim with ctrl-e:
 autoload edit-command-line; zle -N edit-command-line
-bindkey '^e' edit-command-line
 
 PATH="$HOME/.local/bin${PATH:+:${PATH}}"
 export PATH=$HOME/bin:/usr/local/bin:$PATH
@@ -66,7 +65,29 @@ export BROWSER="librewolf"
 export XENVIRONMENT="${HOME}/.config/x11/xresources"
 export PASSWORD_STORE_DIR="${HOME}/my-stuff/pass"
 
-# Load syntax highlighting; should be last.
+bindkey '^e' edit-command-line
+
 source /home/m3/.config/zsh/aliasesrc
-source /usr/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh 2>/dev/null
+
+# Auto suggestions Plugin
+source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh 2>/dev/null
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#8e3436,underline"
+bindkey '^h' autosuggest-accept
+bindkey '^ ' autosuggest-execute
+bindkey '^b' autosuggest-clear
+
+# You should use Plugin
+source /usr/share/zsh/plugins/zsh-you-should-use/you-should-use.plugin.zsh
+export YSU_MESSAGE_POSITION="after"
+export YSU_HARDCORE=1 # Hardcode mode
+
+# Starship
+function set_win_title(){
+    echo -ne "\033]0; $USER@$HOST $PWD \007"
+}
+
+precmd_functions+=(set_win_title)
 eval "$(starship init zsh)"
+
+# Syntax Highlight Plugin
+source /usr/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh 2>/dev/null

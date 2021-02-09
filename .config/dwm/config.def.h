@@ -151,7 +151,7 @@ static const char *const autostart[] = {
     "zsh", "-c", "picom", NULL,
     "zsh", "-c", "dwmblocks", NULL,
     "zsh", "-c", "numlockx on", NULL,
-    "zsh", "-c", "xwallpaper --stretch my-stuff/pictures/dwm-unix.png", NULL,
+    "zsh", "-c", "xwallpaper --stretch my-stuff/Pictures/wallpapers/dwm-unix.png", NULL,
     "zsh", "-c", "/usr/bin/emacs --daemon", NULL,
     "zsh", "-c", "redshift", NULL,
     "zsh", "-c", "unclutter --timeout 5", NULL,
@@ -255,6 +255,7 @@ static const Rule rules[] = {
 	// noSwallow
 	RULE(.title = "Event Tester", .noswallow = 1)
 	RULE(.class = "Xephyr", .noswallow = 1, .isfloating = 1, .iscentered = 1)
+	RULE(.title = "glxgears", .noswallow = 1, .isfloating = 1, .iscentered = 1)
 	RULE(.class = "Gimp", .tags = 1 << 8, .isfloating = 1, .switchtag = 3, .noswallow = 1, .floatpos = "50% 50% 100% 100%")
 	// Scratchpads
 	RULE(.instance = "spterm", .tags = SPTAG(0), .isfloating = 1, .iscentered = 1)
@@ -352,7 +353,6 @@ static Key keys[] = {
 	{ M,                       XK_e,          spawn,                  SHCMD("emacsclient -c -a emacs") },
 	{ M|S,                     XK_c,          spawn,                  SHCMD("emacsclient -c -a e'macs' --eval '(ibuffer)'") },
 	{ A,                       XK_w,          spawn,                  SHCMD("$BROWSER") },
-	{ M,                       XK_w,          spawn,                  SHCMD("webSearch") },
 	{ A|C,                     XK_w,          spawn,                  SHCMD("$BROWSER youtube.com https://fosstodon.org/about twitch.tv https://mail.protonmail.com/login") },
 	{ A,                       XK_b,          spawn,                  SHCMD("freetube") },
 	{ A,                       XK_o,          spawn,                  SHCMD("chromium") },

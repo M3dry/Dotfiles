@@ -500,8 +500,12 @@ endif
 
 " Mappings for faster renaming
 nnoremap I cw<c-a>
+nnoremap ii cw<c-a>
 nnoremap cc cw<c-u>
 nnoremap A cw
+nnoremap aa cw
+
+nnoremap mk :mkdir
 
 " Open console in current directory
 nnoremap ,t :!$TERMINAL &<cr>

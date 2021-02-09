@@ -151,13 +151,12 @@ static const char *const autostart[] = {
     "zsh", "-c", "picom", NULL,
     "zsh", "-c", "dwmblocks", NULL,
     "zsh", "-c", "numlockx on", NULL,
-    "zsh", "-c", "xwallpaper --stretch my-stuff/pictures/dwm-unix.png", NULL,
+    "zsh", "-c", "xwallpaper --stretch my-stuff/Pictures/wallpapers/dwm-unix.png", NULL,
     "zsh", "-c", "/usr/bin/emacs --daemon", NULL,
     "zsh", "-c", "redshift", NULL,
     "zsh", "-c", "unclutter --timeout 5", NULL,
     "zsh", "-c", "dunst", NULL,
     "zsh", "-c", "playerctld", NULL,
-    "zsh", "-c", "clipmenud", NULL,
     "zsh", "-c", "eww daemon", NULL,
     "zsh", "-c", "setxkbmap us,cz ,qwerty -option 'caps:escape' 'grp:shifts_toggle'", NULL,
     "zsh", "-c", "lxsession", NULL,
@@ -256,6 +255,7 @@ static const Rule rules[] = {
 	// noSwallow
 	RULE(.title = "Event Tester", .noswallow = 1)
 	RULE(.class = "Xephyr", .noswallow = 1, .isfloating = 1, .iscentered = 1)
+	RULE(.title = "glxgears", .noswallow = 1, .isfloating = 1, .iscentered = 1)
 	RULE(.class = "Gimp", .tags = 1 << 8, .isfloating = 1, .switchtag = 3, .noswallow = 1, .floatpos = "50% 50% 100% 100%")
 	// Scratchpads
 	RULE(.instance = "spterm", .tags = SPTAG(0), .isfloating = 1, .iscentered = 1)

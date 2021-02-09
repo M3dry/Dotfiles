@@ -1,12 +1,16 @@
 #!/bin/bash
 
-lin=$(tput lines)
-col=$(($(tput cols) - 1))
+# [[ $1 == *.gif ]] && echo "img doesn't support gif" && exit 0
 
-ueberzug layer --parser bash 0< <(
-    declare -Ap a_command=([action]="add" [identifier]="test" [x]="0" [y]="0" [height]="$lin" [width]="$col" [path]="$1")
-    read
-)
+if [[ $1 == *.png ]] || [[ $1 == *.jpg ]] || [[ $1 == *.jpeg ]] || [[ $1 == *.gif ]];then
+    lin=$(tput lines)
+    col=$(($(tput cols) - 1))
+    
+    ueberzug layer --parser bash 0< <(
+        declare -Ap a_command=([action]="add" [identifier]="test" [x]="0" [y]="0" [height]="$lin" [width]="$col" [path]="$1")
+        read
+    )
+fi
 
 # # while true; do
 #     lin=$(tput lines)
