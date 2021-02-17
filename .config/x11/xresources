@@ -33,9 +33,9 @@ dmenu.selforeground: #000000
 dmenu.font: mononoki Nerd Font:size=12
 
 ! St
-st.alpha: 1
-st.alphaUnfocused: 1
-st.font: mononoki Nerd Font:size=13
+*.alpha: 1
+*.alphaUnfocused: 1
+*.font: mononoki Nerd Font:size=13
 
 ! special
 *.foreground:    #f0f0f0

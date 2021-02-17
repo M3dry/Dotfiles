@@ -22,31 +22,5 @@ alias cpush='config push git@github.com:M3dry/Dotfiles.git'
 alias cstat='config status'
 alias ccom='config commit'
 alias cadd='config add'
-alias Sg='git@github.com:m3dry/Dotfiles.git'
 alias doomsync="~/.emacs.d/bin/doom sync"
 alias doomupgrade="~/.emacs.d/bin/doom upgrade"
-
-ex ()
-{
-  if [ -f $1 ] ; then
-    case $1 in
-      *.tar.bz2)   tar xjf $1   ;;
-      *.tar.gz)    tar xf $1    ;;
-      *.bz2)       bunzip2 $1   ;;
-      *.rar)       unrar x $1   ;;
-      *.gz)        gunzip $1    ;;
-      *.tar)       tar xf $1    ;;
-      *.tbz2)      tar xjf $1   ;;
-      *.tgz)       tar xzf $1   ;;
-      *.zip)       unzip $1     ;;
-      *.Z)         uncompress $1;;
-      *.7z)        7z x $1      ;;
-      *.deb)       ar x $1      ;;
-      *.tar.xz)    tar xf $1    ;;
-      *.tar.zst)   unzstd $1    ;;      
-      *)           echo "'$1' cannot be extracted via ex()" ;;
-    esac
-  else
-    echo "'$1' is not a valid file"
-  fi
-}

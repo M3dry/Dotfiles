@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# [[ $1 == *.gif ]] && echo "img doesn't support gif" && exit 0
-
 if [[ $1 == *.png ]] || [[ $1 == *.jpg ]] || [[ $1 == *.jpeg ]] || [[ $1 == *.gif ]];then
     lin=$(tput lines)
     col=$(($(tput cols) - 1))

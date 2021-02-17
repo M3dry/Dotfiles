@@ -1,6 +1,6 @@
 #!/bin/bash
 
-what=$(echo -e "passmenu\ndmenu\nswitch\nvolume\nBooky\nemoji\ncalc\nmanview\ncmusChanger\nclipmenu" | dmenu )
+what=$(echo -e "passmenu\ndmenu\nswitch\nvolume\nBooky\nemoji\ncalc\nmanview\ncmusChanger" | dmenu )
 
 [ $what = "passmenu" ] && passmenu2 -F -p "Passwords:"
 [ $what = "dmenu" ] && dmenu_run -l 5 -g 10 -p "Run:"
@@ -13,4 +13,3 @@ what=$(echo -e "passmenu\ndmenu\nswitch\nvolume\nBooky\nemoji\ncalc\nmanview\ncm
 [ $what = "calc" ] && calc
 [ $what = "manview" ] && manview
 [ $what = "cmusChanger" ] && music-changer cmus
-[ $what = "clipmenu" ] && clipmenu -F -l 20 -g 5 -p "Copy: "

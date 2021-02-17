@@ -2,12 +2,9 @@
 
 bookys="$HOME/.config/booky/bookys"
 conf="$HOME/.config/booky/config"
-source $conf
+[ -z $3 ] && source $conf || source $HOME/.config/booky/$3
 
-dme() {
-  dmenu -n -l "$lines" -g "$columns" -h "$height" -bw "$border" -p "$prompt" -fn "$font" -X "$X" -Y "$Y" -W "$width"
-}
+[ -z "$name" ] || embed="-w $(wmctrl -lx | rg "$name" | sed "s/ .*//")" && [ "$embed" = "-w " ] && embd="" || xdo activate -N "$name"
 
-choice=$(rg "$2" "$bookys" | sed "s/$2// ; s/$2.*//" | dme)
+choice=$(rg "$2" "$bookys" | sed "s/$2// ; s/$2.*//" | dmenu -n $embed -l "$lines" -g "$columns" -h "$height" -bw "$border" -fn "$font" -X "$X" -Y "$Y" -W "$width")
 [ ! -z $choice ] && $1 $(rg "$2$choice$2" "$bookys" | sed "s/.*$2//;")
-
