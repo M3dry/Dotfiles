@@ -347,7 +347,7 @@ static Key keys[] = {
 	/* modifier                     key            function                argument */
   /* Spawing preograms*/
 	{ A,                       XK_Return,     spawn,                  SHCMD("$TERMINAL") },
-	{ A|S,                     XK_c,          spawn,                  SHCMD("st htop") },
+	{ A|S,                     XK_c,          spawn,                  SHCMD("$TERMINAL htop") },
 	{ A|S,                     XK_z,          spawn,                  SHCMD("playerctl play-pause") },
 	{ A,                       XK_e,          spawn,                  SHCMD("$TERMINAL $EDITOR") },
 	{ M,                       XK_e,          spawn,                  SHCMD("emacsclient -c -a emacs") },
@@ -377,7 +377,6 @@ static Key keys[] = {
 	{ A|S,                     XK_p,          spawn,                  SHCMD("passmenu2 -F -p 'Passwords:'") },
 	{ A|S,                     XK_a,          spawn,                  SHCMD("allmenu") },
 	{ A|C,                     XK_q,          spawn,                  SHCMD("shut") },
-	{ A|C,                     XK_c,          spawn,                  SHCMD("clipmenu -F -l 20 -g 5 -p 'Copy: '") },
   /* MultiMedia keys */
 	{ 0, XF86XK_AudioPrev,     spawn,                  SHCMD("playerctl --player cmus previous") },
 	{ 0, XF86XK_AudioNext,     spawn,                  SHCMD("playerctl --player cmus next") },
