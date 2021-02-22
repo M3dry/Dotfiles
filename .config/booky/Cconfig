@@ -1,5 +1,3 @@
-#!/usr/bin/bash
-
 lines=0
 columns=0
 height=0

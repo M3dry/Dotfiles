@@ -68,7 +68,7 @@ export MANPAGER="nvim -c 'set ft=man' -"
 
 bindkey '^e' edit-command-line
 
-source /home/m3/.config/zsh/aliasesrc
+source "$HOME/.config/zsh/aliasesrc"
 
 # Auto suggestions Plugin
 source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh 2>/dev/null
@@ -92,3 +92,6 @@ eval "$(starship init zsh)"
 
 # Syntax Highlight Plugin
 source /usr/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh 2>/dev/null
+
+# Shorts
+source "$HOME/.config/zsh/marks"

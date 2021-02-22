@@ -1,7 +1,6 @@
 #!/bin/bash
 
 bookys="$HOME/.config/booky/bookys"
-conf="$HOME/.config/booky/config"
 [ -z $3 ] && source $conf || source $HOME/.config/booky/$3
 
 [ -z "$name" ] || embed="-w $(wmctrl -lx | rg "$name" | sed "s/ .*//")" && [ "$embed" = "-w " ] && embd="" || xdo activate -N "$name"
