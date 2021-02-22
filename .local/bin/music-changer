@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 cmuschoice() {
     title=$(cmus-remote -Q | rg "title" | sed 's/tag title //')
@@ -10,7 +10,7 @@ cmuschoice() {
     [ $(cmus-remote -C "set repeat_current?" | sed "s/.*=// ; s/'//") = "true" ] && repeat="🔂"
     [ $(cmus-remote -Q | rg "status" | sed "s/status //") = "playing" ] && status="⏸" || status="▶"
     info=$(echo "$artist - $title/$album:$number 🔈$volume% $shuffle$status$repeat")
-    choice=$(echo -e "play/pause\nqueue\nplay song\nrepeat current\n🔈${volume}%\nnext\nprev\nshuffle" | dmenu -p "$info")
+    choice=$(echo "play/pause\nqueue\nplay song\nrepeat current\n🔈${volume}%\nnext\nprev\nshuffle" | dmenu -p "$info")
 
     case $choice in
         "") exit 0;;

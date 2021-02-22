@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-what=$(echo -e "passmenu\ndmenu\nswitch\nvolume\nBooky\nemoji\ncalc\nmanview\ncmusChanger" | dmenu )
+what=$(echo "passmenu\ndmenu\nswitch\nvolume\nBooky\nemoji\ncalc\nmanview\ncmusChanger" | dmenu )
 
 [ $what = "passmenu" ] && passmenu2 -F -p "Passwords:"
 [ $what = "dmenu" ] && dmenu_run -l 5 -g 10 -p "Run:"

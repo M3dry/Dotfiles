@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 echo  $(nvidia-settings -q GPUUtilization -t | awk -F'=' '{print $2}' | sed 's/, memory//g')%
 

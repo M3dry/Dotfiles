@@ -157,11 +157,11 @@ static const char *const autostart[] = {
     "zsh", "-c", "unclutter --timeout 5", NULL,
     "zsh", "-c", "dunst", NULL,
     "zsh", "-c", "playerctld", NULL,
-    "zsh", "-c", "eww daemon", NULL,
     "zsh", "-c", "setxkbmap us,cz ,qwerty -option 'caps:escape' 'grp:ctrls_toggle'", NULL,
     "zsh", "-c", "lxsession", NULL,
     "zsh", "-c", "xrdb .config/x11/xresources", NULL,
-    "zsh", "-c", "sleep 3 && eww open status", NULL,
+    /* "zsh", "-c", "eww daemon", NULL, */
+    /* "zsh", "-c", "sleep 3 && eww open status", NULL, */
     NULL /* terminate */
 };
 
@@ -387,7 +387,7 @@ static Key keys[] = {
 	{ A,                       XK_F5,         xrdb,                   {.v = NULL } },
 	{ M|S,                     XK_u,          setkeymode,             {.ui = COMMANDMODE} },
 	{ A,                       XK_n,          togglebar,              {0} },
-	{ C|A,                     XK_space,      focusmaster,            {0} },
+	{ M,                       XK_space,      focusmaster,            {0} },
 	{ A,                       XK_s,          swapfocus,              {.i = -1 } },
 	{ A|S,                     XK_h,          switchcol,              {0} },
 	{ A,                       XK_apostrophe, zoom,                   {0} },

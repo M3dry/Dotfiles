@@ -1,4 +1,4 @@
-#! /bin/bash 
+#! /bin/sh 
 
 echo $(uptime --pretty | sed "s/up/👤/ ; s/ days/d/g ; s/ day/d/g ; s/ hours/h/g ; s/ hour/h/g ; s/ minutes/min/g ; s/,//g")
 

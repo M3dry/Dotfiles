@@ -1,14 +1,14 @@
-#!/bin/bash
+#!/bin/sh
 
 state="Czech"
 
 [ "$(stat -c %y .cache/corona | awk -F':' '{print $1}')" != "$(date +'%Y-%m-%d %H')" ] && curl -s https://corona-stats.online/CZ > ~/.cache/corona
 
 rg $state ~/.cache/corona | sed 's/\x1b\[[0-9;]*m//g ; s/\s*//g ; s/│/;/g' | awk -F';' '{print "😷 "$3}'
-deaths=$(rg $state ~/.cache/corona | sed 's/\x1b\[[0-9;]*m//g ; s/\s*//g ; s/│/;/g' | awk -F';' '{print $5}')
+deaths=$(rg $state ~/.cache/corona | sed 's/\x1b\[[0-9;]*m//g ; s/\s*//g ; s/│/;/g ; s/▲//g')
 
 case $BUTTON in
-  1) notify-send "deaths" "💀 $deaths";;
+    1) notify-send "total deaths: 💀 $(echo $deaths | awk -F';' '{print $5}')" "new deaths: 💀 $(echo $deaths | awk -F';' '{print $6}')";;
   2) $TERMINAL nvim .local/bin/corona;;
   4) $TERMINAL nvim .config/dwmblocks/blocks.h;;
 esac

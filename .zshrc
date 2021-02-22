@@ -64,6 +64,7 @@ export TERMINAL="st"
 export BROWSER="librewolf"
 export XENVIRONMENT="${HOME}/.config/x11/xresources"
 export PASSWORD_STORE_DIR="${HOME}/my-stuff/pass"
+export MANPAGER="nvim -c 'set ft=man' -"
 
 bindkey '^e' edit-command-line
 

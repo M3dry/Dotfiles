@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 echo 🌡️ $(sensors | rg 'Tdie' | sed 's/Tdie.*+//g')
 

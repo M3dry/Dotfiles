@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/sh 
 
 case $BUTTON in
   1) pamixer --toggle-mute;;

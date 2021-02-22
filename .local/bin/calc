@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/sh
 
 while true; do
     answer=$(dmenu < /dev/null -p "$answer" | sed "s/@/$equal/g" | qalc | tail -n 3 | head -n 1 | sed "s/\x1b\[[0-9;]*m//g")
