@@ -7,6 +7,11 @@ static const unsigned int gappiv         = 3;   /* vert inner gap between window
 static const unsigned int gappoh         = 3;   /* horiz outer gap between windows and screen edge */
 static const unsigned int gappov         = 3;   /* vert outer gap between windows and screen edge */
 static const int smartgaps               = 1;   /* 1 means no outer gap when there is only one window */
+static const char slopspawnstyle[]  = "-t 0 -c 0.92,0.85,0.69,0.3 -o"; /* do NOT define -f (format) here */
+static const char slopresizestyle[] = "-t 0 -c 0.92,0.85,0.69,0.3"; /* do NOT define -f (format) here */
+static const int riodraw_borders    = 1;        /* 0 or 1, indicates whether the area drawn using slop includes the window borders */
+static const int riodraw_spawnasync = 1;        /* 0 means that the application is only spawned after a successful selection while 
+                                                 * 1 means that the application is being initialised in the background while the selection is made */
 static const int showbar                 = 1;   /* 0 means no bar */
 static const int topbar                  = 1;   /* 0 means bottom bar */
 static const int bar_height              = 20;  /* 0 means derive from font, >= 1 explicit height */
@@ -256,11 +261,11 @@ static const Rule rules[] = {
 	RULE(.title = "Event Tester", .noswallow = 1)
 	RULE(.class = "Xephyr", .noswallow = 1, .isfloating = 1, .iscentered = 1)
 	RULE(.title = "glxgears", .noswallow = 1, .isfloating = 1, .iscentered = 1)
-	RULE(.class = "Gimp", .tags = 1 << 8, .isfloating = 1, .switchtag = 3, .noswallow = 1, .floatpos = "50% 50% 100% 100%")
+	RULE(.class = "Gimp", .tags = 1 << 8, .isfloating = 1, .switchtag = 3, .noswallow = 1, .floatpos = "50% 50% 80% 80%")
 	// Scratchpads
 	RULE(.instance = "spterm", .tags = SPTAG(0), .isfloating = 1, .iscentered = 1)
 	RULE(.instance = "spmus", .tags = SPTAG(1), .isfloating = 1, .iscentered = 1)
-	RULE(.title = "spcal", .tags = SPTAG(2), .isfloating = 1, .iscentered = 1, .floatpos = "50% 50% 50% 50%")
+	RULE(.title = "spcal", .tags = SPTAG(2), .isfloating = 1, .iscentered = 1, .floatpos = "50% 50% 76% 74%")
 };
 
 static const MonitorRule monrules[] = {
@@ -386,9 +391,10 @@ static Key keys[] = {
   /* DWM keybindings */
 	{ A,                       XK_F5,         xrdb,                   {.v = NULL } },
 	{ M|S,                     XK_u,          setkeymode,             {.ui = COMMANDMODE} },
+	{ A,                       XK_s,          rioresize,              {0} },
 	{ A,                       XK_n,          togglebar,              {0} },
 	{ M,                       XK_space,      focusmaster,            {0} },
-	{ A,                       XK_s,          swapfocus,              {.i = -1 } },
+	{ M,                       XK_s,          swapfocus,              {.i = -1 } },
 	{ A|S,                     XK_h,          switchcol,              {0} },
 	{ A,                       XK_apostrophe, zoom,                   {0} },
 	{ A,                       XK_Tab,        goback,                 {0} },
@@ -397,8 +403,8 @@ static Key keys[] = {
 	{ M|A,                     XK_j,          focusstack,             {.i = +1 } },
 	{ M|A,                     XK_k,          focusstack,             {.i = -1 } },
 	{ M,                       XK_z,          showhideclient,         {0} },
-	{ C,                       XK_j,          pushdown,               {0} },
-	{ C,                       XK_k,          pushup,                 {0} },
+	{ M,                       XK_j,          pushdown,               {0} },
+	{ M,                       XK_k,          pushup,                 {0} },
 	{ A,                       XK_h,          setmfact,               {.f = -0.05} },
 	{ A,                       XK_l,          setmfact,               {.f = +0.05} },
 	{ A|S,                     XK_j,          setcfact,               {.f = +0.25} },
@@ -506,8 +512,8 @@ static Key keys[] = {
 	// { Agr|A,             XK_m,           floatpos,               {.v = "-1p  1p" } }, // ↙
 	// { Agr|A,             XK_comma,       floatpos,               {.v = " 0p  1p" } }, // ↓
 	// { Agr|A,             XK_period,      floatpos,               {.v = " 1p  1p" } }, // ↘
-	{ M|S,                    XK_i,           cyclelayout,            {.i = -1 } },
-	{ M|S,                    XK_p,           cyclelayout,            {.i = +1 } },
+	{ A|C,                    XK_i,           cyclelayout,            {.i = -1 } },
+	{ A|C,                    XK_p,           cyclelayout,            {.i = +1 } },
 	{ M|C,                    XK_minus,       setborderpx,            {.i = -1 } },
 	{ M|C,                    XK_equal,       setborderpx,            {.i = +1 } },
 	{ M|A,                    XK_0,           setborderpx,            {.i = 0 } },

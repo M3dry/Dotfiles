@@ -3,7 +3,5 @@
 bookys="$HOME/.config/booky/bookys"
 . $HOME/.config/booky/$3
 
-[ -z "$name" ] || embed="-w $(wmctrl -lx | rg "$name" | sed "s/ .*//")" && [ "$embed" = "-w " ] && embd="" || xdo activate -N "$name"
-
-choice=$(rg "$2" "$bookys" | sed "s/$2// ; s/$2.*//" | dmenu -n $embed -l "$lines" -g "$columns" -h "$height" -bw "$border" -fn "$font" -X "$X" -Y "$Y" -W "$width")
+choice=$(rg "$2" "$bookys" | sed "s/$2// ; s/$2.*//" | dmenu -n -l "$lines" -g "$columns" -h "$height" -bw "$border" -fn "$font" -X "$X" -Y "$Y" -W "$width" -p "$prompt")
 [ ! -z $choice ] && $1 $(rg "$2$choice$2" "$bookys" | sed "s/.*$2//;")
