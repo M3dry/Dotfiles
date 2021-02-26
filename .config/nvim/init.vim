@@ -1,6 +1,5 @@
 set nocompatible
 filetype off
-let mapleader = " "
 let g:ale_disable_lsp = 1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -20,7 +19,6 @@ call plug#begin('~/.config/nvim/plugged')
     Plug 'unblevable/quick-scope'
     Plug 'cohama/lexima.vim'
     Plug 'itchyny/lightline.vim'
-    Plug 'maximbaz/lightline-ale'
     Plug 'antoinemadec/FixCursorHold.nvim'
     Plug 'easymotion/vim-easymotion'
     Plug 'tpope/vim-commentary'
@@ -40,6 +38,7 @@ filetype plugin indent on
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let mapleader = " "
 set path+=**
 set wildmenu
 set incsearch
@@ -55,6 +54,8 @@ set autoindent
 set cmdheight=2
 set updatetime=300
 set signcolumn=no
+set noshowmode
+set mouse=nicr
 
 set foldmethod=syntax
 set foldnestmax=10
@@ -140,27 +141,12 @@ let g:vimwiki_list = [{'path': '~/my-stuff/vimwiki/',
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Status Line
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:lightline#ale#indicator_warnings = " "
-let g:lightline#ale#indicator_errors = "🔺"
-
-let g:lightline = {
-      \ 'colorscheme': 'one',
-      \ }
-
-let g:lightline.component_expand = {
-      \  'linter_checking': 'lightline#ale#checking',
-      \  'linter_infos': 'lightline#ale#infos',
-      \  'linter_warnings': 'lightline#ale#warnings',
-      \  'linter_errors': 'lightline#ale#errors',
-      \  'linter_ok': 'lightline#ale#ok',
-      \ }
-
-let g:lightline.active = { 'right': [ [ 'lineinfo' ], [ 'fileformat', 'percent', 'filetype' , 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_infos', 'linter_ok' ] ] }
+let g:lightline = {'colorscheme': 'one'}
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Fern
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-map <Leader>b :Fern . -drawer -toggle<CR>
+map <Leader>r :Fern . -drawer -toggle<CR>
 let g:fern#default_hidden = "1"
 let g:fern#renderer = "nerdfont"
 
@@ -198,20 +184,14 @@ highlight QuickScopeSecondary guifg=#ffffff    guibg=none          gui=underline
 highlight ALEErrorSign        guifg=#ff0000    guibg=none          gui=none
 highlight ALEWarningSign      guifg=#fff000    guibg=none          gui=none
 let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
-let g:lsp_cxx_hl_use_text_props = 1
 " C highlight
+let g:lsp_cxx_hl_use_text_props = 1
 highlight LspCxxHLSymFunction     guifg=#c678dd  guibg=none          gui=none
 highlight LspCxxHLSymVariable     guifg=#a9a1e1  guibg=none          gui=none
 highlight LspCxxHLSymNamespace    guifg=#51afef  guibg=none          gui=none
 highlight LspCxxHLGroupNamespace  guifg=#51afef  guibg=none          gui=none
 highlight LspCxxHLSymParameter    guifg=#da8548  guibg=none          gui=none
 highlight LspCxxHLSymMacro        guifg=#ecbe7b  guibg=none          gui=none
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Mouse Scrolling
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set mouse=nicr
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Splits and Tabbed Files
@@ -240,8 +220,8 @@ map <Leader>tk <C-w>t<C-w>K
 
 map <Leader>tl :tabNext<CR>
 map <Leader>th :tabprev<CR>
-map <Leader>tL :+tabmove<CR>
-map <Leader>tH :-tabmove<CR>
+map <Leader>tk :+tabmove<CR>
+map <Leader>tj :-tabmove<CR>
 map <Leader>tn :tabnew<CR>
 map <Leader>tc :tabclose<CR>
 
@@ -251,6 +231,8 @@ set fillchars+=vert:\
 " => Keybindings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 map <Leader>fs :w<CR>
+map <Leader>fx :wq<CR>
+map <Leader>fq :q!<CR>
 map zx :wq<CR>
 map zq :q!<CR>
 map <Leader>. :edit<Space>
@@ -258,9 +240,10 @@ map <Leader>e :Chmod +x<Space>
 map <Leader>E :!touch<Space>
 map <Leader>m :Mkdir<Space>
 map <Leader>M :!rm -rf<Space>
+map <Leader>F :Neoformat<CR>
 noremap j gj
 noremap k gk
-map <Leader>F :Neoformat<CR>
+nmap ms ysiw
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Other Stuff
