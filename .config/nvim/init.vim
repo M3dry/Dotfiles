@@ -44,6 +44,7 @@ set wildmenu
 set incsearch
 set hidden
 set nobackup
+set notimeout
 set noswapfile
 set number relativenumber
 set clipboard=unnamedplus
