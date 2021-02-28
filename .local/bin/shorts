@@ -1,0 +1,5 @@
+#!/bin/sh
+
+[ -d "$HOME/.config/shorts/" ] && . "$HOME/.config/shorts/$1" || (mkdir $HOME/.config/shorts && echo "no config found")
+
+[ "$type" = "shell" ] && sed "/^#/d ; s/#.*#//g" $markFile | awk '{print "alias "$1"=""\""$2"\"" }' > $finFile
