@@ -3,7 +3,10 @@
 /* appearance */
 static const unsigned int borderpx  = 2;   /* border pixel of windows */
 static const unsigned int snap      = 0;   /* snap pixel */
+static const int splitstatus        = 1;        /* 1 for split status items */
+static const char *splitdelim        = ";";       /* Character used for separating status */
 static const int swallowfloating    = 1;   /* 1 means swallow floating windows by default */
+static const int decorhints         = 1;   /* 1 means respect decoration hints */
 static const unsigned int gappih    = 4;   /* horiz inner gap between windows */
 static const unsigned int gappiv    = 4;   /* vert inner gap between windows */
 static const unsigned int gappoh    = 4;   /* horiz outer gap between windows and screen edge */
@@ -13,8 +16,7 @@ static const int focusonwheel       = 0;
 static const int showbar            = 1;   /* 0 means no bar */
 static const int topbar             = 1;   /* 0 means bottom bar */
 static const int user_bh            = 20;  /* 0 means that dwm will calculate bar height, >= 1 means dwm will user_bh as bar height */
-static const char *fonts[]          = {"mononoki Nerd Font Mono:size=9:antialias=true:autohint=true",
-                                       "JoyPixels:size=8:antialias=true:autohint=true"};
+static const char *fonts[]          = { "mononoki Nerd Font Mono:size=10:antialias=true:autohint=true" };
 
 static const char normfg[]           = "#f0f0f0";
 static const char selfg[]            = "#ffffff";
@@ -37,8 +39,8 @@ typedef struct {
 	const char *name;
 	const void *cmd;
 } Sp;
-const char *spcmd1[] = {"st", "-n", "spterm", "-t", "stSCP", "-g", "144x41", NULL };
-const char *spcmd2[] = {"st", "-n", "spmus", "-t", "cmusSCP", "-g", "144x41", "-e", "cmus", NULL };
+const char *spcmd1[] = {"st", "-c", "spterm", "-t", "stSCP", "-g", "144x41", NULL };
+const char *spcmd2[] = {"st", "-c", "spmus", "-t", "cmusSCP", "-g", "144x41", "-e", "cmus", NULL };
 const char *spcmd3[] = {"qalculate-gtk", "--title", "spcal", NULL };
 static Sp scratchpads[] = {
    /* name          cmd  */
@@ -56,13 +58,20 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     switchtotag     iscentered   isfloating   isterminal    noswallow   monitor */
-	{ "Gimp",     NULL,       NULL,       1 << 8,       1,              0,           1,           0,            0,          -1 },
-	{ "Firefox",  NULL,       NULL,       0,            0,              0,           0,           0,            0,          -1 },
-	{ NULL,		  "spterm",	  NULL,	      SPTAG(0),	    0,              1,           1,			  0,            0,          -1 },
-	{ NULL,		  "spmus",	  NULL,	      SPTAG(1),	    0,              1,           1,			  0,            0,          -1 },
-	{ NULL,		  NULL,	      "spcal",	  SPTAG(2),	    0,              1,           1,			  0,            0,          -1 },
-	{ "st",       NULL,       NULL,       0,            0,              0,           0,           1,            0,          -1 },
+    /* Scratchpads */
+	{ "spterm",	  NULL,	      NULL,	      SPTAG(0),	    0,              1,           1,			  0,            0,          -1 }, /* St */
+	{ "spmus",	  NULL,	      NULL,	      SPTAG(1),	    0,              1,           1,			  0,            0,          -1 }, /* cmus */
+	{ NULL,		  NULL,	      "spcal",	  SPTAG(2),	    0,              1,           1,			  0,            0,          -1 }, /* qalculate-gtk */
+    /* Terminals */
+	{ "St",       NULL,       NULL,       0,            0,              0,           0,           1,            0,          -1 },
+	{ "Alacritty",NULL,       NULL,       0,            0,              0,           0,           1,            0,          -1 },
+	{ "XTerm",    NULL,       NULL,       0,            0,              0,           0,           1,            0,          -1 },
+    /* Noswallow */
+	{ NULL,       "Navigator",NULL,       1,            1,              0,           0,           0,            1,          -1 }, /* firefox */
 	{ NULL,       NULL,       "Event Tester", 0,        0,              0,           0,           0,            1,          -1 }, /* xev */
+	{ "Xephyr",   NULL,       NULL,       0,            0,              1,           1,           0,            1,          -1 }, /* xephyr */
+	{ "Gimp",     NULL,       NULL,       1 << 8,       1,              1,           1,           0,            1,          -1 }, /* gimp */
+	{ NULL,       NULL,       "glxgears", 0,            0,              1,           1,           0,            1,          -1 },
 };
 
 /* layout(s) */
@@ -110,6 +119,7 @@ void swaptags(const Arg *arg);
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 #include <X11/XF86keysym.h>
+
 static Key keys[] = {
 	/* modifier                     key        function        argument */
     /* Spawing preograms */
@@ -197,6 +207,15 @@ static Key keys[] = {
 	{ A,                       XK_period,     focusmon,               {.i = +1 } },
 	{ A|ShiftMask,             XK_comma,      tagmon,                 {.i = -1 } },
 	{ A|ShiftMask,             XK_period,     tagmon,                 {.i = +1 } },
+    /* Moveresize */
+	{ A|C,                     XK_j,          moveresize,             {.v = "0x 25y 0w 0h" } },
+	{ A|C,                     XK_k,          moveresize,             {.v = "0x -25y 0w 0h" } },
+	{ A|C,                     XK_l,          moveresize,             {.v = "25x 0y 0w 0h" } },
+	{ A|C,                     XK_h,          moveresize,             {.v = "-25x 0y 0w 0h" } },
+	{ M|C,                     XK_j,          moveresize,             {.v = "0x 0y 0w 25h" } },
+	{ M|C,                     XK_k,          moveresize,             {.v = "0x 0y 0w -25h" } },
+	{ M|C,                     XK_l,          moveresize,             {.v = "0x 0y 25w 0h" } },
+	{ M|C,                     XK_h,          moveresize,             {.v = "0x 0y -25w 0h" } },
 	TAGKEYS(                   XK_1,                                  0)
 	TAGKEYS(                   XK_2,                                  1)
 	TAGKEYS(                   XK_3,                                  2)
@@ -207,6 +226,7 @@ static Key keys[] = {
 	TAGKEYS(                   XK_8,                                  7)
 	TAGKEYS(                   XK_9,                                  8)
 	{ M|S,                     XK_Escape,     quit,                   {0} }, 
+	{ A|C|S,                   XK_q,          quit,                   {1} }, 
 };
 
 /* button definitions */

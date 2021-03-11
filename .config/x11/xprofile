@@ -11,4 +11,4 @@ lxsession &
 xrdb .config/x11/xresources &
 # /usr/bin/emacs --daemon &
 xset r rate 400 50 &
-dwmStatus &
+killall dwmStatus ; dwmStatus &

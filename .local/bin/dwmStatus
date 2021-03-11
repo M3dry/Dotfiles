@@ -21,7 +21,7 @@ memory() {
 }
 
 clock() {
-    date +'%H:%M:%S %d. %m.'
+    date +'%A, %e. %B %H:%M:%S'
 }
 
 package
@@ -32,7 +32,7 @@ memory
 i=0
 
 while :; do
-    xsetroot -name "PKG:$pkg | $vol | $upt | $mem | $(clock)"
+    xsetroot -name "$(clock);[PKG:$pkg] [$vol] [$upt] [$mem] "
     [ "$(($i % 5))" = "0" ] && memory
     [ "$(($i % 60))" = "0" ] && upTime
     [ "$(($i % 12000))" = "0" ] && package
