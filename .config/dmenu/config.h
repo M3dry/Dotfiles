@@ -5,7 +5,7 @@ static int topbar = 1;                      /* -b  option; if 0, dmenu appears a
 static int instant = 0;                     /* -n  option; if 1, selects matching item without the need to press enter */
 static int center = 0;                      /* -c  option; if 0, dmenu won't be centered on the screen */
 static int min_width = 500;                 /* minimum width when centered */
-static int colorprompt = 1;                 /* -p  option; if 1, prompt uses SchemeSel, otherwise SchemeNorm */
+static int colorprompt = 0;                 /* -p  option; if 1, prompt uses SchemeSel, otherwise SchemeNorm */
 static int fuzzy = 0;                      /* -F  option; if 0, dmenu doesn't use fuzzy matching     */
 static int incremental = 0;                 /* -r  option; if 1, outputs text each time a key is pressed */
 /* -fn option overrides fonts[0]; default X11 font or font set */
@@ -22,12 +22,12 @@ static const char *symbol_2 = ">";
 static const char *colors[][2] =
 {
 	/*                        fg         bg       */
-	[SchemeNorm] =          { "#f0f0f0", "#000000" },
-	[SchemeSel] =           { "#000000", "#51afef" },
-	[SchemeOut] =           { "#000000", "#00ffff" },
-	[SchemeMid] =           { "#ecbe7b", "#000000" },
-	[SchemeSelHighlight] =  { "#ecbe7b", "#000000" },
-	[SchemeNormHighlight] = { "#51afef", "#000000" },
+	[SchemeNorm] =          { "#f0f0f0", "#111111" },
+	[SchemeSel] =           { "#ffffff", "#292d3e" },
+	[SchemeOut] =           { "#000000", "#000000" },
+	[SchemeMid] =           { "#f0f0f0", "#161616" },
+	[SchemeSelHighlight] =  { "#f0f0f0", "#161616" },
+	[SchemeNormHighlight] = { "#ecbe7b", "#000000" },
 };
 /* -l option; if nonzero, dmenu uses vertical list with given number of lines */
 static unsigned int lines      = 0;
