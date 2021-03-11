@@ -10,16 +10,16 @@ if [[ $1 == *.png ]] || [[ $1 == *.jpg ]] || [[ $1 == *.jpeg ]] || [[ $1 == *.gi
     )
 fi
 
-# # while true; do
+# while true; do
 #     lin=$(tput lines)
 #     col=$(($(tput cols) - 1))
 
 #     ueberzug layer --parser bash 0< <(
 #         declare -Ap a_command=([action]="add" [identifier]="test" [x]="0" [y]="0" [height]="$lin" [width]="$col" [path]="$1")
 
-#         # while true; do
-#         #     [ $(tput lines) != $lin ] && break
-#         #     [ $(($(tput cols) - 1)) != $col ] && break
-#         # done
+#         while true; do
+#             [ $(tput lines) != $lin ] && break
+#             [ $(($(tput cols) - 1)) != $col ] && break
+#         done
 #     )
 # done

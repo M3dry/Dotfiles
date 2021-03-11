@@ -3,7 +3,7 @@
 case $BUTTON in
   1) pamixer --toggle-mute;;
   2) $TERMINAL nvim .local/bin/volume;;
-  3) st -e pulsemixer;;
+  3) audio-changer;;
   4) $TERMINAL nvim .config/dwmblocks/blocks.h;;
 esac
 

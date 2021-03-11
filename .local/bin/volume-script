@@ -1,4 +1,4 @@
 #!/bin/sh
 
 dmenu < /dev/null -p 'set volume' | xargs -I {} pamixer --set-volume '{}'
-pkill -rtmin+7 dwmblocks
+killall dwmStatus && dwmStatus &

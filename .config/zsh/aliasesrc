@@ -24,7 +24,6 @@ alias ccom='config commit'
 alias cadd='config add'
 alias doomsync="~/.emacs.d/bin/doom sync"
 alias doomupgrade="~/.emacs.d/bin/doom upgrade"
-alias bo="zathura $HOME/my-stuff/Books/Operating-Systems\(William-Stalligs\)"
 
 ex ()
 {

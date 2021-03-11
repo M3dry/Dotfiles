@@ -1,16 +1,16 @@
-#!/bin/sh
+#!/bin/bash
 
 cmuschoice() {
     title=$(cmus-remote -Q | rg "title" | sed 's/tag title //')
     album=$(cmus-remote -Q | rg "album " | sed 's/tag album //')
-    artist=$(cmus-remote -Q | rg "artist " | sed 's/tag artist //')
+    artist=$(cmus-remote -Q | rg "albumartist " | sed 's/tag albumartist //')
     number=$(cmus-remote -Q | rg "tracknumber" | sed 's/tag tracknumber //')
     volume=$(cmus-remote -Q | rg "vol_right" | sed 's/set vol_right //')
     [ $(cmus-remote -C "set shuffle?" | sed "s/.*=// ; s/'//") = "true" ] && shuffle="🔀"
     [ $(cmus-remote -C "set repeat_current?" | sed "s/.*=// ; s/'//") = "true" ] && repeat="🔂"
     [ $(cmus-remote -Q | rg "status" | sed "s/status //") = "playing" ] && status="⏸" || status="▶"
     info=$(echo "$artist - $title/$album:$number 🔈$volume% $shuffle$status$repeat")
-    choice=$(echo "play/pause\nqueue\nplay song\nrepeat current\n🔈${volume}%\nnext\nprev\nshuffle" | dmenu -p "$info")
+    choice=$(echo -e "play/pause\nqueue\nplay song\nrepeat current\n🔈${volume}%\nnext\nprev\nshuffle" | dmenu -p "$info")
 
     case $choice in
         "") exit 0;;
@@ -29,6 +29,7 @@ Cqueue() {
     cd "/home/m3/my-stuff/Music/"
     whatD=$(ls | dmenu -F -g 10 -l 8 -p "$info")
     [ -z $whatD ] && exit 0
+    [[ "$whatD" = *.mp3 ]] && cmus-remote -q "$whatD" && exit
     cd "/home/m3/my-stuff/Music/$whatD"
     artist=$(ls | sed "s/ -.*//" | head -n 1)
     whatF=$(ls | sed "s/.*- // ; s/.mp3//" | dmenu -F -g 10 -l 8 -p "$info")
@@ -40,6 +41,7 @@ Cplay() {
     cd "/home/m3/my-stuff/Music/"
     whatD=$(ls | dmenu -F -g 10 -l 8 -p "$info")
     [ -z $whatD ] && exit 0
+    [[ "$whatD" = *.mp3 ]] && cmus-remote -f "$whatD" && exit
     cd "/home/m3/my-stuff/Music/$whatD"
     artist=$(ls | sed "s/ -.*//" | head -n 1)
     whatF=$(ls | sed "s/.*- // ; s/.mp3//" | dmenu -F -g 10 -l 8 -p "$info")

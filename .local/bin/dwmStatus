@@ -1,0 +1,41 @@
+#!/bin/sh
+
+package() {
+    pkg=$(checkupdates | wc -l)
+}
+
+volume() {
+    vol="$(pamixer --get-volume)%"
+    case $vol in
+        0%) vol="MUTED";;
+        *) vol=VOL:$vol;;
+    esac
+}
+
+upTime() {
+upt=$(uptime --pretty | sed "s/up // ; s/ days/d/g ; s/ day/d/g ; s/ hours/h/g ; s/ hour/h/g ; s/ minutes/min/g ; s/,//g")
+}
+
+memory() {
+    mem=$(free -h | awk '/^Mem:/ {print $3 "/" $2}')
+}
+
+clock() {
+    date +'%H:%M:%S %d. %m.'
+}
+
+package
+volume
+upTime
+memory
+
+i=0
+
+while :; do
+    xsetroot -name "PKG:$pkg | $vol | $upt | $mem | $(clock)"
+    [ "$(($i % 5))" = "0" ] && memory
+    [ "$(($i % 60))" = "0" ] && upTime
+    [ "$(($i % 12000))" = "0" ] && package
+    sleep 1
+    i=$(($i + 1))
+done

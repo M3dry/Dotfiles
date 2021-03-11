@@ -85,7 +85,7 @@ autocmd BufRead,BufNewFile xresources,xdefaults set filetype=xdefaults
 autocmd BufWritePost xresources !xrdb %
 autocmd BufWritePost DirMarks !shorts DirConf
 
-ab #! #!/bin/bash
+ab #! #!/bin/sh
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => coc
