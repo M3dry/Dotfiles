@@ -1,43 +1,10 @@
 --- dwm.c
 +++ dwm.c
-@@ -428,6 +429,7 @@ buttonpress(XEvent *e)
- 	/* focus monitor if necessary */
- 	if ((m = wintomon(ev->window)) && m != selmon) {
- 		unfocus(selmon->sel, 1);
-+		prevmon = selmon;
- 		selmon = m;
- 		focus(NULL);
- 	}
-@@ -766,6 +768,7 @@ enternotify(XEvent *e)
- 	m = c ? c->mon : wintomon(ev->window);
- 	if (m != selmon) {
- 		unfocus(selmon->sel, 1);
-+		prevmon = selmon;
- 		selmon = m;
- 	} else if (!c || c == selmon->sel)
- 		return;
-@@ -829,6 +834,7 @@ focusmon(const Arg *arg)
- 	if ((m = dirtomon(arg->i)) == selmon)
- 		return;
- 	unfocus(selmon->sel, 0);
-+	prevmon = selmon;
- 	selmon = m;
- 	focus(NULL);
- }
-@@ -1145,6 +1166,8 @@ motionnotify(XEvent *e)
- 		return;
- 	if ((m = recttomon(ev->x_root, ev->y_root, 1, 1)) != mon && mon) {
- 		unfocus(selmon->sel, 1);
-+		if (m != selmon)
-+			prevmon = selmon;
- 		selmon = m;
- 		focus(NULL);
- 	}
-@@ -2061,6 +2087,7 @@ view(const Arg *arg)
- {
- 	if ((arg->ui & TAGMASK) == selmon->tagset[selmon->seltags])
- 		return;
-+	prevmon = NULL;
- 	selmon->seltags ^= 1; /* toggle sel tagset */
- 	if (arg->ui & TAGMASK)
- 		selmon->tagset[selmon->seltags] = arg->ui & TAGMASK;
+@@ -211,6 +211,7 @@ static void tagmon(const Arg *arg);
+ static void tile(Monitor *);
+ static void togglebar(const Arg *arg);
+ static void togglefloating(const Arg *arg);
++static void togglefullscr(const Arg *arg);
+ static void toggletag(const Arg *arg);
+ static void toggleview(const Arg *arg);
+ static void unfocus(Client *c, int setfocus);
