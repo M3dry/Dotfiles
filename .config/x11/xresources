@@ -79,7 +79,7 @@ st.altbackground: #111111
 dwm.normfg:             #ff6c6b
 dwm.selfg:              #ffffff
 dwm.normbg:             #151515
-dwm.selbg:              #151515
+dwm.selbg:              #292d3e
 dwm.normbar:            #111111
 dwm.selbar:             #292d3e
 dwm.normborder:         #111111

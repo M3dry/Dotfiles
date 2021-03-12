@@ -1,16 +1,23 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
+/*  Display modes of the tab bar: never shown, always shown, shown only in  */
+/*  monocle mode in the presence of several windows.                        */
+/*  Modes after showtab_nmodes are disabled.                                */
+enum showtab_modes { showtab_never, showtab_auto, showtab_nmodes, showtab_always};
+static const int showtab			= showtab_auto;        /* Default tab bar show mode */
+static const int toptab				= 1;               /* False means bottom tab bar */
+
 static unsigned int borderpx        = 2;   /* border pixel of windows */
 static const unsigned int snap      = 0;   /* snap pixel */
 static const int splitstatus        = 1;        /* 1 for split status items */
 static const char *splitdelim       = ";";       /* Character used for separating status */
 static const int swallowfloating    = 1;   /* 1 means swallow floating windows by default */
 static const int decorhints         = 1;   /* 1 means respect decoration hints */
-static const unsigned int gappih    = 4;   /* horiz inner gap between windows */
-static const unsigned int gappiv    = 4;   /* vert inner gap between windows */
-static const unsigned int gappoh    = 4;   /* horiz outer gap between windows and screen edge */
-static const unsigned int gappov    = 4;   /* vert outer gap between windows and screen edge */
+static const unsigned int gappih    = 8;   /* horiz inner gap between windows */
+static const unsigned int gappiv    = 8;   /* vert inner gap between windows */
+static const unsigned int gappoh    = 1;   /* horiz outer gap between windows and screen edge */
+static const unsigned int gappov    = 1;   /* vert outer gap between windows and screen edge */
 static       int smartgaps          = 1;   /* 1 means no outer gap when there is only one window */
 static const int focusonwheel       = 0;
 static const int showbar            = 1;   /* 0 means no bar */
@@ -202,11 +209,6 @@ static Key keys[] = {
 	{ A,                       XK_l,          focusdir,               {.i = 1 } }, // right
 	{ A,                       XK_k,          focusdir,               {.i = 2 } }, // up
 	{ A,                       XK_j,          focusdir,               {.i = 3 } }, // down
-    /* Gaps */
-	{ M|S,                     XK_equal,      incrgaps,               {.i = +1 } },
-	{ M|S,                     XK_minus,      incrgaps,               {.i = -1 } },
-	{ M|S,                     XK_0,          togglegaps,             {0} },
-	{ M|C,                     XK_0,          defaultgaps,            {0} },
     /* Layouts */
 	{ A,                       XK_t,          setlayout,              {.v = &layouts[0]} },
 	{ A,                       XK_v,          setlayout,              {.v = &layouts[1]} },
@@ -217,6 +219,7 @@ static Key keys[] = {
 	{ A|S,                     XK_m,          setlayout,              {.v = &layouts[6]} },
 	{ A,                       XK_m,          setlayout,              {.v = &layouts[7]} },
 	{ A|S,                     XK_g,          setlayout,              {.v = &layouts[8]} },
+	{ A|S,                     XK_t,          tabmode,                {-1} },
 	{ A|C,                     XK_i,          cyclelayout,            {.i = -1 } },
 	{ A|C,                     XK_p,          cyclelayout,            {.i = +1 } },
 	{ A,                       XK_0,          view,                   {.ui = ~0 } },
@@ -227,7 +230,7 @@ static Key keys[] = {
 	{ M,                       XK_k,          pushup,                 {0} },
 	{ A,                       XK_space,      togglefloating,         {0} },
 	{ A|S,                     XK_space,      unfloatvisible,         {0} },
-	{ C,                       XK_s,          togglesticky,           {0} },
+	{ M,                       XK_s,          togglesticky,           {0} },
 	{ A,                       XK_f,          togglefullscr,          {0} },
 	{ A|C,                     XK_f,          togglefakefullscreen,   {0} },
 	{ A,                       XK_u,          togglescratch,          {.ui = 0 } },
@@ -247,6 +250,11 @@ static Key keys[] = {
 	{ M|C,                     XK_k,          moveresize,             {.v = "0x 0y 0w -25h" } },
 	{ M|C,                     XK_l,          moveresize,             {.v = "0x 0y 25w 0h" } },
 	{ M|C,                     XK_h,          moveresize,             {.v = "0x 0y -25w 0h" } },
+    /* Gaps */
+	{ A|S,                     XK_equal,      incrgaps,               {.i = +1 } },
+	{ A|S,                     XK_minus,      incrgaps,               {.i = -1 } },
+	{ A|S,                     XK_0,          defaultgaps,            {0} },
+	{ A|C,                     XK_0,          togglegaps,             {0} },
 	TAGKEYS(                   XK_1,                                  0)
 	TAGKEYS(                   XK_2,                                  1)
 	TAGKEYS(                   XK_3,                                  2)
@@ -271,6 +279,7 @@ static Button buttons[] = {
 	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
 	{ ClkTagBar,            A,              Button1,        tag,            {0} },
 	{ ClkTagBar,            A,              Button3,        toggletag,      {0} },
+	{ ClkTabBar,            0,              Button1,        focuswin,       {0} },
 };
 
 void

@@ -242,8 +242,6 @@ map <Leader>E :!touch<Space>
 map <Leader>m :Mkdir<Space>
 map <Leader>M :!rm -rf<Space>
 map <Leader>F :Neoformat<CR>
-noremap j gj
-noremap k gk
 nmap ms ysiw
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
