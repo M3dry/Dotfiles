@@ -1,10 +1,63 @@
 --- dwm.c
 +++ dwm.c
-@@ -262,6 +264,7 @@ static void (*handler[LASTEvent]) (XEvent *) = {
- 	[UnmapNotify] = unmapnotify
- };
- static Atom wmatom[WMLast], netatom[NetLast];
-+static int restart = 0;
- static int running = 1;
- static Cur *cursor[CurLast];
- static Clr **scheme;
+@@ -654,31 +664,46 @@ configurerequest(XEvent *e)
+ Monitor *
+ createmon(void)
+ {
+-	Monitor *m;
+-	int i;
+-
++	Monitor *m, *mon;
++	int i, mi, j, layout;
++	const MonitorRule *mr;
+ 	m = ecalloc(1, sizeof(Monitor));
+ 	m->tagset[0] = m->tagset[1] = 1;
+ 	m->mfact = mfact;
+ 	m->nmaster = nmaster;
+ 	m->showbar = showbar;
+ 	m->topbar = topbar;
+-	m->lt[0] = &layouts[0];
+-	m->lt[1] = &layouts[1 % LENGTH(layouts)];
+-	strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
++
++	for (mi = 0, mon = mons; mon; mon = mon->next, mi++);
++	for (j = 0; j < LENGTH(monrules); j++) {
++		mr = &monrules[j];
++		if ((mr->monitor == -1 || mr->monitor == mi)
++				&& (mr->tag <= 0 || (m->tagset[0] & (1 << (mr->tag - 1))))
++		) {
++			layout = MAX(mr->layout, 0);
++			layout = MIN(layout, LENGTH(layouts) - 1);
++			m->lt[0] = &layouts[layout];
++			m->lt[1] = &layouts[1 % LENGTH(layouts)];
++			strncpy(m->ltsymbol, layouts[layout].symbol, sizeof m->ltsymbol);
++
++			if (mr->mfact > -1)
++				m->mfact = mr->mfact;
++			if (mr->nmaster > -1)
++				m->nmaster = mr->nmaster;
++			if (mr->showbar > -1)
++				m->showbar = mr->showbar;
++			if (mr->topbar > -1)
++				m->topbar = mr->topbar;
++			break;
++		}
++	}
++
+ 	if (!(m->pertag = (Pertag *)calloc(1, sizeof(Pertag))))
+ 		die("fatal: could not malloc() %u bytes\n", sizeof(Pertag));
+ 	m->pertag->curtag = m->pertag->prevtag = 1;
+-	for (i = 0; i <= LENGTH(tags); i++) {
+-		/* init nmaster */
+-		m->pertag->nmasters[i] = m->nmaster;
+-
+-		/* init mfacts */
+-		m->pertag->mfacts[i] = m->mfact;
+ 
++	for (i = 0; i <= LENGTH(tags); i++) {
+ 		/* init layouts */
+-		m->pertag->ltidxs[i][0] = m->lt[0];
+-		m->pertag->ltidxs[i][1] = m->lt[1];
+ 		m->pertag->sellts[i] = m->sellt;
+ 
+ 		/* init showbar */

@@ -33,9 +33,9 @@ i=0
 
 while :; do
     xsetroot -name "$(clock);[PKG:$pkg] [$vol] [$upt] [$mem] "
-    [ "$(($i % 5))" = "0" ] && memory
-    [ "$(($i % 60))" = "0" ] && upTime
-    [ "$(($i % 12000))" = "0" ] && package
-    sleep 1
+    [ "$(($i % 10))" = "0" ] && memory
+    [ "$(($i % 120))" = "0" ] && upTime
+    [ "$(($i % 25000))" = "0" ] && package
+    sleep 0.5
     i=$(($i + 1))
 done
