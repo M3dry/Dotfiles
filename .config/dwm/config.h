@@ -8,7 +8,7 @@ enum showtab_modes { showtab_never, showtab_auto, showtab_nmodes, showtab_always
 static const int showtab			= showtab_auto;        /* Default tab bar show mode */
 static const int toptab				= 0;               /* False means bottom tab bar */
 
-static unsigned int borderpx        = 2;   /* border pixel of windows */
+static const unsigned int borderpx  = 2;   /* border pixel of windows */
 static const unsigned int snap      = 0;   /* snap pixel */
 static const int splitstatus        = 0;        /* 1 for split status items */
 static const char *splitdelim       = ";";       /* Character used for separating status */
@@ -29,21 +29,44 @@ static const int systraypinningfailfirst = 1;   /* 1: if pinning fails, display 
 static const int showsystray        = 1;     /* 0 means no systray */
 static const char *fonts[]          = { "mononoki Nerd Font Mono:size=12:antialias=true:autohint=true" };
 
-static char normfg[]           = "#ff6c6b";
-static char selfg[]            = "#ffffff";
-static char normbg[]           = "#111111";
-static char selbg[]            = "#292d3e";
-static char normbar[]          = "#111111";
-static char selbar[]           = "#292d3e";
-static char normborder[]       = "#111111";
-static char selborder[]        = "#ff6c6b";
-static char normfloatborder[]  = "#111111";
-static char selfloatborder[]   = "#ffffff";
+static const char normfg[]                = "#51afef";
+static const char selfg[]                 = "#ffffff";
+static const char normbg[]                = "#111111";
+static const char selbg[]                 = "#292d3e";
+static const char normbar[]               = "#111111";
+static const char selbar[]                = "#292d3e";
+static const char normborder[]            = "#111111";
+static const char selborder[]             = "#ff6c6b";
+static const char normfloatwinborder[]    = "#111111";
+static const char selfloatwinborder[]     = "#ffffff";
+/* Lay constout borders */
+static const char normtileborder[]        = "#292d3e";
+static const char normfibonacciborder[]   = "#292d3e";
+static const char normfloatborder[]       = "#292d3e";
+static const char normdeckborder[]        = "#292d3e";
+static const char normnrowgridborder[]    = "#292d3e";
+static const char normbstackborder[]      = "#292d3e";
+static const char normcenmasterborder[]   = "#292d3e";
+static const char normmonocleborder[]     = "#292d3e";
+static const char normgaplessgridborder[] = "#292d3e";
+static const char seltileborder[]         = "#ff6c6b";
+static const char selfibonacciborder[]    = "#ff6c6b";
+static const char selfloatborder[]        = "#ff6c6b";
+static const char seldeckborder[]         = "#ff6c6b";
+static const char selnrowgridborder[]     = "#ff6c6b";
+static const char selbstackborder[]       = "#ff6c6b";
+static const char selcenmasterborder[]    = "#ff6c6b";
+static const char selmonocleborder[]      = "#ff6c6b";
+static const char selgaplessgridborder[]  = "#ff6c6b";
 
-static char *colors[][5]  = {
-	/*               fg      bg      bar      border      float border*/
-	[SchemeNorm] = { normfg, normbg, normbar, normborder, normfloatborder },
-	[SchemeSel]  = { selfg,  selbg,  selbar,  selborder,  selfloatborder },
+static const char *colors[][9]  = {
+	/*                  fg      bg      bar      border      float border */
+	[SchemeNorm]    = { normfg, normbg, normbar, normborder, normfloatwinborder },
+	[SchemeSel]     = { selfg,  selbg,  selbar,  selborder,  selfloatwinborder },
+	/*                      tile            fibonacci            float            deck            nrowgrid            bstack            centeredmaster       monocle            gaplessgrid */
+	[SchemeNormLayout]  = { normtileborder, normfibonacciborder, normfloatborder, normdeckborder, normnrowgridborder, normbstackborder, normcenmasterborder, normmonocleborder, normgaplessgridborder },
+	[SchemeSelLayout]   = { seltileborder,  selfibonacciborder,  selfloatborder,  seldeckborder,  selnrowgridborder,  selbstackborder,  selcenmasterborder,  selmonocleborder,  selgaplessgridborder },
+    /* if you change layout order you also need to change the order here */
 };
 
 typedef struct {
@@ -92,8 +115,8 @@ static const MonitorRule monrules[] = {
 };
 
 /* layout(s) */
-static float mfact           = 0.5;  /* factor of master area size [0.05..0.95] */
-static int resizehints       = 0;    /* 1 means respect size hints in tiled resizals */
+static const float mfact     = 0.5;  /* factor of master area size [0.05..0.95] */
+static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int attachbelow = 1;    /* 1 means attach after the currently active window */
 
@@ -117,25 +140,6 @@ static const Layout layouts[] = {
 };
 
 void swaptags(const Arg *arg);
-
-/*
- * Xresources preferences to load at startup
- */
-ResourcePref resources[] = {
-		{ "normfg",             STRING,  &normfg },
-		{ "selfg",              STRING,  &selfg },
-		{ "normbg",             STRING,  &normbg },
-		{ "selbg",              STRING,  &selbg },
-		{ "normbar",            STRING,  &normbar },
-		{ "selbar",             STRING,  &selbar },
-		{ "normborder",         STRING,  &normborder },
-		{ "selborder",          STRING,  &selborder },
-		{ "normfloatborder",    STRING,  &normfloatborder },
-		{ "selfloatborder",     STRING,  &selfloatborder },
-		{ "borderpx",          	INTEGER, &borderpx },
-		{ "resizehints",       	INTEGER, &resizehints },
-		{ "mfact",      	 	FLOAT,   &mfact },
-};
 
 /* key definitions */
 #define M Mod4Mask

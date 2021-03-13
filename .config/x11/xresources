@@ -74,18 +74,3 @@ st.altbackground: #111111
 ! white
 *.color7:       #202328
 *.color15:      #dfdfdf
-
-! dwm
-dwm.normfg:             #ff6c6b
-dwm.selfg:              #ffffff
-dwm.normbg:             #151515
-dwm.selbg:              #292d3e
-dwm.normbar:            #111111
-dwm.selbar:             #292d3e
-dwm.normborder:         #111111
-dwm.selborder:          #ff6c6b
-dwm.normfloatborder:    #111111
-dwm.selfloatborder:     #ffffff
-dwm.borderpx: 2
-dwm.resizehints: 0
-dwm.mfact: 0.5
