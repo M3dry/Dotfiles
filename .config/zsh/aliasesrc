@@ -22,6 +22,7 @@ alias cpush='config push git@github.com:M3dry/Dotfiles.git'
 alias cstat='config status'
 alias ccom='config commit'
 alias cadd='config add'
+alias gc='git clone'
 alias doomsync="~/.emacs.d/bin/doom sync"
 alias doomupgrade="~/.emacs.d/bin/doom upgrade"
 

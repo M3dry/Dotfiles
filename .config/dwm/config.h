@@ -6,11 +6,11 @@
 /*  Modes after showtab_nmodes are disabled.                                */
 enum showtab_modes { showtab_never, showtab_auto, showtab_nmodes, showtab_always};
 static const int showtab			= showtab_auto;        /* Default tab bar show mode */
-static const int toptab				= 1;               /* False means bottom tab bar */
+static const int toptab				= 0;               /* False means bottom tab bar */
 
 static unsigned int borderpx        = 2;   /* border pixel of windows */
 static const unsigned int snap      = 0;   /* snap pixel */
-static const int splitstatus        = 1;        /* 1 for split status items */
+static const int splitstatus        = 0;        /* 1 for split status items */
 static const char *splitdelim       = ";";       /* Character used for separating status */
 static const int swallowfloating    = 1;   /* 1 means swallow floating windows by default */
 static const int decorhints         = 1;   /* 1 means respect decoration hints */
@@ -23,6 +23,10 @@ static const int focusonwheel       = 0;
 static const int showbar            = 1;   /* 0 means no bar */
 static const int topbar             = 1;   /* 0 means bottom bar */
 static const int user_bh            = 24;  /* 0 means that dwm will calculate bar height, >= 1 means dwm will user_bh as bar height */
+static const unsigned int systraypinning = 0;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
+static const unsigned int systrayspacing = 2;   /* systray spacing */
+static const int systraypinningfailfirst = 1;   /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor*/
+static const int showsystray        = 1;     /* 0 means no systray */
 static const char *fonts[]          = { "mononoki Nerd Font Mono:size=12:antialias=true:autohint=true" };
 
 static char normfg[]           = "#ff6c6b";
@@ -140,10 +144,10 @@ ResourcePref resources[] = {
 
 #define C ControlMask
 #define TAGKEYS(KEY,TAG) \
-	{ A,                       KEY,      view,           {.ui = 1 << TAG} }, \
+	{ A,                       KEY,      comboview,      {.ui = 1 << TAG} }, \
 	{ C,                       KEY,      toggleview,     {.ui = 1 << TAG} }, \
 	{ M,                       KEY,      toggletag,      {.ui = 1 << TAG} }, \
-	{ A|S,                     KEY,      tag,            {.ui = 1 << TAG} }, \
+	{ A|S,                     KEY,      combotag,       {.ui = 1 << TAG} }, \
 	{ A|C,                     KEY,      tagwith,        {.ui = 1 << TAG} }, \
 	{ M|S,                     KEY,      swaptags,       {.ui = 1 << TAG} }, \
 	{ A|M,                     KEY,      tagnextmon,     {.ui = 1 << TAG} }, \
@@ -163,8 +167,6 @@ static Key keys[] = {
 	{ M,                       XK_e,          spawn,                  SHCMD("emacsclient -c -a emacs") },
 	{ M|S,                     XK_c,          spawn,                  SHCMD("emacsclient -c -a e'macs' --eval '(ibuffer)'") },
 	{ A,                       XK_w,          spawn,                  SHCMD("xdo activate -N LibreWolf || librewolf") },
-	{ A|C,                     XK_w,          spawn,                  SHCMD("xdo activate -N LibreWolf || librewolf youtube.com twitch.tv mail.protonmail.com/login") },
-	{ A,                       XK_b,          spawn,                  SHCMD("freetube") },
 	{ A,                       XK_o,          spawn,                  SHCMD("chromium") },
 	{ A,                       XK_Escape,     spawn,                  SHCMD("xkill") },
 	{ C|A,                     XK_d,          spawn,                  SHCMD("discord") },
