@@ -91,7 +91,7 @@
 
 /* enums */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
-enum { SchemeNorm, SchemeSel, SchemeNormLayout, SchemeSelLayout }; /* color schemes */
+enum { SchemeNorm, SchemeSel, SchemeTabNorm, SchemeTabSel, SchemeNormLayout, SchemeSelLayout }; /* color schemes */
 enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
        NetSystemTray, NetSystemTrayOP, NetSystemTrayOrientation, NetSystemTrayOrientationHorz,
        NetWMFullscreen, NetActiveWindow, NetWMWindowType,
@@ -446,6 +446,10 @@ combotag(const Arg *arg) {
 void
 comboview(const Arg *arg) {
 	unsigned newtags = arg->ui & TAGMASK;
+    if ((arg->ui & TAGMASK) == selmon->tagset[selmon->seltags]) {
+        view(&((Arg) { .ui = 0 }));
+        return;
+    }
 	if (combo) {
 		selmon->tagset[selmon->seltags] |= newtags;
 	} else {
@@ -1276,13 +1280,13 @@ drawtab(Monitor *m) {
 	  if(i >= m->ntabs) break;
 	  if(m->tab_widths[i] >  maxsize) m->tab_widths[i] = maxsize;
 	  w = m->tab_widths[i];
-	  drw_setscheme(drw, scheme[(c == m->sel) ? SchemeSel : SchemeNorm]);
+	  drw_setscheme(drw, scheme[(c == m->sel) ? SchemeTabSel : SchemeTabNorm]);
 	  drw_text(drw, x, 0, w, th, 0, c->name, 0);
 	  x += w;
 	  ++i;
 	}
 
-	drw_setscheme(drw, scheme[SchemeNorm]);
+	drw_setscheme(drw, scheme[SchemeTabNorm]);
 
 	/* cleans interspace between window names and current viewed tag label */
 	w = m->ww - view_info_w - x;
@@ -1337,10 +1341,18 @@ focus(Client *c)
 		detachstack(c);
 		attachstack(c);
 		grabbuttons(c, 1);
-		if(c->isfloating)
+		if(c->fakefullscreen && c->isfloating) 
+			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColFakeFullscrFloat].pixel);
+        else if (c->fakefullscreen)
+			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColFakeFullscr].pixel);
+		else if(c->isfloating && c->issticky)
+			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColStickyFloat].pixel);
+        else if (c->issticky)
+			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColSticky].pixel);
+        else if (c->isfloating)
 			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColFloat].pixel);
 		else {
-            for (unsigned int i = 0; i < 8; i++) {
+            for (unsigned int i = 0; i < 9; i++) {
                 if (&layouts[i] == selmon->lt[selmon->sellt]) {
 			        XSetWindowBorder(dpy, c->win, scheme[SchemeSelLayout][i].pixel);
                 }
@@ -1741,12 +1753,12 @@ manage(Window w, XWindowAttributes *wa)
 
 	wc.border_width = c->bw;
 	XConfigureWindow(dpy, w, CWBorderWidth, &wc);
-	if(c->isfloating)
-		XSetWindowBorder(dpy, w, scheme[SchemeSel][ColFloat].pixel);
+    if (c->isfloating)
+		XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColFloat].pixel);
 	else {
-        for (unsigned int i = 0; i < 8; i++) {
+        for (unsigned int i = 0; i < 9; i++) {
             if (&layouts[i] == selmon->lt[selmon->sellt]) {
-		        XSetWindowBorder(dpy, w, scheme[SchemeSelLayout][i].pixel);
+		        XSetWindowBorder(dpy, w, scheme[SchemeNormLayout][i].pixel);
             }
         }
     }
@@ -1767,10 +1779,10 @@ manage(Window w, XWindowAttributes *wa)
 	grabbuttons(c, 0);
 	if (!c->isfloating)
 		c->isfloating = c->oldstate = trans != None || c->isfixed;
-	if (c->isfloating)
+	if (c->isfloating) {
 		XRaiseWindow(dpy, c->win);
-	if(c->isfloating)
-		XSetWindowBorder(dpy, w, scheme[SchemeSel][ColFloat].pixel);
+		XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColFloat].pixel);
+    }
 	if( attachbelow )
 		attachBelow(c);
 	else
@@ -2741,12 +2753,18 @@ togglefakefullscreen(const Arg *arg)
 				c->oldw = c->w;
 				c->oldh = c->h;
 			}
+            for (unsigned int i = 0; i < 9; i++) {
+                if (&layouts[i] == selmon->lt[selmon->sellt]) {
+			        XSetWindowBorder(dpy, c->win, scheme[SchemeSelLayout][i].pixel);
+                }
+            }
 			c->fakefullscreen = 0;
 		}
 		else
 			c->isfullscreen = 0;
 	} else {
 		c->fakefullscreen = 1;
+		XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColFakeFullscr].pixel);
 		if (c->isfullscreen) {
 			c->isfloating = c->oldstate;
 			c->bw = c->oldbw;
@@ -2780,20 +2798,28 @@ togglefloating(const Arg *arg)
 	if (selmon->sel->isfullscreen && selmon->sel->fakefullscreen != 1) /* no support for fullscreen windows */
 		return;
 	selmon->sel->isfloating = !selmon->sel->isfloating || selmon->sel->isfixed;
-	if (selmon->sel->isfloating)
-		XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSel][ColFloat].pixel);
-	else {
-        for (unsigned int i = 0; i < 8; i++) {
-            if (&layouts[i] == selmon->lt[selmon->sellt]) {
-		        XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSelLayout][i].pixel);
-            }
-        }
-    }
-	if(selmon->sel->isfloating)
+	if(selmon->sel->isfloating) {
+        if (selmon->sel->issticky)
+		    XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSel][ColStickyFloat].pixel);
+        else if (selmon->sel->fakefullscreen)
+		    XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSel][ColFakeFullscrFloat].pixel);
+        else
+		    XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSel][ColFloat].pixel);
 		/* restore last known float dimensions */
 		resize(selmon->sel, selmon->sel->sfx, selmon->sel->sfy,
 		       selmon->sel->sfw, selmon->sel->sfh, False);
-	else {
+    } else {
+        if (selmon->sel->issticky)
+		    XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSel][ColSticky].pixel);
+        else if (selmon->sel->fakefullscreen)
+		    XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSel][ColFakeFullscr].pixel);
+        else {
+            for (unsigned int i = 0; i < 9; i++) {
+                if (&layouts[i] == selmon->lt[selmon->sellt]) {
+		            XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSelLayout][i].pixel);
+                }
+            }
+        }
 		/* save last known float dimensions */
 		selmon->sel->sfx = selmon->sel->x;
 		selmon->sel->sfy = selmon->sel->y;
@@ -2849,15 +2875,32 @@ togglesticky(const Arg *arg)
 {
 	if (!selmon->sel)
 		return;
+    if (selmon->sel->isfloating)
+	    XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSel][ColStickyFloat].pixel);
+    else
+	    XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSel][ColSticky].pixel);
+
 	selmon->sel->issticky = !selmon->sel->issticky;
+    if (!selmon->sel->issticky) {
+        if (selmon->sel->isfloating)
+	        XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSel][ColFloat].pixel);
+        else {
+            for (unsigned int i = 0; i < 9; i++) {
+                if (&layouts[i] == selmon->lt[selmon->sellt]) {
+		            XSetWindowBorder(dpy, selmon->sel->win, scheme[SchemeSelLayout][i].pixel);
+                }
+            }
+        }
+    }
 	arrange(selmon);
 }
 
 void
 togglefullscr(const Arg *arg)
 {
-  if(selmon->sel)
+  if(selmon->sel) {
     setfullscreen(selmon->sel, !selmon->sel->isfullscreen);
+  }
 }
 
 void
@@ -2915,9 +2958,21 @@ unfocus(Client *c, int setfocus)
 	if (!c)
 		return;
 	grabbuttons(c, 0);
-    for (unsigned int i = 0; i < 8; i++) {
-        if (&layouts[i] == selmon->lt[selmon->sellt]) {
-	        XSetWindowBorder(dpy, c->win, scheme[SchemeNormLayout][i].pixel);
+	if(c->fakefullscreen && c->isfloating) 
+		XSetWindowBorder(dpy, c->win, scheme[SchemeNorm][ColFakeFullscrFloat].pixel);
+	else if(c->fakefullscreen)
+		XSetWindowBorder(dpy, c->win, scheme[SchemeNorm][ColFakeFullscr].pixel);
+	else if(c->isfloating && c->issticky)
+		XSetWindowBorder(dpy, c->win, scheme[SchemeNorm][ColStickyFloat].pixel);
+    else if (c->issticky)
+		XSetWindowBorder(dpy, c->win, scheme[SchemeNorm][ColSticky].pixel);
+    else if (c->isfloating)
+		XSetWindowBorder(dpy, c->win, scheme[SchemeNorm][ColFloat].pixel);
+	else {
+        for (unsigned int i = 0; i < 9; i++) {
+            if (&layouts[i] == selmon->lt[selmon->sellt]) {
+		        XSetWindowBorder(dpy, c->win, scheme[SchemeNormLayout][i].pixel);
+            }
         }
     }
 	if (setfocus) {

@@ -12,7 +12,7 @@ typedef struct Fnt {
 	struct Fnt *next;
 } Fnt;
 
-enum { ColFg, ColBg, ColBar, ColBor, ColFloat }; /* Clr scheme index */
+enum { ColFg, ColBg, ColFloat, ColSticky, ColStickyFloat, ColFakeFullscr, ColFakeFullscrFloat }; /* Clr scheme index */
 typedef XftColor Clr;
 
 typedef struct {

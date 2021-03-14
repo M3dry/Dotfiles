@@ -31,12 +31,21 @@ static const char normfg[]                = "#51afef";
 static const char selfg[]                 = "#ffffff";
 static const char normbg[]                = "#111111";
 static const char selbg[]                 = "#292d3e";
-static const char normbar[]               = "#111111";
-static const char selbar[]                = "#292d3e";
-static const char normborder[]            = "#111111";
-static const char selborder[]             = "#ff6c6b";
-static const char normfloatwinborder[]    = "#111111";
+static const char normfloatwinborder[]    = "#000000";
 static const char selfloatwinborder[]     = "#ffffff";
+static const char normstickyborder[]      = "#000000";
+static const char selstickyborder[]       = "#98be65";
+static const char normstickyfloatborder[] = "#000000";
+static const char selstickyfloatborder[]  = "#8acc35";
+static const char normfakefullscr[]       = "#408ab2";
+static const char selfakefullscr[]        = "#b869e5";
+static const char normfakefullscrfloat[]  = "#289fe0";
+static const char selfakefullscrfloat[]   = "#9b1be5";
+/* Tab Bar */
+static const char normtabfg[]             = "#ffffff";
+static const char seltabfg[]              = "#000000";
+static const char normtabbg[]             = "#3071db";
+static const char seltabbg[]              = "#3071db";
 /* Lay constout borders */
 static const char normtileborder[]        = "#292d3e";
 static const char normfibonacciborder[]   = "#292d3e";
@@ -49,19 +58,22 @@ static const char normmonocleborder[]     = "#292d3e";
 static const char normgaplessgridborder[] = "#292d3e";
 static const char seltileborder[]         = "#ff6c6b";
 static const char selfibonacciborder[]    = "#ff6c6b";
-static const char selfloatborder[]        = "#98be65";
+static const char selfloatborder[]        = "#16cc31";
 static const char seldeckborder[]         = "#ff6c6b";
 static const char selnrowgridborder[]     = "#ff6c6b";
-static const char selbstackborder[]       = "#51afef";
-static const char selcenmasterborder[]    = "#c678dd";
+static const char selbstackborder[]       = "#c678dd";
+static const char selcenmasterborder[]    = "#ff6c6b";
 static const char selmonocleborder[]      = "#ff6c6b";
 static const char selgaplessgridborder[]  = "#ff6c6b";
 
-static const char *colors[][9]  = {
-	/*                  fg      bg      bar      border      float border */
-	[SchemeNorm]    = { normfg, normbg, normbar, normborder, normfloatwinborder },
-	[SchemeSel]     = { selfg,  selbg,  selbar,  selborder,  selfloatwinborder },
-	/*                      tile            fibonacci            float            deck            nrowgrid            bstack            centeredmaster       monocle            gaplessgrid */
+static const char *colors[][10]  = {
+	/*                  fg      bg      float               sticky            sticky + float         fakefullscreen   fakefullscreen + float */
+	[SchemeNorm]    = { normfg, normbg, normfloatwinborder, normstickyborder, normstickyfloatborder, normfakefullscr, normfakefullscrfloat },
+	[SchemeSel]     = { selfg,  selbg,  selfloatwinborder,  selstickyborder,  selstickyfloatborder,  selfakefullscr,  selfakefullscrfloat },
+	/* Tabs             fg         bg */
+	[SchemeTabNorm] = { normtabfg, normtabbg },
+	[SchemeTabSel]  = { seltabfg,  seltabbg},
+	/* Win borders          tile            fibonacci            float            deck            nrowgrid            bstack            centeredmaster       monocle            gaplessgrid */
 	[SchemeNormLayout]  = { normtileborder, normfibonacciborder, normfloatborder, normdeckborder, normnrowgridborder, normbstackborder, normcenmasterborder, normmonocleborder, normgaplessgridborder },
 	[SchemeSelLayout]   = { seltileborder,  selfibonacciborder,  selfloatborder,  seldeckborder,  selnrowgridborder,  selbstackborder,  selcenmasterborder,  selmonocleborder,  selgaplessgridborder },
     /* if you change layout order you also need to change the order here */
@@ -213,6 +225,8 @@ static Key keys[] = {
 	{ A,                       XK_l,          focusdir,               {.i = 1 } }, // right
 	{ A,                       XK_k,          focusdir,               {.i = 2 } }, // up
 	{ A,                       XK_j,          focusdir,               {.i = 3 } }, // down
+	{ M,                       XK_h,          focusstack,             {.i = 0 } },
+	{ M,                       XK_l,          focusstack,             {.i = 1 } },
     /* Layouts */
 	{ A,                       XK_t,          setlayout,              {.v = &layouts[0]} },
 	{ A,                       XK_v,          setlayout,              {.v = &layouts[1]} },
