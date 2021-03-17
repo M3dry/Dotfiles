@@ -35,6 +35,8 @@ static const char normfloatwinborder[]    = "#000000";
 static const char selfloatwinborder[]     = "#ffffff";
 static const char normstickyborder[]      = "#000000";
 static const char selstickyborder[]       = "#98be65";
+static const char normmarkborder[]        = "#98be65";
+static const char selmarkborder[]         = "#16cc31";
 static const char normstickyfloatborder[] = "#000000";
 static const char selstickyfloatborder[]  = "#8acc35";
 static const char normfakefullscr[]       = "#408ab2";
@@ -67,9 +69,9 @@ static const char selmonocleborder[]      = "#ff6c6b";
 static const char selgaplessgridborder[]  = "#ff6c6b";
 
 static const char *colors[][10]  = {
-	/*                  fg      bg      float               sticky            sticky + float         fakefullscreen   fakefullscreen + float */
-	[SchemeNorm]    = { normfg, normbg, normfloatwinborder, normstickyborder, normstickyfloatborder, normfakefullscr, normfakefullscrfloat },
-	[SchemeSel]     = { selfg,  selbg,  selfloatwinborder,  selstickyborder,  selstickyfloatborder,  selfakefullscr,  selfakefullscrfloat },
+	/*                  fg      bg      float               sticky            mark            sticky + float         fakefullscreen   fakefullscreen + float */
+	[SchemeNorm]    = { normfg, normbg, normfloatwinborder, normstickyborder, normmarkborder, normstickyfloatborder, normfakefullscr, normfakefullscrfloat },
+	[SchemeSel]     = { selfg,  selbg,  selfloatwinborder,  selstickyborder,  selmarkborder,  selstickyfloatborder,  selfakefullscr,  selfakefullscrfloat },
 	/* Tabs             fg         bg */
 	[SchemeTabNorm] = { normtabfg, normtabbg },
 	[SchemeTabSel]  = { seltabfg,  seltabbg},
@@ -252,6 +254,9 @@ static Key keys[] = {
 	{ A,                       XK_u,          togglescratch,          {.ui = 0 } },
     { A,                       XK_i,          togglescratch,          {.ui = 1 } },
     { A,                       XK_y,          togglescratch,          {.ui = 2 } },
+    { A,                       XK_apostrophe, togglemark,             {0} },
+    { A|S,                     XK_o,          swapfocus,              {0} },
+    { A|S,                     XK_i,          swapclient,             {0} },
     /* Monitors */
 	{ A,                       XK_comma,      focusmon,               {.i = -1 } },
 	{ A,                       XK_period,     focusmon,               {.i = +1 } },
@@ -296,34 +301,4 @@ static Button buttons[] = {
 	{ ClkTagBar,            A,              Button1,        tag,            {0} },
 	{ ClkTagBar,            A,              Button3,        toggletag,      {0} },
 	{ ClkTabBar,            0,              Button1,        focuswin,       {0} },
-};
-
-#include "dwmc.c"
-/* signal definitions */
-/* signum must be greater than 0 */
-/* trigger signals using `xsetroot -name "fsignal:<signame> [<type> <value>]"` */
-static Signal signals[] = {
-	/* signum           function */
-	{ "focusstack",     focusstack },
-	{ "setmfact",       setmfact },
-	{ "togglebar",      togglebar },
-	{ "incnmaster",     incnmaster },
-	{ "togglefloating", togglefloating },
-	{ "focusmon",       focusmon },
-	{ "tagmon",         tagmon },
-	{ "zoom",           zoom },
-	{ "view",           view },
-	{ "viewall",        viewall },
-	{ "viewex",         viewex },
-	{ "toggleview",     view },
-	{ "toggleviewex",   toggleviewex },
-	{ "tag",            tag },
-	{ "tagall",         tagall },
-	{ "tagex",          tagex },
-	{ "toggletag",      tag },
-	{ "toggletagex",    toggletagex },
-	{ "killclient",     killclient },
-	{ "quit",           quit },
-	{ "setlayout",      setlayout },
-	{ "setlayoutex",    setlayoutex },
 };

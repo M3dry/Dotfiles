@@ -46,6 +46,9 @@ static const char normtabfg[]             = "#ffffff";
 static const char seltabfg[]              = "#000000";
 static const char normtabbg[]             = "#3071db";
 static const char seltabbg[]              = "#3071db";
+/* Inverter mon */
+static const char norminvmonbg[]          = "#3071db";
+static const char norminvmonfg[]          = "#ffffff";
 /* Lay constout borders */
 static const char normtileborder[]        = "#292d3e";
 static const char normfibonacciborder[]   = "#292d3e";
@@ -73,6 +76,8 @@ static const char *colors[][10]  = {
 	/* Tabs             fg         bg */
 	[SchemeTabNorm] = { normtabfg, normtabbg },
 	[SchemeTabSel]  = { seltabfg,  seltabbg},
+	/* Unfocused mon    fg            bg */
+	[SchemeInvMon]  = { norminvmonfg, norminvmonbg },
 	/* Win borders          tile            fibonacci            float            deck            nrowgrid            bstack            centeredmaster       monocle            gaplessgrid */
 	[SchemeNormLayout]  = { normtileborder, normfibonacciborder, normfloatborder, normdeckborder, normnrowgridborder, normbstackborder, normcenmasterborder, normmonocleborder, normgaplessgridborder },
 	[SchemeSelLayout]   = { seltileborder,  selfibonacciborder,  selfloatborder,  seldeckborder,  selnrowgridborder,  selbstackborder,  selcenmasterborder,  selmonocleborder,  selgaplessgridborder },
@@ -145,11 +150,9 @@ static const Layout layouts[] = {
 	{ "TTT",      bstack },
 	{ "|M|",      centeredmaster },
 	{ "[M]",      monocle },
-	{ "HHH",      gaplessgrid },
+	{ "HHH",      horizgrid },
 	{ NULL,       NULL },
 };
-
-void swaptags(const Arg *arg);
 
 /* key definitions */
 #define M Mod4Mask
@@ -200,7 +203,7 @@ static Key keys[] = {
 	{ A|S,                     XK_d,          spawn,                  SHCMD("calc") },
 	{ A|S,                     XK_v,          spawn,                  SHCMD("manview") },
 	{ A,                       XK_z,          spawn,                  SHCMD("music-changer cmus") },
-	{ A|S,                     XK_p,          spawn,                  SHCMD("passmenu2 -F -p 'Passwords:'") },
+	{ M,                       XK_p,          spawn,                  SHCMD("passmenu2 -F -p 'Passwords:'") },
 	{ A|S,                     XK_a,          spawn,                  SHCMD("allmenu") },
 	{ A|C,                     XK_q,          spawn,                  SHCMD("shut") },
     /* MultiMedia keys */
@@ -242,8 +245,10 @@ static Key keys[] = {
 	{ A|C,                     XK_p,          cyclelayout,            {.i = +1 } },
 	{ A,                       XK_0,          view,                   {.ui = ~0 } },
 	{ A,                       XK_Tab,        goback,                 {0} },
+	{ A|S,                     XK_n,          shiftviewclients,       { .i = +1 } },
+	{ A|S,                     XK_p,          shiftviewclients,       { .i = -1 } },
     /* Window manipulation */
-	{ A,                       XK_apostrophe, zoom,                   {0} },
+	{ A,                       XK_semicolon,  zoom,                   {0} },
 	{ M,                       XK_j,          pushdown,               {0} },
 	{ M,                       XK_k,          pushup,                 {0} },
 	{ A,                       XK_space,      togglefloating,         {0} },
@@ -300,24 +305,32 @@ static Button buttons[] = {
 	{ ClkTabBar,            0,              Button1,        focuswin,       {0} },
 };
 
-void
-swaptags(const Arg *arg)
-{
-	unsigned int newtag = arg->ui & TAGMASK;
-	unsigned int curtag = selmon->tagset[selmon->seltags];
-
-	if (newtag == curtag || !curtag || (curtag & (curtag-1)))
-		return;
-
-	for (Client *c = selmon->clients; c != NULL; c = c->next) {
-		if((c->tags & newtag) || (c->tags & curtag))
-			c->tags ^= curtag ^ newtag;
-
-		if(!c->tags) c->tags = newtag;
-	}
-
-	selmon->tagset[selmon->seltags] = newtag;
-
-	focus(NULL);
-	arrange(selmon);
-}
+#include "dwmc.c"
+/* signal definitions */
+/* signum must be greater than 0 */
+/* trigger signals using `xsetroot -name "fsignal:<signame> [<type> <value>]"` */
+static Signal signals[] = {
+	/* signum           function */
+	{ "focusstack",     focusstack },
+	{ "setmfact",       setmfact },
+	{ "togglebar",      togglebar },
+	{ "incnmaster",     incnmaster },
+	{ "togglefloating", togglefloating },
+	{ "focusmon",       focusmon },
+	{ "tagmon",         tagmon },
+	{ "zoom",           zoom },
+	{ "view",           view },
+	{ "viewall",        viewall },
+	{ "viewex",         viewex },
+	{ "toggleview",     view },
+	{ "toggleviewex",   toggleviewex },
+	{ "tag",            tag },
+	{ "tagall",         tagall },
+	{ "tagex",          tagex },
+	{ "toggletag",      tag },
+	{ "toggletagex",    toggletagex },
+	{ "killclient",     killclient },
+	{ "quit",           quit },
+	{ "setlayout",      setlayout },
+	{ "setlayoutex",    setlayoutex },
+};

@@ -242,6 +242,7 @@ map <Leader>E :!touch<Space>
 map <Leader>m :Mkdir<Space>
 map <Leader>M :!rm -rf<Space>
 map <Leader>F :Neoformat<CR>
+map <Leader>W GetTerm
 nmap ms ysiw
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
