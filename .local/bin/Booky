@@ -3,5 +3,5 @@
 bookys="$HOME/.config/booky/bookys"
 . $HOME/.config/booky/$3
 
-choice=$(rg "$2" "$bookys" | sed "s/$2// ; s/$2.*//" | dmenu -n -l "$lines" -g "$columns" -h "$height" -bw "$border" -fn "$font" -X "$X" -Y "$Y" -W "$width" -p "$prompt")
+choice=$(rg "$2" "$bookys" | sed "s/$2// ; s/$2.*//" | dmenu -n -l "$lines" -bw "$border" -fn "$font" -p "$prompt")
 [ ! -z $choice ] && $1 $(rg "$2$choice$2" "$bookys" | sed "s/.*$2//;")

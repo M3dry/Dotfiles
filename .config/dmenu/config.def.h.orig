@@ -9,18 +9,16 @@ static int colorprompt = 0;                /* -p  option; if 1, prompt uses Sche
 static int min_width = 500;                    /* minimum width when centered */
 /* -fn option overrides fonts[0]; default X11 font or font set */
 static const char *fonts[] = {
-	"mononoki nerd font:pixelsize=16:antialias=true:autohint=true",
-	"joypixels:pixelsize=14:antialias=true:autohint=true"
+	"monospace:size=10"
 };
 static const char *prompt      = NULL;      /* -p  option; prompt to the left of input field */
 static const char *colors[SchemeLast][2] = {
-	/*                        fg         bg       */
-	[SchemeNorm] =          { "#f0f0f0", "#111111" },
-	[SchemeSel] =           { "#ffffff", "#292d3e" },
-	[SchemeOut] =           { "#000000", "#000000" },
-	[SchemeMid] =           { "#f0f0f0", "#161616" },
-	[SchemeSelHighlight] =  { "#f0f0f0", "#161616" },
-	[SchemeNormHighlight] = { "#ecbe7b", "#000000" },
+	/*     fg         bg       */
+	[SchemeNorm] = { "#bbbbbb", "#222222" },
+	[SchemeSel] = { "#eeeeee", "#005577" },
+	[SchemeSelHighlight] = { "#ffc978", "#005577" },
+	[SchemeNormHighlight] = { "#ffc978", "#222222" },
+	[SchemeOut] = { "#000000", "#00ffff" },
 };
 /* -l and -g options; controls number of lines and columns in grid if > 0 */
 static unsigned int lines      = 0;
