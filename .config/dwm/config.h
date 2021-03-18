@@ -27,7 +27,7 @@ static const int systraypinningfailfirst = 1;   /* 1: if pinning fails, display 
 static const int showsystray        = 1;     /* 0 means no systray */
 static const char *fonts[]          = { "mononoki Nerd Font Mono:size=12:antialias=true:autohint=true" };
 
-static const char normfg[]                = "#51afef";
+static const char normfg[]                = "#5e5e5e";
 static const char selfg[]                 = "#ffffff";
 static const char normbg[]                = "#111111";
 static const char selbg[]                 = "#292d3e";
@@ -41,9 +41,12 @@ static const char normfakefullscr[]       = "#408ab2";
 static const char selfakefullscr[]        = "#b869e5";
 static const char normfakefullscrfloat[]  = "#289fe0";
 static const char selfakefullscrfloat[]   = "#9b1be5";
+/* Occupied */
+static const char occupiedbg[]            = "#111111";
+static const char occupiedfg[]            = "#ffffff";
 /* Status */
 static const char statusbg[]              = "#111111";
-static const char statusfb[]              = "#f0f0f0";
+static const char statusfg[]              = "#f0f0f0";
 /* Tab Bar */
 static const char normtabfg[]             = "#ffffff";
 static const char seltabfg[]              = "#000000";
@@ -73,16 +76,14 @@ static const char selmonocleborder[]      = "#ff6c6b";
 static const char selgaplessgridborder[]  = "#ff6c6b";
 
 static const char *colors[][10]  = {
-	/* Tags/borders     fg      bg      float               sticky            sticky + float         fakefullscreen   fakefullscreen + float */
-	[SchemeNorm]    = { normfg, normbg, normfloatwinborder, normstickyborder, normstickyfloatborder, normfakefullscr, normfakefullscrfloat },
-	[SchemeSel]     = { selfg,  selbg,  selfloatwinborder,  selstickyborder,  selstickyfloatborder,  selfakefullscr,  selfakefullscrfloat },
-    /* Status/ltsymbol  fg         bg */
-	[SchemeStatus]  = { statusfb,  statusbg },
-	/* Tabs             fg         bg */
-	[SchemeTabNorm] = { normtabfg, normtabbg },
-	[SchemeTabSel]  = { seltabfg,  seltabbg},
-	/* Unfocused mon    fg        bg */
-	[SchemeInvMon]  = { invmonfg, invmonbg },
+	/* Tags/borders       fg          bg      float               sticky            sticky + float         fakefullscreen   fakefullscreen + float */
+	[SchemeNorm]     = { normfg,      normbg, normfloatwinborder, normstickyborder, normstickyfloatborder, normfakefullscr, normfakefullscrfloat },
+	[SchemeSel]      = { selfg,       selbg,  selfloatwinborder,  selstickyborder,  selstickyfloatborder,  selfakefullscr,  selfakefullscrfloat },
+	[SchemeOccupied] = { occupiedfg,  occupiedbg }, /* Tags that have 1 of more windowns */
+	[SchemeStatus]   = { statusfg,    statusbg }, /* Status / ltsymbol */
+	[SchemeTabNorm]  = { normtabfg,   normtabbg }, /* Tabs */
+	[SchemeTabSel]   = { seltabfg,    seltabbg}, /* Tabs selected */
+	[SchemeInvMon]   = { invmonfg,    invmonbg }, /* Unfocused monitors */
 	/* Win borders          tile            fibonacci            float            deck            nrowgrid            bstack            centeredmaster       monocle            gaplessgrid */
 	[SchemeNormLayout]  = { normtileborder, normfibonacciborder, normfloatborder, normdeckborder, normnrowgridborder, normbstackborder, normcenmasterborder, normmonocleborder, normgaplessgridborder },
 	[SchemeSelLayout]   = { seltileborder,  selfibonacciborder,  selfloatborder,  seldeckborder,  selnrowgridborder,  selbstackborder,  selcenmasterborder,  selmonocleborder,  selgaplessgridborder },

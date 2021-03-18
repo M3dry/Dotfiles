@@ -91,7 +91,7 @@
 
 /* enums */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
-enum { SchemeNorm, SchemeSel, SchemeTabNorm, SchemeStatus, SchemeTabSel, SchemeInvMon, SchemeNormLayout, SchemeSelLayout }; /* color schemes */
+enum { SchemeNorm, SchemeSel, SchemeOccupied, SchemeTabNorm, SchemeStatus, SchemeTabSel, SchemeInvMon, SchemeNormLayout, SchemeSelLayout }; /* color schemes */
 enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
        NetSystemTray, NetSystemTrayOP, NetSystemTrayOrientation, NetSystemTrayOrientationHorz,
        NetWMFullscreen, NetActiveWindow, NetWMWindowType,
@@ -1191,7 +1191,9 @@ drawbar(Monitor *m)
 	for (i = 0; i < LENGTH(tags); i++) {
 		indn = 0;
 		w = TEXTW(tags[i]);
-        if (m == selmon)
+        if (occ & 1 << i)
+		    drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeOccupied]);
+        else if (m == selmon)
 		    drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]);
         else
 		    drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeInvMon]);
