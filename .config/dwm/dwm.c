@@ -91,7 +91,7 @@
 
 /* enums */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
-enum { SchemeNorm, SchemeSel, SchemeTabNorm, SchemeTabSel, SchemeInvMon, SchemeNormLayout, SchemeSelLayout }; /* color schemes */
+enum { SchemeNorm, SchemeSel, SchemeTabNorm, SchemeStatus, SchemeTabSel, SchemeInvMon, SchemeNormLayout, SchemeSelLayout }; /* color schemes */
 enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
        NetSystemTray, NetSystemTrayOP, NetSystemTrayOrientation, NetSystemTrayOrientationHorz,
        NetWMFullscreen, NetActiveWindow, NetWMWindowType,
@@ -145,11 +145,6 @@ typedef struct {
 	void (*func)(const Arg *);
 	const Arg arg;
 } Key;
-
-typedef struct {
-	const char * sig;
-	void (*func)(const Arg *);
-} Signal;
 
 typedef struct {
 	const char *symbol;
@@ -228,7 +223,6 @@ static void arrangemon(Monitor *m);
 static void attach(Client *c);
 static void attachBelow(Client *c);
 static void attachstack(Client *c);
-static int fake_signal(void);
 static void buttonpress(XEvent *e);
 static void checkotherwm(void);
 static void cleanup(void);
@@ -678,49 +672,6 @@ attachstack(Client *c)
 {
 	c->snext = c->mon->stack;
 	c->mon->stack = c;
-}
-
-int
-fake_signal(void)
-{
-	char fsignal[256];
-	char indicator[9] = "fsignal:";
-	char str_sig[50];
-	char param[16];
-	int i, len_str_sig, n, paramn;
-	size_t len_fsignal, len_indicator = strlen(indicator);
-	Arg arg;
-
-	// Get root name property
-	if (gettextprop(root, XA_WM_NAME, fsignal, sizeof(fsignal))) {
-		len_fsignal = strlen(fsignal);
-
-		// Check if this is indeed a fake signal
-		if (len_indicator > len_fsignal ? 0 : strncmp(indicator, fsignal, len_indicator) == 0) {
-			paramn = sscanf(fsignal+len_indicator, "%s%n%s%n", str_sig, &len_str_sig, param, &n);
-
-			if (paramn == 1) arg = (Arg) {0};
-			else if (paramn > 2) return 1;
-			else if (strncmp(param, "i", n - len_str_sig) == 0)
-				sscanf(fsignal + len_indicator + n, "%i", &(arg.i));
-			else if (strncmp(param, "ui", n - len_str_sig) == 0)
-				sscanf(fsignal + len_indicator + n, "%u", &(arg.ui));
-			else if (strncmp(param, "f", n - len_str_sig) == 0)
-				sscanf(fsignal + len_indicator + n, "%f", &(arg.f));
-			else return 1;
-
-			// Check if a signal was found, and if so handle it
-			for (i = 0; i < LENGTH(signals); i++)
-				if (strncmp(str_sig, signals[i].sig, len_str_sig) == 0 && signals[i].func)
-					signals[i].func(&(arg));
-
-			// A fake signal was sent
-			return 1;
-		}
-	}
-
-	// No fake signal was sent, so proceed with update
-	return 0;
 }
 
 void
@@ -1243,12 +1194,13 @@ drawbar(Monitor *m)
         if (m == selmon)
 		    drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]);
         else
-		    drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeInvMon : SchemeNorm]);
+		    drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeInvMon]);
 		drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
 
 		for (c = m->clients; c; c = c->next) {
 			if (c->tags & (1 << i)) {
-				drw_rect(drw, x, 1 + (indn * 2), selmon->sel == c ? 6 : 1, 1, 1, urg & 1 << i);
+	            drw_setscheme(drw, scheme[SchemeSel]);
+				drw_rect(drw, x, 1 + (indn * 3), selmon->sel == c ? 6 : 3, 1, 2, urg & 1 << i);
 				indn++;
 			}
 		}
@@ -1256,10 +1208,16 @@ drawbar(Monitor *m)
 		x += w;
 	}
 	w = blw = TEXTW(m->ltsymbol);
-	drw_setscheme(drw, scheme[SchemeNorm]);
+    if (m == selmon)
+	    drw_setscheme(drw, scheme[SchemeStatus]);
+    else
+	    drw_setscheme(drw, scheme[SchemeInvMon]);
 	x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
 
-	drw_setscheme(drw, scheme[SchemeNorm]);
+    if (m == selmon)
+	    drw_setscheme(drw, scheme[SchemeStatus]);
+    else
+	    drw_setscheme(drw, scheme[SchemeInvMon]);
 	drw_rect(drw, x, 0, m->ww - x, bh, 1, 1);
 
 	if (m == selmon || 1) { /* status is only drawn on selected monitor */
@@ -2099,10 +2057,8 @@ propertynotify(XEvent *e)
 		resizebarwin(selmon);
 		updatesystray();
 	}
-	if ((ev->window == root) && (ev->atom == XA_WM_NAME)) {
-		if (!fake_signal())
-			updatestatus();
-	}
+	if ((ev->window == root) && (ev->atom == XA_WM_NAME))
+		updatestatus();
 	else if (ev->state == PropertyDelete)
 		return; /* ignore */
 	else if ((c = wintoclient(ev->window))) {
@@ -3953,7 +3909,7 @@ main(int argc, char *argv[])
 {
 	if (argc == 2 && !strcmp("-v", argv[1]))
 		die("dwm-"VERSION);
-	else if (argc != 1)
+	else if (argc != 1 && strcmp("-s", argv[1]))
 		die("usage: dwm [-v]");
 	if (!setlocale(LC_CTYPE, "") || !XSupportsLocale())
 		fputs("warning: no locale support\n", stderr);
@@ -3961,6 +3917,11 @@ main(int argc, char *argv[])
 		die("dwm: cannot open display");
 	if (!(xcon = XGetXCBConnection(dpy)))
 		die("dwm: cannot get xcb connection\n");
+	if (argc > 1 && !strcmp("-s", argv[1])) {
+		XStoreName(dpy, RootWindow(dpy, DefaultScreen(dpy)), argv[2]);
+		XCloseDisplay(dpy);
+		return 0;
+	}
 	checkotherwm();
 	setup();
 #ifdef __OpenBSD__

@@ -1,30 +1,10 @@
 --- config.h
 +++ config.h
-@@ -12,13 +12,10 @@ static const char col_gray2[]       = "#444444";
- static const char col_gray3[]       = "#bbbbbb";
- static const char col_gray4[]       = "#eeeeee";
- static const char col_cyan[]        = "#005577";
--static const char normmarkcolor[]   = "#775500";	/*border color for marked client*/
--static const char selmarkcolor[]    = "#775577";	/*border color for marked client on focus*/
--
--static const char *colors[][4]      = {
--	/*               fg         bg         border     mark   */
--	[SchemeNorm] = { col_gray3, col_gray1, col_gray2, normmarkcolor },
--	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan,  selmarkcolor  },
-+static const char *colors[][3]      = {
-+	/*               fg         bg         border   */
-+	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-+	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
- };
+@@ -178,6 +178,7 @@ static Key keys[] = {
+ 	{ MODKEY,                       XK_e,      setlayout,      {.v = &layouts[LAYOUT_I_grid]} },
  
- /* tagging */
-@@ -97,9 +94,6 @@ static Key keys[] = {
- 	TAGKEYS(                        XK_8,                      7)
- 	TAGKEYS(                        XK_9,                      8)
- 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
--    { MODKEY,                       XK_semicolon, togglemark,   {0} },
--    { MODKEY,                       XK_o,      swapfocus,      {0} },
--    { MODKEY,                       XK_u,      swapclient,     {0} },
- };
- 
- /* button definitions */
+ 	{ MODKEY,                       XK_space,  togglefloating, {0} },
++	{ MODKEY|ShiftMask,             XK_space,  togglealwaysontop, {0} },
+ 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
+ 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
+ 	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },

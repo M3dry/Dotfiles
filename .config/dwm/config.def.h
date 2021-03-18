@@ -41,14 +41,17 @@ static const char normfakefullscr[]       = "#408ab2";
 static const char selfakefullscr[]        = "#b869e5";
 static const char normfakefullscrfloat[]  = "#289fe0";
 static const char selfakefullscrfloat[]   = "#9b1be5";
+/* Status */
+static const char statusbg[]              = "#111111";
+static const char statusfb[]              = "#f0f0f0";
 /* Tab Bar */
 static const char normtabfg[]             = "#ffffff";
 static const char seltabfg[]              = "#000000";
 static const char normtabbg[]             = "#3071db";
 static const char seltabbg[]              = "#3071db";
 /* Inverter mon */
-static const char norminvmonbg[]          = "#3071db";
-static const char norminvmonfg[]          = "#ffffff";
+static const char invmonbg[]              = "#3071db";
+static const char invmonfg[]              = "#ffffff";
 /* Lay constout borders */
 static const char normtileborder[]        = "#292d3e";
 static const char normfibonacciborder[]   = "#292d3e";
@@ -70,14 +73,16 @@ static const char selmonocleborder[]      = "#ff6c6b";
 static const char selgaplessgridborder[]  = "#ff6c6b";
 
 static const char *colors[][10]  = {
-	/*                  fg      bg      float               sticky            sticky + float         fakefullscreen   fakefullscreen + float */
+	/* Tags/borders     fg      bg      float               sticky            sticky + float         fakefullscreen   fakefullscreen + float */
 	[SchemeNorm]    = { normfg, normbg, normfloatwinborder, normstickyborder, normstickyfloatborder, normfakefullscr, normfakefullscrfloat },
 	[SchemeSel]     = { selfg,  selbg,  selfloatwinborder,  selstickyborder,  selstickyfloatborder,  selfakefullscr,  selfakefullscrfloat },
+    /* Status/ltsymbol  fg         bg */
+	[SchemeStatus]  = { statusfb,  statusbg },
 	/* Tabs             fg         bg */
 	[SchemeTabNorm] = { normtabfg, normtabbg },
 	[SchemeTabSel]  = { seltabfg,  seltabbg},
-	/* Unfocused mon    fg            bg */
-	[SchemeInvMon]  = { norminvmonfg, norminvmonbg },
+	/* Unfocused mon    fg        bg */
+	[SchemeInvMon]  = { invmonfg, invmonbg },
 	/* Win borders          tile            fibonacci            float            deck            nrowgrid            bstack            centeredmaster       monocle            gaplessgrid */
 	[SchemeNormLayout]  = { normtileborder, normfibonacciborder, normfloatborder, normdeckborder, normnrowgridborder, normbstackborder, normcenmasterborder, normmonocleborder, normgaplessgridborder },
 	[SchemeSelLayout]   = { seltileborder,  selfibonacciborder,  selfloatborder,  seldeckborder,  selnrowgridborder,  selbstackborder,  selcenmasterborder,  selmonocleborder,  selgaplessgridborder },
@@ -150,7 +155,7 @@ static const Layout layouts[] = {
 	{ "TTT",      bstack },
 	{ "|M|",      centeredmaster },
 	{ "[M]",      monocle },
-	{ "HHH",      horizgrid },
+	{ "HHH",      gaplessgrid },
 	{ NULL,       NULL },
 };
 
@@ -262,8 +267,8 @@ static Key keys[] = {
     /* Monitors */
 	{ A,                       XK_comma,      focusmon,               {.i = -1 } },
 	{ A,                       XK_period,     focusmon,               {.i = +1 } },
-	{ A|ShiftMask,             XK_comma,      tagmon,                 {.i = -1 } },
-	{ A|ShiftMask,             XK_period,     tagmon,                 {.i = +1 } },
+	{ A|S,                     XK_comma,      tagmon,                 {.i = -1 } },
+	{ A|S,                     XK_period,     tagmon,                 {.i = +1 } },
     /* Moveresize */
 	{ A|C,                     XK_j,          moveresize,             {.v = "0x 25y 0w 0h" } },
 	{ A|C,                     XK_k,          moveresize,             {.v = "0x -25y 0w 0h" } },
@@ -303,34 +308,4 @@ static Button buttons[] = {
 	{ ClkTagBar,            A,              Button1,        tag,            {0} },
 	{ ClkTagBar,            A,              Button3,        toggletag,      {0} },
 	{ ClkTabBar,            0,              Button1,        focuswin,       {0} },
-};
-
-#include "dwmc.c"
-/* signal definitions */
-/* signum must be greater than 0 */
-/* trigger signals using `xsetroot -name "fsignal:<signame> [<type> <value>]"` */
-static Signal signals[] = {
-	/* signum           function */
-	{ "focusstack",     focusstack },
-	{ "setmfact",       setmfact },
-	{ "togglebar",      togglebar },
-	{ "incnmaster",     incnmaster },
-	{ "togglefloating", togglefloating },
-	{ "focusmon",       focusmon },
-	{ "tagmon",         tagmon },
-	{ "zoom",           zoom },
-	{ "view",           view },
-	{ "viewall",        viewall },
-	{ "viewex",         viewex },
-	{ "toggleview",     view },
-	{ "toggleviewex",   toggleviewex },
-	{ "tag",            tag },
-	{ "tagall",         tagall },
-	{ "tagex",          tagex },
-	{ "toggletag",      tag },
-	{ "toggletagex",    toggletagex },
-	{ "killclient",     killclient },
-	{ "quit",           quit },
-	{ "setlayout",      setlayout },
-	{ "setlayoutex",    setlayoutex },
 };

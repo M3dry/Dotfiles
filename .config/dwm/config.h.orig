@@ -35,8 +35,6 @@ static const char normfloatwinborder[]    = "#000000";
 static const char selfloatwinborder[]     = "#ffffff";
 static const char normstickyborder[]      = "#000000";
 static const char selstickyborder[]       = "#98be65";
-static const char normmarkborder[]        = "#98be65";
-static const char selmarkborder[]         = "#16cc31";
 static const char normstickyfloatborder[] = "#000000";
 static const char selstickyfloatborder[]  = "#8acc35";
 static const char normfakefullscr[]       = "#408ab2";
@@ -48,6 +46,9 @@ static const char normtabfg[]             = "#ffffff";
 static const char seltabfg[]              = "#000000";
 static const char normtabbg[]             = "#3071db";
 static const char seltabbg[]              = "#3071db";
+/* Inverter mon */
+static const char norminvmonbg[]          = "#3071db";
+static const char norminvmonfg[]          = "#ffffff";
 /* Lay constout borders */
 static const char normtileborder[]        = "#292d3e";
 static const char normfibonacciborder[]   = "#292d3e";
@@ -69,12 +70,14 @@ static const char selmonocleborder[]      = "#ff6c6b";
 static const char selgaplessgridborder[]  = "#ff6c6b";
 
 static const char *colors[][10]  = {
-	/*                  fg      bg      float               sticky            mark            sticky + float         fakefullscreen   fakefullscreen + float */
-	[SchemeNorm]    = { normfg, normbg, normfloatwinborder, normstickyborder, normmarkborder, normstickyfloatborder, normfakefullscr, normfakefullscrfloat },
-	[SchemeSel]     = { selfg,  selbg,  selfloatwinborder,  selstickyborder,  selmarkborder,  selstickyfloatborder,  selfakefullscr,  selfakefullscrfloat },
+	/*                  fg      bg      float               sticky            sticky + float         fakefullscreen   fakefullscreen + float */
+	[SchemeNorm]    = { normfg, normbg, normfloatwinborder, normstickyborder, normstickyfloatborder, normfakefullscr, normfakefullscrfloat },
+	[SchemeSel]     = { selfg,  selbg,  selfloatwinborder,  selstickyborder,  selstickyfloatborder,  selfakefullscr,  selfakefullscrfloat },
 	/* Tabs             fg         bg */
 	[SchemeTabNorm] = { normtabfg, normtabbg },
 	[SchemeTabSel]  = { seltabfg,  seltabbg},
+	/* Unfocused mon    fg            bg */
+	[SchemeInvMon]  = { norminvmonfg, norminvmonbg },
 	/* Win borders          tile            fibonacci            float            deck            nrowgrid            bstack            centeredmaster       monocle            gaplessgrid */
 	[SchemeNormLayout]  = { normtileborder, normfibonacciborder, normfloatborder, normdeckborder, normnrowgridborder, normbstackborder, normcenmasterborder, normmonocleborder, normgaplessgridborder },
 	[SchemeSelLayout]   = { seltileborder,  selfibonacciborder,  selfloatborder,  seldeckborder,  selnrowgridborder,  selbstackborder,  selcenmasterborder,  selmonocleborder,  selgaplessgridborder },
@@ -147,7 +150,7 @@ static const Layout layouts[] = {
 	{ "TTT",      bstack },
 	{ "|M|",      centeredmaster },
 	{ "[M]",      monocle },
-	{ "HHH",      gaplessgrid },
+	{ "HHH",      horizgrid },
 	{ NULL,       NULL },
 };
 
@@ -200,7 +203,7 @@ static Key keys[] = {
 	{ A|S,                     XK_d,          spawn,                  SHCMD("calc") },
 	{ A|S,                     XK_v,          spawn,                  SHCMD("manview") },
 	{ A,                       XK_z,          spawn,                  SHCMD("music-changer cmus") },
-	{ A|S,                     XK_p,          spawn,                  SHCMD("passmenu2 -F -p 'Passwords:'") },
+	{ M,                       XK_p,          spawn,                  SHCMD("passmenu2 -F -p 'Passwords:'") },
 	{ A|S,                     XK_a,          spawn,                  SHCMD("allmenu") },
 	{ A|C,                     XK_q,          spawn,                  SHCMD("shut") },
     /* MultiMedia keys */
@@ -242,6 +245,8 @@ static Key keys[] = {
 	{ A|C,                     XK_p,          cyclelayout,            {.i = +1 } },
 	{ A,                       XK_0,          view,                   {.ui = ~0 } },
 	{ A,                       XK_Tab,        goback,                 {0} },
+	{ A|S,                     XK_n,          shiftviewclients,       { .i = +1 } },
+	{ A|S,                     XK_p,          shiftviewclients,       { .i = -1 } },
     /* Window manipulation */
 	{ A,                       XK_semicolon,  zoom,                   {0} },
 	{ M,                       XK_j,          pushdown,               {0} },
@@ -254,9 +259,6 @@ static Key keys[] = {
 	{ A,                       XK_u,          togglescratch,          {.ui = 0 } },
     { A,                       XK_i,          togglescratch,          {.ui = 1 } },
     { A,                       XK_y,          togglescratch,          {.ui = 2 } },
-    { A,                       XK_apostrophe, togglemark,             {0} },
-    { A|S,                     XK_o,          swapfocus,              {0} },
-    { A|S,                     XK_i,          swapclient,             {0} },
     /* Monitors */
 	{ A,                       XK_comma,      focusmon,               {.i = -1 } },
 	{ A,                       XK_period,     focusmon,               {.i = +1 } },
@@ -301,4 +303,34 @@ static Button buttons[] = {
 	{ ClkTagBar,            A,              Button1,        tag,            {0} },
 	{ ClkTagBar,            A,              Button3,        toggletag,      {0} },
 	{ ClkTabBar,            0,              Button1,        focuswin,       {0} },
+};
+
+#include "dwmc.c"
+/* signal definitions */
+/* signum must be greater than 0 */
+/* trigger signals using `xsetroot -name "fsignal:<signame> [<type> <value>]"` */
+static Signal signals[] = {
+	/* signum           function */
+	{ "focusstack",     focusstack },
+	{ "setmfact",       setmfact },
+	{ "togglebar",      togglebar },
+	{ "incnmaster",     incnmaster },
+	{ "togglefloating", togglefloating },
+	{ "focusmon",       focusmon },
+	{ "tagmon",         tagmon },
+	{ "zoom",           zoom },
+	{ "view",           view },
+	{ "viewall",        viewall },
+	{ "viewex",         viewex },
+	{ "toggleview",     view },
+	{ "toggleviewex",   toggleviewex },
+	{ "tag",            tag },
+	{ "tagall",         tagall },
+	{ "tagex",          tagex },
+	{ "toggletag",      tag },
+	{ "toggletagex",    toggletagex },
+	{ "killclient",     killclient },
+	{ "quit",           quit },
+	{ "setlayout",      setlayout },
+	{ "setlayoutex",    setlayoutex },
 };
