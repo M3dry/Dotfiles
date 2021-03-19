@@ -11,6 +11,7 @@ vicmd_symbol = "[λ](bold fg:#37e00d)"
 [directory]
 read_only = " 📕"
 format = "[$path](bold fg:#ecbe7b)[$read_only](bold fg:#ff6c6b)"
+truncation_length = 6
 
 [cmd_duration]
 min_time = 0

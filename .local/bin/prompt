@@ -1,3 +1,3 @@
 #!/bin/sh
 
-[ $(echo "No\nYes" | dmenu -p "$1") = "Yes" ] && $2
+[ $(echo "No\nYes" | dmenu -p "$1" -fn "mononoki nerd font:pixelsize=19:antialias=true:autohint=true") = "Yes" ] && $2
