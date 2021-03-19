@@ -26,6 +26,7 @@ alias gc='git clone'
 alias gdwm='git push git@github.com:M3dry/dwm.git'
 alias gdmenu='git push git@github.com:M3dry/dmenu.git'
 alias gst='git push git@github.com:M3dry/st.git'
+alias gslock='git push git@github.com:M3dry/slock.git'
 alias doomsync="~/.emacs.d/bin/doom sync"
 alias doomupgrade="~/.emacs.d/bin/doom upgrade"
 
