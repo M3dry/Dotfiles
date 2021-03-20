@@ -59,7 +59,7 @@ autoload edit-command-line; zle -N edit-command-line
 PATH="$HOME/.local/bin${PATH:+:${PATH}}"
 export PATH=$HOME/bin:/usr/local/bin:$PATH
 export EDITOR="nvim"
-export VISUAL="nvim"
+export VISUAL="emacsclient -c -a emacs"
 export TERMINAL="st"
 export BROWSER="librewolf"
 export XENVIRONMENT="${HOME}/.config/x11/xresources"

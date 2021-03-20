@@ -18,16 +18,11 @@ alias mks="doas make install"
 alias smk="rm config.h && doas make install"
 alias te="trash-empty"
 alias config='/usr/bin/git --git-dir=$HOME/Dotfiles/ --work-tree=$HOME'
-alias cpush='config push git@github.com:M3dry/Dotfiles.git'
+alias cpush='config push'
 alias cstat='config status'
 alias ccom='config commit'
 alias cadd='config add'
 alias gc='git clone'
-alias gdwm='git push git@github.com:M3dry/dwm.git'
-alias gdmenu='git push git@github.com:M3dry/dmenu.git'
-alias gst='git push git@github.com:M3dry/st.git'
-alias gslock='git push git@github.com:M3dry/slock.git'
-alias gtabbed='git push git@github.com:M3dry/tabbed.git'
 alias doomsync="~/.emacs.d/bin/doom sync"
 alias doomupgrade="~/.emacs.d/bin/doom upgrade"
 

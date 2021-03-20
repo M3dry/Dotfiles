@@ -94,7 +94,7 @@
 (after! org
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
   (setq org-directory "~/my-stuff/org/"
-        org-agenda-files '("~/Org/agenda.org")
+        org-agenda-files '("~/my-stuff/org/agenda/")
         org-ellipsis "  "
         org-log-done 'time
         org-journal-dir "~/my-stuff/org/journal/"
