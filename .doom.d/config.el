@@ -3,8 +3,6 @@
 
 (setq doom-theme 'doom-one)
 
-(setq org-directory "~/my-stuff/org/")
-
 (setq display-line-numbers-type t)
 
 (setq doom-font (font-spec :family "Mononoki Nerd Font" :size 15)
@@ -62,3 +60,59 @@
       :leader
       :desc "Toggle rainbow mode"
       "t c" #'rainbow-mode)
+
+(after! mastodon
+  (setq mastodon-instance-url "https://fosstodon.org/"))
+
+(custom-set-variables
+ '(elfeed-feeds
+   (quote
+    (("https://www.reddit.com/r/linux/new.rss" linux reddit)
+     ("https://www.reddit.com/r/linuxmasterrace/new/.rss" linuxmasterrace reddit)
+     ("https://www.reddit.com/r/linuxmemes/new/.rss" linuxmemes reddit)
+     ("https://www.reddit.com/r/voidlinux/new/.rss" voidlinux reddit)
+     ("https://www.reddit.com/r/suckless/new/.rss" suckless reddit)
+     ("https://www.reddit.com/r/emacs/new.rss" emacs reddit)
+     ("https://www.reddit.com/r/vim/new.rss" vim reddit)
+     ("https://www.reddit.com/r/agraelus/new.rss" agraelus reddit)))))
+
+(map! :leader
+      :desc "Launch elfeed"
+      "e f" #'elfeed)
+
+(setq browse-url-browser-function 'eww-browse-url)
+(map! :leader
+      :desc "Eww web browser"
+      "e w" #'eww
+      :leader
+      :desc "Eww reload page"
+      "e R" #'eww-reload
+      :leader
+      :desc "Search web for text between BEG/END"
+      "s w" #'eww-search-words)
+
+(after! org
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+  (setq org-directory "~/my-stuff/org/"
+        org-agenda-files '("~/Org/agenda.org")
+        org-ellipsis "  "
+        org-log-done 'time
+        org-journal-dir "~/my-stuff/org/journal/"
+        org-journal-date-format "%B %d, %Y (%A) "
+        org-journal-file-format "%Y-%m-%d.org"
+        org-hide-emphasis-markers t
+        org-link-abbrev-alist    ; This overwrites the default Doom org-link-abbrev-list
+          '(("google" . "http://www.google.com/search?q=")
+            ("arch-wiki" . "https://wiki.archlinux.org/index.php/")
+            ("ddg" . "https://duckduckgo.com/?q=")
+            ("wiki" . "https://en.wikipedia.org/wiki/"))
+        org-todo-keywords        ; This overwrites the default Doom org-todo-keywords
+          '((sequence
+             "TODO(t)"           ; A task that is ready to be tackled
+             "PROJ(p)"           ; A project that contains other tasks
+             "WAIT(w)"           ; Something is holding up this task
+             "|"                 ; The pipe necessary to separate "active" states and "inactive" states
+             "DONE(d)"           ; Task has been completed
+             "CANCELLED(c)" )))) ; Task has been cancelled
+
+(setq! global-prettify-symbols-mode 't)

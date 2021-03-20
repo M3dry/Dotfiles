@@ -55,3 +55,4 @@
 (package! dired-open)
 (package! peep-dired)
 (package! async)
+(package! mastodon)
