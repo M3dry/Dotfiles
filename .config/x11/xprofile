@@ -9,6 +9,6 @@ playerctld &
 setxkbmap us,cz ,qwerty -option 'caps:escape' 'grp:ctrls_toggle' &
 lxsession &
 xrdb .config/x11/xresources &
-# /usr/bin/emacs --daemon &
+/usr/bin/emacs --daemon &
 xset r rate 400 50 &
 killall dwmStatus ; dwmStatus &

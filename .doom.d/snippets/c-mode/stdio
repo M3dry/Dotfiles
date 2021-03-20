@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: stdio
+# uuid: stdio
+# key: stdio
+# --
+#include <stdio.h>

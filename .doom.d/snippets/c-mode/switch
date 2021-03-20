@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: switch
+# uuid: switch
+# key: switch
+# --
+switch ($1) {
+    default:
+        $0;
+        break;
+}

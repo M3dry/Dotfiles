@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: string
+# uuid: string
+# key: string
+# --
+#include <string.h>

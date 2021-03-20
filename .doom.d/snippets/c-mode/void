@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: void
+# uuid: void
+# key: void
+# --
+void
+$1($2)
+{
+    $0
+}
