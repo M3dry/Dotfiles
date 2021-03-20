@@ -60,3 +60,4 @@
 (package! literate-calc-mode)
 (package! drag-stuff)
 (package! lsp-treemacs)
+(package! emojify)
