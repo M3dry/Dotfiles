@@ -66,10 +66,10 @@
        ;;word-wrap         ; soft wrapping with language-aware indent
 
        :emacs
-       dired             ; making dired pretty [functional]
+       (dired +icons)  ; making dired pretty [functional]
        electric          ; smarter, keyword-based electric-indent
-       ibuffer         ; interactive buffer management
-       undo              ; persistent, smarter undo for your inevitable mistakes
+       (ibuffer +icons); interactive buffer management
+       undo            ; persistent, smarter undo for your inevitable mistakes
        vc                ; version-control and Emacs, sitting in a tree
 
        :term
@@ -85,7 +85,7 @@
 
        :tools
        ;;ansible
-       debugger          ; FIXME stepping through code, to help you add bugs
+       (debugger +lsp)   ; FIXME stepping through code, to help you add bugs
        ;;direnv
        ;;docker
        editorconfig      ; let someone else argue about tabs vs spaces
@@ -93,7 +93,7 @@
        (eval +overlay)     ; run code, run (also, repls)
        ;;gist              ; interacting with github gists
        lookup              ; navigate your code and its documentation
-       lsp
+       (lsp +peek)
        magit             ; a git porcelain for Emacs
        make              ; run make tasks from Emacs
        pass              ; password manager for nerds
@@ -121,7 +121,7 @@
        ;;(dart +flutter)   ; paint ui and not much else
        ;;elixir            ; erlang done right
        ;;elm               ; care for a cup of TEA?
-       (emacs-lisp +lsp)   ; drown in parentheses
+       emacs-lisp        ; drown in parentheses
        ;;erlang            ; an elegant language for a more civilized age
        ;;ess               ; emacs speaks statistics
        ;;faust             ; dsp, but you get to keep your soul

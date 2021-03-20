@@ -116,3 +116,72 @@
              "CANCELLED(c)" )))) ; Task has been cancelled
 
 (setq! global-prettify-symbols-mode 't)
+
+(defun prefer-horizontal-split ()
+  (set-variable 'split-height-threshold nil t)
+  (set-variable 'split-width-threshold 40 t)) ; make this as low as needed
+(add-hook 'markdown-mode-hook 'prefer-horizontal-split)
+(map! :leader
+      :desc "Clone indirect buffer other window"
+      "b c" #'clone-indirect-buffer-other-window)
+
+(map! :leader
+      :desc "Go to emms playlist"
+      "a a" #'emms-playlist-mode-go
+      :leader
+      :desc "Emms pause track"
+      "a x" #'emms-pause
+      :leader
+      :desc "Emms stop track"
+      "a s" #'emms-stop
+      :leader
+      :desc "Emms play previous track"
+      "a p" #'emms-previous
+      :leader
+      :desc "Emms play next track"
+      "a n" #'emms-next)
+
+(map! :leader
+      :desc "Edit school agenda file"
+      "v a" #'(lambda () (interactive) (find-file "~/my-stuff/org/agenda/school.org"))
+      :leader
+      :desc "Edit dwm/dwm.c"
+      "v d d" #'(lambda () (interactive) (find-file "~/.config/dwm/dwm.c"))
+      :leader
+      :desc "Edit dwm/config.def.h"
+      "v d c" #'(lambda () (interactive) (find-file "~/.config/dwm/config.def.h"))
+      :leader
+      :desc "Edit doom config.el"
+      "v c" #'(lambda () (interactive) (find-file "~/.doom.d/config.el"))
+      :leader
+      :desc "Edit doom init.el"
+      "v i" #'(lambda () (interactive) (find-file "~/.doom.d/init.el"))
+      :leader
+      :desc "Edit doom packages.el"
+      "v p" #'(lambda () (interactive) (find-file "~/.doom.d/packages.el")))
+
+(setq fancy-splash-image "~/my-stuff/Pictures/doom.png")
+(setq lsp-idle-delay 0.1)
+(setq lsp-headerline-breadcrumb-enable t)
+(setq lsp-completion-show-detail t)
+(setq lsp-completion-show-kind t)
+(setq lsp-ui-doc-enable t)
+
+(map! :leader
+      :desc "Find definition"
+      "r d" #'lsp-find-definition
+      :leader
+      :desc "Find references"
+      "r r" #'lsp-find-references
+      :leader
+      :desc "Find declaration"
+      "r D" #'lsp-find-declaration
+      :leader
+      :desc "Enable code lens"
+      "r c" #'lsp-lens-mode
+      :leader
+      :desc "Enabale breadcrumb"
+      "r b" #'lsp-headerline-breadcrumb-mode
+      :leader
+      :desc "Show error"
+      "r e" #'flycheck-list-errors)
