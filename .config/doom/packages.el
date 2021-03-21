@@ -50,6 +50,7 @@
 ;(unpin! t)
 (package! org-bullets)
 (package! org-ql)
+(package! org-alert)
 (package! evil-tutor)
 (package! all-the-icons-dired)
 (package! dired-open)
@@ -61,3 +62,5 @@
 (package! drag-stuff)
 (package! lsp-treemacs)
 (package! emojify)
+(package! vimrc-mode)
+(package! lsp-ivy)

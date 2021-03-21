@@ -114,6 +114,7 @@
              "|"                 ; The pipe necessary to separate "active" states and "inactive" states
              "DONE(d)"           ; Task has been completed
              "CANCELLED(c)" )))) ; Task has been cancelled
+(setq alert-default-style 'libnotify)
 
 (setq! global-prettify-symbols-mode 't)
 
@@ -143,7 +144,7 @@
 
 (map! :leader
       :desc "Edit school agenda file"
-      "v a" #'(lambda () (interactive) (find-file "~/my-stuff/org/agenda/school.org"))
+      "v a s" #'(lambda () (interactive) (find-file "~/my-stuff/org/agenda/school.org"))
       :leader
       :desc "Edit dwm/dwm.c"
       "v d d" #'(lambda () (interactive) (find-file "~/.config/dwm/dwm.c"))
