@@ -25,6 +25,7 @@ alias cadd='config add'
 alias gc='git clone'
 alias doomsync="~/.emacs.d/bin/doom sync"
 alias doomupgrade="~/.emacs.d/bin/doom upgrade"
+alias doomdoc="~/.emacs.d/bin/doom doctor"
 
 ex ()
 {

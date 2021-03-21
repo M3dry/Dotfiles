@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: #+begin_src c++
+# key: <cc
+# uuid: <cc
+# --
+#+BEGIN_SRC c++
+    $0
+#+END_SRC

@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: #+begin_src python
+# key: <p
+# uuid: <p
+# --
+#+BEGIN_SRC python
+    $0
+#+END_SRC

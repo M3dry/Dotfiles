@@ -49,10 +49,8 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 (package! org-bullets)
-(package! org-ql)
 (package! org-alert)
 (package! evil-tutor)
-(package! all-the-icons-dired)
 (package! dired-open)
 (package! peep-dired)
 (package! async)
@@ -64,3 +62,5 @@
 (package! emojify)
 (package! vimrc-mode)
 (package! lsp-ivy)
+
+(package! doom-snippets :ignore t)

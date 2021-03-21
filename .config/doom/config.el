@@ -64,17 +64,14 @@
 (after! mastodon
   (setq mastodon-instance-url "https://fosstodon.org/"))
 
-(custom-set-variables
- '(elfeed-feeds
-   (quote
-    (("https://www.reddit.com/r/linux/new.rss" linux reddit)
-     ("https://www.reddit.com/r/linuxmasterrace/new/.rss" linuxmasterrace reddit)
-     ("https://www.reddit.com/r/linuxmemes/new/.rss" linuxmemes reddit)
-     ("https://www.reddit.com/r/voidlinux/new/.rss" voidlinux reddit)
-     ("https://www.reddit.com/r/suckless/new/.rss" suckless reddit)
-     ("https://www.reddit.com/r/emacs/new.rss" emacs reddit)
-     ("https://www.reddit.com/r/vim/new.rss" vim reddit)
-     ("https://www.reddit.com/r/agraelus/new.rss" agraelus reddit)))))
+(setq elfeed-feeds '(("https://www.reddit.com/r/linux/new.rss" linux reddit)
+                    ("https://www.reddit.com/r/linuxmasterrace/new/.rss" linuxmasterrace reddit memes)
+                    ("https://www.reddit.com/r/linuxmemes/new/.rss" linuxmemes reddit memes)
+                    ("https://www.reddit.com/r/voidlinux/new/.rss" voidlinux reddit)
+                    ("https://www.reddit.com/r/suckless/new/.rss" suckless reddit)
+                    ("https://www.reddit.com/r/emacs/new.rss" emacs reddit editor)
+                    ("https://www.reddit.com/r/vim/new.rss" vim reddit editor)
+                    ("https://www.reddit.com/r/agraelus/new.rss" agraelus reddit)))
 
 (map! :leader
       :desc "Launch elfeed"
@@ -153,13 +150,13 @@
       "v d c" #'(lambda () (interactive) (find-file "~/.config/dwm/config.def.h"))
       :leader
       :desc "Edit doom config.el"
-      "v c" #'(lambda () (interactive) (find-file "~/.doom.d/config.el"))
+      "v c" #'(lambda () (interactive) (find-file "~/.config/doom/config.el"))
       :leader
       :desc "Edit doom init.el"
-      "v i" #'(lambda () (interactive) (find-file "~/.doom.d/init.el"))
+      "v i" #'(lambda () (interactive) (find-file "~/.config/doom/init.el"))
       :leader
       :desc "Edit doom packages.el"
-      "v p" #'(lambda () (interactive) (find-file "~/.doom.d/packages.el")))
+      "v p" #'(lambda () (interactive) (find-file "~/.config/doom/packages.el")))
 
 (setq fancy-splash-image "~/my-stuff/Pictures/doom.png")
 (setq lsp-idle-delay 0.1)
