@@ -15,7 +15,7 @@ alias mount="doas mount "
 alias umount="doas umount "
 alias doas="doas --"
 alias mks="doas make install"
-alias smk="rm config.h && doas make install"
+alias smk="doas make install"
 alias te="trash-empty"
 alias config='/usr/bin/git --git-dir=$HOME/Dotfiles/ --work-tree=$HOME'
 alias cpush='config push'

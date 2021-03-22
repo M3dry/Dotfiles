@@ -6,7 +6,8 @@ xwallpaper --stretch ~/my-stuff/Pictures/wallpapers/dwm-unix.png &
 redshift &
 dunst &
 playerctld &
-setxkbmap us,cz ,qwerty -option 'caps:escape' 'grp:ctrls_toggle' &
+setxkbmap us,cz ,qwerty -option 'ctrl:nocaps' 'grp:ctrls_toggle' &
+xcape -e "Shift_L=Escape"
 lxsession &
 xrdb .config/x11/xresources &
 /usr/bin/emacs --daemon &

@@ -48,8 +48,6 @@
 ;(unpin! pinned-package another-pinned-package)
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
-(package! org-bullets)
-(package! org-alert)
 (package! evil-tutor)
 (package! dired-open)
 (package! peep-dired)
@@ -64,3 +62,4 @@
 (package! lsp-ivy)
 
 (package! doom-snippets :ignore t)
+(package! hl-line :disable t)

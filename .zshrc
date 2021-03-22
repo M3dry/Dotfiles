@@ -65,6 +65,8 @@ export BROWSER="librewolf"
 export XENVIRONMENT="${HOME}/.config/x11/xresources"
 export PASSWORD_STORE_DIR="${HOME}/my-stuff/pass"
 export MANPAGER="nvim -c 'set ft=man' -"
+export MPD_HOST="localhost"
+export MPD_PORT="6600"
 
 bindkey '^e' edit-command-line
 

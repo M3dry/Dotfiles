@@ -3,6 +3,6 @@
 # key: <c
 # uuid: <c
 # --
-#+BEGIN_SRC c
+#+BEGIN_SRC C
     $0
 #+END_SRC

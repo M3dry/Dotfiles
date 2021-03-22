@@ -12,11 +12,10 @@
         (setq doom-themes-enable-bold t
               doom-themes-enable-italic t))
 (custom-set-faces!
-  '(font-lock-comment-face :slant italic)
   '(font-lock-keyword-face :slant italic))
+  '(font-lock-comment-face :slant italic)
 
-(set-frame-parameter (selected-frame) 'alpha '(100 100))
-(add-to-list 'default-frame-alist '(alpha 100 100))
+(add-to-list 'default-frame-alist '(alpha 95 95))
 
 (map! :leader
       :desc "Dired"
@@ -89,29 +88,51 @@
       "s w" #'eww-search-words)
 
 (after! org
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
   (setq org-directory "~/my-stuff/org/"
         org-agenda-files '("~/my-stuff/org/agenda/")
         org-ellipsis "  "
+        org-agenda-start-with-log-mode t
         org-log-done 'time
-        org-journal-dir "~/my-stuff/org/journal/"
-        org-journal-date-format "%B %d, %Y (%A) "
-        org-journal-file-format "%Y-%m-%d.org"
+        org-log-into-drawer t
         org-hide-emphasis-markers t
-        org-link-abbrev-alist    ; This overwrites the default Doom org-link-abbrev-list
-          '(("google" . "http://www.google.com/search?q=")
-            ("arch-wiki" . "https://wiki.archlinux.org/index.php/")
-            ("ddg" . "https://duckduckgo.com/?q=")
-            ("wiki" . "https://en.wikipedia.org/wiki/"))
-        org-todo-keywords        ; This overwrites the default Doom org-todo-keywords
-          '((sequence
-             "TODO(t)"           ; A task that is ready to be tackled
-             "PROJ(p)"           ; A project that contains other tasks
-             "WAIT(w)"           ; Something is holding up this task
-             "|"                 ; The pipe necessary to separate "active" states and "inactive" states
-             "DONE(d)"           ; Task has been completed
-             "CANCELLED(c)" )))) ; Task has been cancelled
-(setq alert-default-style 'libnotify)
+        org-link-abbrev-alist
+        '(("google" . "http://www.google.com/search?q=")
+          ("arch-wiki" . "https://wiki.archlinux.org/index.php/")
+          ("ddg" . "https://duckduckgo.com/?q=")
+          ("wiki" . "https://en.wikipedia.org/wiki/"))
+        org-todo-keywords
+        '((sequence
+           "TODO(t)"
+           "TEST(T)"
+           "HOMEWORK(h)"
+           "PROJ(p)"
+           "|"
+           "WAIT(w)"
+           "DONE(d)"
+           "CANCELLED(c)" ))
+        org-tag-alist
+        '((:startgroup)
+          (:endgroup)
+          ("schedule" . ?s)
+          ("school" . ?S)
+          ("english" . ?e))
+        org-agenda-custom-commands
+        '(("T" "Next Tests"
+           ((todo "TEST"
+                  ((org-agenda-overriding-header "Next Tests")))))
+          ("E" Low Effort "+Effort<15&+Effort>0"
+           ((org-agenda-overriding-header "Low Effort Tasks")
+            (org-agenda-max-todos 20)
+            (org-agenda-files org-agenda-files))))
+        org-refile-targets '(("~/my-stuff/org/agenda/Archive.org" :maxlevel . 4))))
+(advice-add 'org-refile :after 'org-save-all-org-buffers)
+
+(map! :leader
+      :desc "eval calculations in org doc"
+      "o c" #'literate-calc-eval-buffer
+      :leader
+      :desc "Eval calculation on selected line"
+      "o l" #'literate-calc-eval-line)
 
 (setq! global-prettify-symbols-mode 't)
 
@@ -122,22 +143,6 @@
 (map! :leader
       :desc "Clone indirect buffer other window"
       "b c" #'clone-indirect-buffer-other-window)
-
-(map! :leader
-      :desc "Go to emms playlist"
-      "a a" #'emms-playlist-mode-go
-      :leader
-      :desc "Emms pause track"
-      "a x" #'emms-pause
-      :leader
-      :desc "Emms stop track"
-      "a s" #'emms-stop
-      :leader
-      :desc "Emms play previous track"
-      "a p" #'emms-previous
-      :leader
-      :desc "Emms play next track"
-      "a n" #'emms-next)
 
 (map! :leader
       :desc "Edit school agenda file"
@@ -170,7 +175,7 @@
       "r d" #'lsp-find-definition
       :leader
       :desc "Find references"
-      "r r" #'lsp-find-references
+      "r R" #'lsp-find-references
       :leader
       :desc "Find declaration"
       "r D" #'lsp-find-declaration
@@ -182,4 +187,10 @@
       "r b" #'lsp-headerline-breadcrumb-mode
       :leader
       :desc "Show error"
-      "r e" #'flycheck-list-errors)
+      "r e" #'lsp-treemacs-errors-list
+      :leader
+      :desc "Show references"
+      "r r" #'lsp-treemacs-references
+      :leader
+      :desc "Show symbols"
+      "r s" #'lsp-treemacs-symbols)
