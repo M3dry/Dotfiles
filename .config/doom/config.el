@@ -1,9 +1,9 @@
 (setq user-full-name "M3dry"
       user-mail-address "m3dry@protonmail.com")
 
-(setq doom-theme 'doom-one)
+(setq doom-theme 'paledeep)
 
-(setq display-line-numbers-type t)
+(setq display-line-numbers-type 'relative)
 
 (setq doom-font (font-spec :family "Mononoki Nerd Font" :size 15)
       doom-variable-pitch-font (font-spec :family "Mononoki Nerd Font" :size 15)
@@ -31,19 +31,13 @@
          :leader
          :desc "Dired view file"
          "d v" #'dired-view-file)))
-;; Make 'h' and 'l' go back and forward in dired. Much faster to navigate the directory structure!
 (evil-define-key 'normal dired-mode-map
   (kbd "h") 'dired-up-directory
-  (kbd "l") 'dired-open-file) ; use dired-find-file instead if not using dired-open package
-;; If peep-dired is enabled, you will get image previews as you go up/down with 'j' and 'k'
+  (kbd "l") 'dired-open-file)
 (evil-define-key 'normal peep-dired-mode-map
   (kbd "j") 'peep-dired-next-file
   (kbd "k") 'peep-dired-prev-file)
 (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
-;; Get file icons in dired
-(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
-;; With dired-open plugin, you can launch external programs for certain extensions
-;; For example, I set all .png files to open in 'sxiv' and all .mp4 files to open in 'mpv'
 (setq dired-open-extensions '(("gif" . "sxiv")
                               ("jpg" . "sxiv")
                               ("png" . "sxiv")
@@ -113,7 +107,7 @@
         org-tag-alist
         '((:startgroup)
           (:endgroup)
-          ("schedule" . ?s)
+          ("lesson" . ?l)
           ("school" . ?S)
           ("english" . ?e))
         org-agenda-custom-commands
@@ -128,11 +122,14 @@
 (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
 (map! :leader
-      :desc "eval calculations in org doc"
+      :desc "Eval calculations in org doc"
       "o c" #'literate-calc-eval-buffer
       :leader
       :desc "Eval calculation on selected line"
-      "o l" #'literate-calc-eval-line)
+      "o l" #'literate-calc-eval-line
+      :leader
+      :desc "Tangle source blocks"
+      "m m" #'org-babel-tangle)
 
 (setq! global-prettify-symbols-mode 't)
 
@@ -145,8 +142,11 @@
       "b c" #'clone-indirect-buffer-other-window)
 
 (map! :leader
-      :desc "Edit school agenda file"
-      "v a s" #'(lambda () (interactive) (find-file "~/my-stuff/org/agenda/school.org"))
+      :desc "Edit School agenda file"
+      "v a s" #'(lambda () (interactive) (find-file "~/my-stuff/org/agenda/School.org"))
+      :leader
+      :desc "Edit English agenda file"
+      "v a e" #'(lambda () (interactive) (find-file "~/my-stuff/org/agenda/English.org"))
       :leader
       :desc "Edit dwm/dwm.c"
       "v d d" #'(lambda () (interactive) (find-file "~/.config/dwm/dwm.c"))
@@ -161,9 +161,12 @@
       "v i" #'(lambda () (interactive) (find-file "~/.config/doom/init.el"))
       :leader
       :desc "Edit doom packages.el"
-      "v p" #'(lambda () (interactive) (find-file "~/.config/doom/packages.el")))
+      "v p" #'(lambda () (interactive) (find-file "~/.config/doom/packages.el"))
+      :leader
+      :desc "Edit doom packages.el"
+      "v t" #'(lambda () (interactive) (find-file "~/.config/doom/themes/paledeep-theme.el")))
 
-(setq fancy-splash-image "~/my-stuff/Pictures/doom.png")
+(setq fancy-splash-image "~/my-stuff/Pictures/emacs/emacs-logo-spiral.png")
 (setq lsp-idle-delay 0.1)
 (setq lsp-headerline-breadcrumb-enable t)
 (setq lsp-completion-show-detail t)
@@ -186,11 +189,16 @@
       :desc "Enabale breadcrumb"
       "r b" #'lsp-headerline-breadcrumb-mode
       :leader
-      :desc "Show error"
+      :desc "Show error in treemacs"
       "r e" #'lsp-treemacs-errors-list
       :leader
-      :desc "Show references"
+      :desc "Show references in treemacs"
       "r r" #'lsp-treemacs-references
       :leader
-      :desc "Show symbols"
-      "r s" #'lsp-treemacs-symbols)
+      :desc "Show symbols in treemacs"
+      "r s" #'lsp-treemacs-symbols
+      :leader
+      :desc "Open treemacs"
+      "t o" #'treemacs)
+
+(setq which-key-idle-delay 0.5)

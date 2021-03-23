@@ -10,6 +10,6 @@ setxkbmap us,cz ,qwerty -option 'ctrl:nocaps' 'grp:ctrls_toggle' &
 xcape -e "Shift_L=Escape"
 lxsession &
 xrdb .config/x11/xresources &
-/usr/bin/emacs --daemon &
+killalll emacs ; /usr/bin/emacs --daemon &
 xset r rate 400 50 &
 killall dwmStatus ; dwmStatus &

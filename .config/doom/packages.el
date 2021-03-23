@@ -51,7 +51,6 @@
 (package! evil-tutor)
 (package! dired-open)
 (package! peep-dired)
-(package! async)
 (package! visual-regexp)
 (package! visual-regexp-steroids)
 (package! literate-calc-mode)

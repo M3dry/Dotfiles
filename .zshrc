@@ -92,6 +92,9 @@ function set_win_title(){
 precmd_functions+=(set_win_title)
 eval "$(starship init zsh)"
 
+# autopair
+source /usr/share/zsh/plugins/zsh-autopair/autopair.zsh 2>/dev/null
+
 # Syntax Highlight Plugin
 source /usr/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh 2>/dev/null
 
