@@ -3,6 +3,7 @@
 
 (setq doom-theme 'paledeep)
 
+(setq fringe-mode 8)
 (setq display-line-numbers-type 'relative)
 
 (setq doom-font (font-spec :family "Mononoki Nerd Font" :size 15)
@@ -89,11 +90,10 @@
         org-log-done 'time
         org-log-into-drawer t
         org-hide-emphasis-markers t
-        org-link-abbrev-alist
-        '(("google" . "http://www.google.com/search?q=")
-          ("arch-wiki" . "https://wiki.archlinux.org/index.php/")
-          ("ddg" . "https://duckduckgo.com/?q=")
-          ("wiki" . "https://en.wikipedia.org/wiki/"))
+        org-capture-templates
+        `(("t" "Todos")
+          ("tt" "Todo" entry (file+olp "~/my-stuff/org/agenda/Inbox.org" "Todo")
+           "* TODO %?\n %U\n %a"))
         org-todo-keywords
         '((sequence
            "TODO(t)"
@@ -104,21 +104,21 @@
            "WAIT(w)"
            "DONE(d)"
            "CANCELLED(c)" ))
-        org-tag-alist
-        '((:startgroup)
-          (:endgroup)
-          ("lesson" . ?l)
-          ("school" . ?S)
-          ("english" . ?e))
-        org-agenda-custom-commands
-        '(("T" "Next Tests"
-           ((todo "TEST"
-                  ((org-agenda-overriding-header "Next Tests")))))
-          ("E" Low Effort "+Effort<15&+Effort>0"
-           ((org-agenda-overriding-header "Low Effort Tasks")
-            (org-agenda-max-todos 20)
-            (org-agenda-files org-agenda-files))))
-        org-refile-targets '(("~/my-stuff/org/agenda/Archive.org" :maxlevel . 4))))
+       org-tag-alist
+       '((:startgroup)
+         (:endgroup)
+         ("lesson" . ?l)
+         ("school" . ?S)
+         ("english" . ?e))
+       org-agenda-custom-commands
+       '(("T" "Next Tests"
+          ((todo "TEST"
+                 ((org-agenda-overriding-header "Next Tests")))))
+         ("E" Low Effort "+Effort<15&+Effort>0"
+          ((org-agenda-overriding-header "Low Effort Tasks")
+           (org-agenda-max-todos 20)
+           (org-agenda-files org-agenda-files))))
+       org-refile-targets '(("~/my-stuff/org/agenda/Archive.org" :maxlevel . 4))))
 (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
 (map! :leader
@@ -151,27 +151,31 @@
       :desc "Edit dwm/dwm.c"
       "v d d" #'(lambda () (interactive) (find-file "~/.config/dwm/dwm.c"))
       :leader
-      :desc "Edit dwm/config.def.h"
-      "v d c" #'(lambda () (interactive) (find-file "~/.config/dwm/config.def.h"))
+      :desc "Edit dwm/dwm.org"
+      "v d c" #'(lambda () (interactive) (find-file "~/.config/dwm/dwm.org"))
       :leader
       :desc "Edit doom config.el"
-      "v c" #'(lambda () (interactive) (find-file "~/.config/doom/config.el"))
+      "v e c" #'(lambda () (interactive) (find-file "~/.config/doom/config.el"))
       :leader
       :desc "Edit doom init.el"
-      "v i" #'(lambda () (interactive) (find-file "~/.config/doom/init.el"))
+      "v e i" #'(lambda () (interactive) (find-file "~/.config/doom/init.el"))
       :leader
       :desc "Edit doom packages.el"
-      "v p" #'(lambda () (interactive) (find-file "~/.config/doom/packages.el"))
+      "v e p" #'(lambda () (interactive) (find-file "~/.config/doom/packages.el"))
       :leader
       :desc "Edit doom packages.el"
-      "v t" #'(lambda () (interactive) (find-file "~/.config/doom/themes/paledeep-theme.el")))
+      "v e t" #'(lambda () (interactive) (find-file "~/.config/doom/themes/paledeep-theme.el")))
 
 (setq fancy-splash-image "~/my-stuff/Pictures/emacs/emacs-logo-spiral.png")
-(setq lsp-idle-delay 0.1)
-(setq lsp-headerline-breadcrumb-enable t)
-(setq lsp-completion-show-detail t)
-(setq lsp-completion-show-kind t)
-(setq lsp-ui-doc-enable t)
+
+(setq
+ lsp-idle-delay 0
+ lsp-headerline-breadcrumb-enable t
+ lsp-completion-show-detail t
+ lsp-completion-show-kind t
+ lsp-ui-doc-enable t
+ company-idle-delay 0
+ company-tooltip-limit 25)
 
 (map! :leader
       :desc "Find definition"
@@ -220,3 +224,12 @@
     ("Pacific/Auckland" "Auckland")
     ("Asia/Shanghai" "Shanghai")))
 (setq display-time-world-time-format "%a, %d %b %I:%M %R %Z")
+
+(defhydra hydra-resize (:timeout 2)
+  ("h" evil-window-decrease-width)
+  ("l" evil-window-increase-width)
+  ("k" evil-window-decrease-height)
+  ("j" evil-window-increase-height))
+(map! :leader
+      :desc "Resize windows"
+      "w C-i" #'hydra-resize/body)
