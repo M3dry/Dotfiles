@@ -60,7 +60,7 @@ Can be an integer to determine the exact padding."
    (strings        green)
    (variables      yellow)
    (numbers        orange)
-   (region         base1)
+   (region         base6)
    (error          red)
    (warning        yellow)
    (success        green)
@@ -150,6 +150,7 @@ Can be an integer to determine the exact padding."
    ;; tooltip
    (tooltip                  :background (doom-darken bg-alt 0.2) :foreground fg)
    (line-number              :background bg :foreground base3)
-   (line-number-current-line :background bg :foreground yellow)))
+   (line-number-current-line :background bg :foreground yellow)
+   ))
 
 (provide 'paledeep-theme)

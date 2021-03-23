@@ -15,7 +15,7 @@
   '(font-lock-keyword-face :slant italic))
   '(font-lock-comment-face :slant italic)
 
-(add-to-list 'default-frame-alist '(alpha 95 95))
+(add-to-list 'default-frame-alist '(alpha 97 97))
 
 (map! :leader
       :desc "Dired"
@@ -202,3 +202,21 @@
       "t o" #'treemacs)
 
 (setq which-key-idle-delay 0.5)
+
+(after! doom-modeline
+  (doom-modeline-def-modeline 'main
+    '(bar matches buffer-info remote-host buffer-position parrot selection-info)
+    '(misc-info minor-modes checker input-method buffer-encoding major-mode process vcs "  ")))
+(setq
+ doom-modeline-height 35
+ doom-modeline-bar-width 8
+ doom-modeline-major-mode-icon t)
+
+(setq display-time-world-list
+  '(("Etc/UTC" "UTC")
+    ("Europe/Prague" "Prague")
+    ("America/New_York" "New York")
+    ("Europe/Athens" "Athens")
+    ("Pacific/Auckland" "Auckland")
+    ("Asia/Shanghai" "Shanghai")))
+(setq display-time-world-time-format "%a, %d %b %I:%M %R %Z")
