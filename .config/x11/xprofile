@@ -7,7 +7,7 @@ redshift &
 dunst &
 playerctld &
 setxkbmap us,cz ,qwerty -option 'ctrl:nocaps' 'grp:ctrls_toggle' &
-xcape -e "Shift_L=Escape"
+xcape -e "Control_L=Escape"
 lxsession &
 xrdb .config/x11/xresources &
 killalll emacs ; /usr/bin/emacs --daemon &
