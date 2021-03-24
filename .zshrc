@@ -74,7 +74,7 @@ source "$HOME/.config/zsh/aliasesrc"
 
 # Auto suggestions Plugin
 source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh 2>/dev/null
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#8e3436,underline"
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#3C435E,bold"
 bindkey '^h' autosuggest-accept
 bindkey '^ ' autosuggest-execute
 bindkey '^b' autosuggest-clear
