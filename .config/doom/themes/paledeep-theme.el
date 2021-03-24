@@ -98,9 +98,7 @@ Can be an integer to determine the exact padding."
     :background modeline-bg-alt :foreground modeline-fg-alt
     :box (if -modeline-pad `(:line-width ,-modeline-pad :color ,modeline-bg-alt)))
 
-   (fringe :background base2)
-
-   ;; --- major-mode faces ------------------------
+   ;; major-mode faces ------------------------
    ;; man-mode
    (Man-overstrike :inherit 'bold :foreground magenta)
    (Man-underline :inherit 'underline :foreground blue)

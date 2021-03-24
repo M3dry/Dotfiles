@@ -3,6 +3,7 @@
 
 (setq doom-theme 'paledeep)
 
+(toggle-truncate-lines)
 (setq fringe-mode 8)
 (setq display-line-numbers-type 'relative)
 
@@ -16,7 +17,7 @@
   '(font-lock-keyword-face :slant italic))
   '(font-lock-comment-face :slant italic)
 
-(add-to-list 'default-frame-alist '(alpha 97 97))
+(add-to-list 'default-frame-alist '(alpha 90 90))
 
 (map! :leader
       :desc "Dired"
@@ -118,7 +119,7 @@
           ((org-agenda-overriding-header "Low Effort Tasks")
            (org-agenda-max-todos 20)
            (org-agenda-files org-agenda-files))))
-       org-refile-targets '(("~/my-stuff/org/agenda/Archive.org" :maxlevel . 4))))
+       org-refile-targets '(("~/my-stuff/org/Archive.org" :maxlevel . 4))))
 (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
 (map! :leader
@@ -163,7 +164,7 @@
       :desc "Edit doom packages.el"
       "v e p" #'(lambda () (interactive) (find-file "~/.config/doom/packages.el"))
       :leader
-      :desc "Edit doom packages.el"
+      :desc "Edit theme"
       "v e t" #'(lambda () (interactive) (find-file "~/.config/doom/themes/paledeep-theme.el")))
 
 (setq fancy-splash-image "~/my-stuff/Pictures/emacs/emacs-logo-spiral.png")
@@ -174,6 +175,8 @@
  lsp-completion-show-detail t
  lsp-completion-show-kind t
  lsp-ui-doc-enable t
+ lsp-enable-semantic-highlighting t
+ lsp-semantic-tokens-mode t
  company-idle-delay 0
  company-tooltip-limit 25)
 
@@ -232,4 +235,4 @@
   ("j" evil-window-increase-height))
 (map! :leader
       :desc "Resize windows"
-      "w C-i" #'hydra-resize/body)
+      "W" #'hydra-resize/body)
