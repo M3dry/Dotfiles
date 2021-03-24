@@ -4,20 +4,20 @@ format = """
  $time $cmd_duration $directory [$character](bold fg:blue)"""
 
 [character]
-success_symbol = "[λ](bold fg:#51afef)"
-error_symbol = "[λ](bold fg:#e53e19)"
-vicmd_symbol = "[λ](bold fg:#37e00d)"
+success_symbol = "[λ](bold fg:#7986E7)"
+error_symbol = "[λ](bold fg:#ff5370)"
+vicmd_symbol = "[λ](bold fg:#c3e88d)"
 
 [directory]
 read_only = " 📕"
-format = "[$path](bold fg:#ecbe7b)[$read_only](bold fg:#ff6c6b)"
+format = "[$path](fg:#717CB4)[$read_only](bold fg:#ff6c6b)"
 truncation_length = 6
 
 [cmd_duration]
 min_time = 0
-format = "[took](bold fg:#ffffff) [$duration](bold fg:#ecbe7b)"
+format = "[took](bold fg:#EEFFFF) [$duration](bold fg:#ffcb6b)"
 
 [time]
 disabled = false
-format = '[$time](bold fg:#ecbe7b)'
+format = '[$time](bold fg:#ffcb6b)'
 time_format = "%R"
