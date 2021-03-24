@@ -119,9 +119,22 @@
           ((org-agenda-overriding-header "Low Effort Tasks")
            (org-agenda-max-todos 20)
            (org-agenda-files org-agenda-files))))
-       org-refile-targets '(("~/my-stuff/org/Archive.org" :maxlevel . 4))))
-(advice-add 'org-refile :after 'org-save-all-org-buffers)
-
+       org-refile-targets '(("~/my-stuff/org/Archive.org" :maxlevel . 4)))
+       (advice-add 'org-refile :after 'org-save-all-org-buffers)
+       (dolist (face '((org-level-1 . 1.4)
+                       (org-level-2 . 1.3)
+                       (org-level-3 . 1.2)
+                       (org-level-4 . 1.0)
+                       (org-level-5 . 1.1)
+                       (org-level-6 . 1.1)
+                       (org-level-7 . 1.1)
+                       (org-level-8 . 1.1)))
+         (set-face-attribute (car face) nil :font "Mononoki Nerd Font" :height (cdr face))))
+(defun dw/org-babel-tangle-dont-ask ()
+  (let ((org-confirm-babel-evaluate nil))
+    (org-babel-tangle)))
+(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'dw/org-babel-tangle-dont-ask
+                                              'run-at-end 'only-in-org-mode)))
 (map! :leader
       :desc "Eval calculations in org doc"
       "o c" #'literate-calc-eval-buffer
@@ -148,6 +161,12 @@
       :leader
       :desc "Edit English agenda file"
       "v a e" #'(lambda () (interactive) (find-file "~/my-stuff/org/agenda/English.org"))
+      :leader
+      :desc "Edit English agenda file"
+      "v a i" #'(lambda () (interactive) (find-file "~/my-stuff/org/Inbox.org"))
+      :leader
+      :desc "Edit English agenda file"
+      "v a a" #'(lambda () (interactive) (find-file "~/my-stuff/org/Archive.org"))
       :leader
       :desc "Edit dwm/dwm.c"
       "v d d" #'(lambda () (interactive) (find-file "~/.config/dwm/dwm.c"))
@@ -236,3 +255,6 @@
 (map! :leader
       :desc "Resize windows"
       "W" #'hydra-resize/body)
+
+(super-save-mode +1)
+(setq super-save-auto-save-when-idle t)

@@ -59,6 +59,7 @@
 (package! emojify)
 (package! vimrc-mode)
 (package! lsp-ivy)
+(package! super-save)
 
 (package! doom-snippets :ignore t)
 (package! hl-line :disable t)

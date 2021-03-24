@@ -44,33 +44,33 @@ st.altbackground: #1E1C31
 *.cursorColor:    #ff5370
 
 ! black
-*.color0:       #1c1f24
-*.color8:       #5b6268
+*.color0:         #1c1f24
+*.color8:         #5b6268
 
 ! red
-*.color1:       #f78c6c
-*.color9:       #ff5370
+*.color1:         #f78c6c
+*.color9:         #ff5370
 
 ! green
-*.color2:       #c3e88d
-*.color10:      #aff000
+*.color2:         #c3e88d
+*.color10:        #98be65
 
 ! yellow
-*.color3:       #ffcb6b
-*.color11:      #ffd700
+*.color3:         #ecbe7b
+*.color11:        #ffcb6b
 
 ! blue
-*.color4:       #82aaff
-*.color12:      #5fafff
+*.color4:         #82aaff
+*.color12:        #5fafff
 
 ! magenta
-*.color5:       #c792ea
-*.color13:      #d787d7
+*.color5:         #c792ea
+*.color13:        #d787d7
 
 ! cyan
-*.color6:       #89DDFF
-*.color14:      #5fd7ff
+*.color6:         #89DDFF
+*.color14:        #5fd7ff
 
 ! white
-*.color7:       #BFC7d5
-*.color15:      #bcbcbc
+*.color7:         #BFC7d5
+*.color15:        #bcbcbc

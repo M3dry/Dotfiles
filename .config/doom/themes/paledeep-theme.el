@@ -107,6 +107,16 @@ Can be an integer to determine the exact padding."
    ((org-block &override) :background base2)
    ((org-block-background &override) :background base2)
    ((org-block-begin-line &override) :background base2)
+   (org-document-title :height 1.2 :foreground dark-blue)
+   (org-meta-line :height 1.3 :foreground yellow)
+   (org-document-info-keyword :inherit 'bold :height 1.7 :foreground yellow)
+   (org-date :height 1.2 :foreground yellow)
+   (org-tag :height 0.8 :foreground base7)
+   (org-todo :height 1.08 :foreground green)
+   (org-code :foreground blue)
+   (org-done :height 1.08 :foreground (doom-darken blue 0.28))
+   (org-checkbox :height 1.23 :foreground dark-blue)
+
 
    ;; --- plugin faces -------------------
    ;; css-mode / scss-mode
@@ -149,7 +159,7 @@ Can be an integer to determine the exact padding."
    ;; tooltip
    (tooltip                  :background (doom-darken bg-alt 0.2) :foreground fg)
    (line-number              :background bg :foreground base3)
-   (line-number-current-line :background bg :foreground yellow)
+   (line-number-current-line :background bg :foreground red)
    ))
 
 (provide 'paledeep-theme)
