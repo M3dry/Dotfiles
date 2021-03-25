@@ -190,16 +190,14 @@
  lsp-headerline-breadcrumb-enable t
  lsp-completion-show-detail t
  lsp-completion-show-kind t
- lsp-ui-doc-enable t
  lsp-semantic-tokens-mode t
  lsp-enable-semantic-highlighting t
- lsp-ui-sideline-show-hover t
- lsp-ui-sideline-delay 0
  company-idle-delay 0
  company-tooltip-limit 25
  company-tooltip-idle-delay 0)
 
 (add-hook 'evil-insert-state-entry-hook (lambda () (evil-scroll-line-to-center nil)))
+(define-key evil-insert-state-map (kbd "TAB") (lambda () (interactive) (up-list)))
 
 (map! :leader
       :desc "Find definition"

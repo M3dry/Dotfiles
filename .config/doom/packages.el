@@ -48,7 +48,6 @@
 ;(unpin! pinned-package another-pinned-package)
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
-(package! evil-tutor)
 (package! dired-open)
 (package! peep-dired)
 (package! visual-regexp)
