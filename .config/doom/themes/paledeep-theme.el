@@ -85,18 +85,18 @@ Can be an integer to determine the exact padding."
 
    (mode-line
     :background bg :foreground dark-blue
-    :box (if -modeline-pad `(:line-width ,-modeline-pad :color ,modeline-bg)))
+    :box (if -modeline-pad `(:line-width ,-modeline-pad :color ,modeline-bg)) :height 0.99)
 
    (mode-line-inactive
     :background modeline-bg-alt :foreground modeline-fg-alt
-    :box (if -modeline-pad `(:line-width ,-modeline-pad :color ,modeline-bg-alt)))
+    :box (if -modeline-pad `(:line-width ,-modeline-pad :color ,modeline-bg-alt)) :height 0.99)
 
    (solaire-mode-line-face
     :background bg :foreground dark-blue
-    :box (if -modeline-pad `(:line-width ,-modeline-pad :color ,modeline-bg)))
+    :box (if -modeline-pad `(:line-width ,-modeline-pad :color ,modeline-bg)) :height 0.99)
    (solaire-mode-line-inactive-face
     :background modeline-bg-alt :foreground modeline-fg-alt
-    :box (if -modeline-pad `(:line-width ,-modeline-pad :color ,modeline-bg-alt)))
+    :box (if -modeline-pad `(:line-width ,-modeline-pad :color ,modeline-bg-alt)) :height 0.99)
 
    ;; major-mode faces ------------------------
    ;; man-mode
