@@ -3,7 +3,7 @@
 
 (setq doom-theme 'paledeep)
 
-(toggle-truncate-lines)
+(toggle-truncate-lines t)
 (setq fringe-mode 8)
 (setq display-line-numbers-type 'relative)
 
@@ -191,10 +191,15 @@
  lsp-completion-show-detail t
  lsp-completion-show-kind t
  lsp-ui-doc-enable t
- lsp-enable-semantic-highlighting t
  lsp-semantic-tokens-mode t
+ lsp-enable-semantic-highlighting t
+ lsp-ui-sideline-show-hover t
+ lsp-ui-sideline-delay 0
  company-idle-delay 0
- company-tooltip-limit 25)
+ company-tooltip-limit 25
+ company-tooltip-idle-delay 0)
+
+(add-hook 'evil-insert-state-entry-hook (lambda () (evil-scroll-line-to-center nil)))
 
 (map! :leader
       :desc "Find definition"
@@ -226,14 +231,11 @@
 
 (setq which-key-idle-delay 0.5)
 
-(after! doom-modeline
-  (doom-modeline-def-modeline 'main
-    '(bar matches buffer-info remote-host buffer-position parrot selection-info)
-    '(misc-info minor-modes checker input-method buffer-encoding major-mode process vcs "  ")))
 (setq
  doom-modeline-height 35
  doom-modeline-bar-width 8
- doom-modeline-major-mode-icon t)
+ doom-modeline-major-mode-icon t
+ doom-modeline-enable-word-count t)
 
 (setq display-time-world-list
   '(("Etc/UTC" "UTC")

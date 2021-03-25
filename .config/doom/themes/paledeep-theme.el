@@ -84,7 +84,7 @@ Can be an integer to determine the exact padding."
    (doom-modeline-buffer-major-mode :inherit 'doom-modeline-buffer-path)
 
    (mode-line
-    :background modeline-bg :foreground modeline-fg
+    :background bg :foreground dark-blue
     :box (if -modeline-pad `(:line-width ,-modeline-pad :color ,modeline-bg)))
 
    (mode-line-inactive
@@ -92,7 +92,7 @@ Can be an integer to determine the exact padding."
     :box (if -modeline-pad `(:line-width ,-modeline-pad :color ,modeline-bg-alt)))
 
    (solaire-mode-line-face
-    :background modeline-bg :foreground modeline-fg
+    :background bg :foreground dark-blue
     :box (if -modeline-pad `(:line-width ,-modeline-pad :color ,modeline-bg)))
    (solaire-mode-line-inactive-face
     :background modeline-bg-alt :foreground modeline-fg-alt
@@ -107,9 +107,9 @@ Can be an integer to determine the exact padding."
    ((org-block &override) :background base2)
    ((org-block-background &override) :background base2)
    ((org-block-begin-line &override) :background base2)
-   (org-document-title :height 1.2 :foreground dark-blue)
+   (org-document-title :height 1.3 :foreground dark-blue)
    (org-meta-line :height 1.3 :foreground yellow)
-   (org-document-info-keyword :inherit 'bold :height 1.7 :foreground yellow)
+   (org-document-info-keyword :inherit 'bold :height 1.4 :foreground yellow)
    (org-date :height 1.2 :foreground yellow)
    (org-tag :height 0.8 :foreground base7)
    (org-todo :height 1.08 :foreground green)
@@ -143,6 +143,10 @@ Can be an integer to determine the exact padding."
    (company-tooltip-selection :foreground dark-blue :background (doom-darken bg-alt 0.25))
    (company-tooltip-common :foreground red :inherit 'bold)
    (company-tooltip-mouse :foreground dark-blue :background (doom-darken bg-alt 0.25))
+
+   ;; lsp
+   (lsp-ui-sideline-current-symbol :background dark-blue :foreground bg)
+   (lsp-ui-sideline-symbol-info :background bg-alt :foreground base5)
 
    ;; treemacs
    (treemacs-directory-face :foreground dark-blue)
