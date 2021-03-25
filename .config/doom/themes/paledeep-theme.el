@@ -130,7 +130,6 @@ Can be an integer to determine the exact padding."
    (dired-k-ignored :foreground cyan)
    (dired-k-added    :foreground vc-added)
 
-
    ;; js2-mode
    (js2-jsdoc-tag              :foreground magenta)
    (js2-object-property        :foreground yellow)
@@ -138,6 +137,25 @@ Can be an integer to determine the exact padding."
    (js2-function-param         :foreground violet)
    (js2-jsdoc-type             :foreground base8)
    (js2-jsdoc-value            :foreground cyan)
+
+   ;; company
+   (company-tooltip :foreground fg :background bg-alt)
+   (company-tooltip-selection :foreground dark-blue :background (doom-darken bg-alt 0.25))
+   (company-tooltip-common :foreground red :inherit 'bold)
+   (company-tooltip-mouse :foreground dark-blue :background (doom-darken bg-alt 0.25))
+
+   ;; treemacs
+   (treemacs-directory-face :foreground dark-blue)
+   (treemacs-file-face :foreground red)
+
+   ;; whichkey
+   (which-key-key-face :foreground red :inherit 'bold :height 1.1)
+   (which-key-group-description-face :foreground dark-blue :inherit 'bold)
+   (which-key-command-description-face :foreground fg-alt)
+   (which-key-separator-face :foreground magenta)
+
+   ;; ivy
+   (ivy-current-match :background bg-alt :foreground red)
 
    ;; rainbow-delimiters
    (rainbow-delimiters-depth-1-face     :foreground magenta)
@@ -160,6 +178,6 @@ Can be an integer to determine the exact padding."
    (tooltip                  :background (doom-darken bg-alt 0.2) :foreground fg)
    (line-number              :background bg :foreground base3)
    (line-number-current-line :background bg :foreground red)
-   ))
+   (lazy-highlight :background red :foreground bg :inherit 'bold)))
 
 (provide 'paledeep-theme)

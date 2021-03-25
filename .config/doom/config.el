@@ -7,9 +7,9 @@
 (setq fringe-mode 8)
 (setq display-line-numbers-type 'relative)
 
-(setq doom-font (font-spec :family "Mononoki Nerd Font" :size 15)
-      doom-variable-pitch-font (font-spec :family "Mononoki Nerd Font" :size 15)
-      doom-big-font (font-spec :family "Mononoki Nerd Font" :size 18))
+(setq doom-font (font-spec :family "Mononoki Nerd Font" :size 16)
+      doom-variable-pitch-font (font-spec :family "Mononoki Nerd Font" :size 16)
+      doom-big-font (font-spec :family "Mononoki Nerd Font" :size 25))
 (after! doom-themes
         (setq doom-themes-enable-bold t
               doom-themes-enable-italic t))
@@ -17,7 +17,8 @@
   '(font-lock-keyword-face :slant italic))
   '(font-lock-comment-face :slant italic)
 
-(add-to-list 'default-frame-alist '(alpha 90 90))
+(set-frame-parameter (selected-frame) 'alpha '(90 . 90))
+(add-to-list 'default-frame-alist '(alpha . (90 . 90)))
 
 (map! :leader
       :desc "Dired"
@@ -98,8 +99,6 @@
         org-todo-keywords
         '((sequence
            "TODO(t)"
-           "TEST(T)"
-           "HOMEWORK(h)"
            "PROJ(p)"
            "|"
            "WAIT(w)"
@@ -110,15 +109,10 @@
          (:endgroup)
          ("lesson" . ?l)
          ("school" . ?S)
-         ("english" . ?e))
-       org-agenda-custom-commands
-       '(("T" "Next Tests"
-          ((todo "TEST"
-                 ((org-agenda-overriding-header "Next Tests")))))
-         ("E" Low Effort "+Effort<15&+Effort>0"
-          ((org-agenda-overriding-header "Low Effort Tasks")
-           (org-agenda-max-todos 20)
-           (org-agenda-files org-agenda-files))))
+         ("homework" . ?h)
+         ("test" . ?t)
+         ("english" . ?e)
+         ("habits" . ?H))
        org-refile-targets '(("~/my-stuff/org/Archive.org" :maxlevel . 4)))
        (advice-add 'org-refile :after 'org-save-all-org-buffers)
        (dolist (face '((org-level-1 . 1.4)
@@ -162,10 +156,13 @@
       :desc "Edit English agenda file"
       "v a e" #'(lambda () (interactive) (find-file "~/my-stuff/org/agenda/English.org"))
       :leader
-      :desc "Edit English agenda file"
+      :desc "Edit Habits agenda file"
+      "v a h" #'(lambda () (interactive) (find-file "~/my-stuff/org/agenda/Habits.org"))
+      :leader
+      :desc "Edit Inbox agenda file"
       "v a i" #'(lambda () (interactive) (find-file "~/my-stuff/org/Inbox.org"))
       :leader
-      :desc "Edit English agenda file"
+      :desc "Edit Archive agenda file"
       "v a a" #'(lambda () (interactive) (find-file "~/my-stuff/org/Archive.org"))
       :leader
       :desc "Edit dwm/dwm.c"
