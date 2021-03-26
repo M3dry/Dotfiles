@@ -1,5 +1,7 @@
 #!/bin/bash
 
+font="mononoki nerd font:pixelsize=19:antialias=true:autohint=true"
+
 cmuschoice() {
     title=$(cmus-remote -Q | rg "title" | sed 's/tag title //')
     album=$(cmus-remote -Q | rg "album " | sed 's/tag album //')
@@ -10,7 +12,7 @@ cmuschoice() {
     [ $(cmus-remote -C "set repeat_current?" | sed "s/.*=// ; s/'//") = "true" ] && repeat="🔂"
     [ $(cmus-remote -Q | rg "status" | sed "s/status //") = "playing" ] && status="⏸" || status="▶"
     info=$(echo "$artist - $title/$album:$number 🔈$volume% $shuffle$status$repeat")
-    choice=$(echo -e "play/pause\nqueue\nplay song\nrepeat current\n🔈${volume}%\nnext\nprev\nshuffle" | dmenu -p "$info")
+    choice=$(echo -e "play/pause\nqueue\nplay song\nrepeat current\n🔈${volume}%\nnext\nprev\nshuffle" | dmenu -p "$info" -l 8)
 
     case $choice in
         "") exit 0;;
@@ -18,7 +20,7 @@ cmuschoice() {
         queue) Cqueue;;
         play\ song) Cplay;;
         repeat\ current) cmus-remote -C "toggle repeat_current";;
-        🔈$volume%) dmenu < /dev/null -p "$info" | xargs -I {} cmus-remote -v '{}'%;;
+        🔈$volume%) dmenu < /dev/null -p "$info" -fn "$font" | xargs -I {} cmus-remote -v '{}'%;;
         next) cmus-remote -n;;
         prev) cmus-remote -r;;
         shuffle) cmus-remote -S;;
@@ -51,7 +53,7 @@ Cplay() {
 
 spotchoice() {
     info=$(playerctl --player spotify metadata --format "{{ artist }} - {{ title }}/{{ album }}")
-    choice=$(echo -e "play/pause\nreplay song\nnext\nprev" | dmenu -p "Now playing $info")
+    choice=$(echo -e "play/pause\nreplay song\nnext\nprev" | dmenu -p "Now playing $info" -fn "$font")
     case $choice in
         play/pause) playerctl --player spotify play-pause;;
         replay\ song) playerctl --player spotify previous && playerctl --player spotify play;;

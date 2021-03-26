@@ -88,10 +88,51 @@
   (setq org-directory "~/my-stuff/org/"
         org-agenda-files '("~/my-stuff/org/agenda/")
         org-ellipsis "  "
+        org-modules
+        '(org-habit
+          ol-bibtex)
         org-agenda-start-with-log-mode t
         org-log-done 'time
         org-log-into-drawer t
+        org-agenda-skip-scheduled-if-done t
+        org-agenda-skip-deadline-if-done t
+        org-agenda-include-deadlines t
         org-hide-emphasis-markers t
+        org-agenda-custom-commands
+        '(("o" "Overview"
+           ((agenda "" ((org-agenda-span 'week)
+                        (org-super-agenda-groups
+                         '((:name "Today"
+                            :time-grid t
+                            :date today
+                            :todo "TODAY"
+                            :scheduled today
+                            :order 1)))))
+            (alltodo "" ((org-agenda-overriding-header "")
+                         (org-super-agenda-groups
+                          '((:name "Due Today"
+                             :deadline today
+                             :order 2)
+                            (:name "Due Soon"
+                             :deadline future
+                             :order 8)
+                            (:name "Overdue"
+                             :deadline past
+                             :face error
+                             :order 7)
+                            (:name "School"
+                             :tag  "school"
+                             :order 3)
+                            (:name "Homework"
+                             :tag "homework"
+                             :order 7)
+                            (:name "Tests"
+                             :tag "test"
+                             :order 13)
+                            (:name "Habits"
+                             :habit
+                             :order 14)
+                            )))))))
         org-capture-templates
         `(("t" "Todos")
           ("tt" "Todo" entry (file+olp "~/my-stuff/org/agenda/Inbox.org" "Todo")
@@ -104,31 +145,34 @@
            "WAIT(w)"
            "DONE(d)"
            "CANCELLED(c)" ))
-       org-tag-alist
-       '((:startgroup)
-         (:endgroup)
-         ("lesson" . ?l)
-         ("school" . ?S)
-         ("homework" . ?h)
-         ("test" . ?t)
-         ("english" . ?e)
-         ("habits" . ?H))
-       org-refile-targets '(("~/my-stuff/org/Archive.org" :maxlevel . 4)))
-       (advice-add 'org-refile :after 'org-save-all-org-buffers)
-       (dolist (face '((org-level-1 . 1.4)
-                       (org-level-2 . 1.3)
-                       (org-level-3 . 1.2)
-                       (org-level-4 . 1.0)
-                       (org-level-5 . 1.1)
-                       (org-level-6 . 1.1)
-                       (org-level-7 . 1.1)
-                       (org-level-8 . 1.1)))
-         (set-face-attribute (car face) nil :font "Mononoki Nerd Font" :height (cdr face))))
+        org-tag-alist
+        '((:startgroup)
+          (:endgroup)
+          ("lesson" . ?l)
+          ("school" . ?S)
+          ("homework" . ?h)
+          ("test" . ?t)
+          ("english" . ?e)
+          ("habits" . ?H))
+        org-refile-targets '(("~/my-stuff/org/Archive.org" :maxlevel . 4)))
+  (advice-add 'org-refile :after 'org-save-all-org-buffers)
+  (dolist (face '((org-level-1 . 1.4)
+                  (org-level-2 . 1.3)
+                  (org-level-3 . 1.2)
+                  (org-level-4 . 1.0)
+                  (org-level-5 . 1.1)
+                  (org-level-6 . 1.1)
+                  (org-level-7 . 1.1)
+                  (org-level-8 . 1.1)))
+    (set-face-attribute (car face) nil :font "Mononoki Nerd Font" :height (cdr face))))
 (defun dw/org-babel-tangle-dont-ask ()
   (let ((org-confirm-babel-evaluate nil))
     (org-babel-tangle)))
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'dw/org-babel-tangle-dont-ask
                                               'run-at-end 'only-in-org-mode)))
+(after! org-fancy-priorities
+  (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")))
+
 (map! :leader
       :desc "Eval calculations in org doc"
       "o c" #'literate-calc-eval-buffer
@@ -197,7 +241,7 @@
  company-tooltip-idle-delay 0)
 
 (add-hook 'evil-insert-state-entry-hook (lambda () (evil-scroll-line-to-center nil)))
-(define-key evil-insert-state-map (kbd "TAB") (lambda () (interactive) (up-list)))
+(define-key evil-insert-state-map (kbd "C-l") (lambda () (interactive) (up-list)))
 
 (map! :leader
       :desc "Find definition"
@@ -234,7 +278,12 @@
  doom-modeline-bar-width 8
  doom-modeline-major-mode-icon t
  doom-modeline-enable-word-count t)
-
+(setq all-the-icons-scale-factor 0.95)
+(defun doom-modeline-conditional-buffer-encoding ()
+  (setq-local doom-modeline-buffer-encoding
+              (unless (or (eq buffer-file-coding-system 'utf-8-unix)
+                          (eq buffer-file-coding-system 'utf-8)))))
+(add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
 (setq display-time-world-list
   '(("Etc/UTC" "UTC")
     ("Europe/Prague" "Prague")
@@ -255,3 +304,4 @@
 
 (super-save-mode +1)
 (setq super-save-auto-save-when-idle t)
+(add-hook 'Info-selection-hook 'info-colors-fontify-node)

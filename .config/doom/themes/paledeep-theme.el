@@ -98,6 +98,11 @@ Can be an integer to determine the exact padding."
     :background modeline-bg-alt :foreground modeline-fg-alt
     :box (if -modeline-pad `(:line-width ,-modeline-pad :color ,modeline-bg-alt)) :height 0.99)
 
+   (doom-modeline-evil-normal-state :foreground bg)
+   (doom-modeline-evil-insert-state :foreground dark-blue)
+   (doom-modeline-evil-visual-state :foreground green)
+   (doom-modeline-evil-replace-state :foreground red)
+
    ;; major-mode faces ------------------------
    ;; man-mode
    (Man-overstrike :inherit 'bold :foreground magenta)

@@ -57,8 +57,9 @@
 (package! lsp-treemacs)
 (package! emojify)
 (package! vimrc-mode)
-(package! lsp-ivy)
 (package! super-save)
+(package! info-colors)
+(package! org-super-agenda)
 
 (package! doom-snippets :ignore t)
 (package! hl-line :disable t)
