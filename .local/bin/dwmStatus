@@ -12,15 +12,15 @@ volume() {
 }
 
 upTime() {
-    upt="^c#ffd700^[UPT:$(uptime --pretty | sed "s/up // ; s/ days/d/g ; s/ day/d/g ; s/ hours/h/g ; s/ hour/h/g ; s/ minutes/min/g ; s/,//g")]^d^"
+    upt="^c#afff00^[UPT:$(uptime --pretty | sed "s/up // ; s/ days/d/g ; s/ day/d/g ; s/ hours/h/g ; s/ hour/h/g ; s/ minutes/min/g ; s/,//g")]^d^"
 }
 
 memory() {
     mem=$(free -h | awk '/^Mem:/ {print $3 "/" $2}')
     memPercentage=$(free -h | awk '/^Mem:/ {print $3/$2 * 100}')
-    [ "$(echo $memPercentage | sed "s/\..*//")" -gt "30" ] && mem="^c#ffcb6b^[$mem]^d^" && return 0
-    [ "$(echo $memPercentage | sed "s/\..*//")" -gt "50" ] && mem="^c#f78c6c^[$mem]^d^" && return 0
-    [ "$(echo $memPercentage | sed "s/\..*//")" -gt "75" ] && mem="^c#ff5370^[$mem]^d^" || mem="^c#afff00^[$mem]^d^"
+    [ "$(echo $memPercentage | sed "s/\..*//")" -gt "30" ] && mem="^c#f78c6c^[$mem]^d^" && return 0
+    [ "$(echo $memPercentage | sed "s/\..*//")" -gt "50" ] && mem="^c#ff5f00^[$mem]^d^" && return 0
+    [ "$(echo $memPercentage | sed "s/\..*//")" -gt "75" ] && mem="^c#ff5370^[$mem]^d^" || mem="^c#ffd700^[$mem]^d^"
 }
 
 clock() {
