@@ -2,25 +2,25 @@
 
 package() {
     pkg="$(checkupdates | wc -l)"
-    [ "$pkg" -gt "100" ] && pkg="^c#ff5370^PKG:$pkg^d^" || pkg="PKG:$pkg"
+    [ "$pkg" -gt "100" ] && pkg="^c#ff5370^[PKG:$pkg^d^]" || pkg="^c#89ddff^[PKG:$pkg]^d^"
 }
 
 volume() {
     vol="VOL:$(pamixer --get-volume)%"
-    [ "$(echo $vol | sed "s/%// ; s/VOL://")" -eq "0" ] && vol="^c#ff5370^MUTED^d^"
-    [ "$(echo $vol | sed "s/%// ; s/VOL://")" -ge "50" ] && vol="^c#ffcb6b^$vol^d^"
+    [ "$(echo $vol | sed "s/%// ; s/VOL://")" -eq "0" ] && vol="^c#ff5370^[MUTED]^d^" && return 0
+    [ "$(echo $vol | sed "s/%// ; s/VOL://")" -ge "50" ] && vol="^c#f78c6c^[$vol]^d^" || vol="^c#00d7af^[$vol]^d^"
 }
 
 upTime() {
-    upt=$(uptime --pretty | sed "s/up // ; s/ days/d/g ; s/ day/d/g ; s/ hours/h/g ; s/ hour/h/g ; s/ minutes/min/g ; s/,//g")
+    upt="^c#ffd700^[UPT:$(uptime --pretty | sed "s/up // ; s/ days/d/g ; s/ day/d/g ; s/ hours/h/g ; s/ hour/h/g ; s/ minutes/min/g ; s/,//g")]^d^"
 }
 
 memory() {
     mem=$(free -h | awk '/^Mem:/ {print $3 "/" $2}')
     memPercentage=$(free -h | awk '/^Mem:/ {print $3/$2 * 100}')
-    [ "$(echo $memPercentage | sed "s/\..*//")" -gt "75" ] && mem="^c#ff5370^$mem^d^"
-    [ "$(echo $memPercentage | sed "s/\..*//")" -gt "50" ] && mem="^c#f78c6c^$mem^d^"
-    [ "$(echo $memPercentage | sed "s/\..*//")" -gt "30" ] && mem="^c#ffcb6b^$mem^d^"
+    [ "$(echo $memPercentage | sed "s/\..*//")" -gt "30" ] && mem="^c#ffcb6b^[$mem]^d^" && return 0
+    [ "$(echo $memPercentage | sed "s/\..*//")" -gt "50" ] && mem="^c#f78c6c^[$mem]^d^" && return 0
+    [ "$(echo $memPercentage | sed "s/\..*//")" -gt "75" ] && mem="^c#ff5370^[$mem]^d^" || mem="^c#afff00^[$mem]^d^"
 }
 
 clock() {
@@ -35,7 +35,7 @@ memory
 i=0
 
 while :; do
-    dwm -s "[$(clock)] [$pkg] [$vol] [$upt] [$mem] "
+    dwm -s "^c#c782ea^[$(clock)]^d^ $pkg $vol $upt $mem "
     [ "$(($i % 10))" = "0" ] && memory
     [ "$(($i % 120))" = "0" ] && upTime
     [ "$(($i % 25000))" = "0" ] && package
