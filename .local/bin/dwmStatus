@@ -6,9 +6,9 @@ package() {
 }
 
 volume() {
-    vol="VOL:$(pamixer --get-volume)%"
-    [ "$(echo $vol | sed "s/%// ; s/VOL://")" -eq "0" ] && vol="^c#ff5370^[MUTED]^d^" && return 0
-    [ "$(echo $vol | sed "s/%// ; s/VOL://")" -ge "50" ] && vol="^c#f78c6c^[$vol]^d^" || vol="^c#00d7af^[$vol]^d^"
+    vol="$(pamixer --get-volume)"
+    [ "$vol" -eq "0" ] && vol="^c#ff5370^[MUTED]^d^" && return 0
+    [ "$vol" -ge "50" ] && vol="^c#f78c6c^[VOL:$vol%]^d^" || vol="^c#00d7af^[VOL:$vol%]^d^"
 }
 
 upTime() {
