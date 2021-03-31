@@ -8,7 +8,7 @@ dunst &
 playerctld &
 setxkbmap us,cz ,qwerty -option 'ctrl:nocaps' 'grp:ctrls_toggle' &
 xcape -e "Control_L=Escape"
-lxsession &
+lxpolkit &
 xrdb .config/x11/xresources &
 killalll emacs ; /usr/bin/emacs --daemon &
 xset r rate 400 50 &
