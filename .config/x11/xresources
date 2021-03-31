@@ -25,13 +25,6 @@ Sxiv.background: #292d3e
 Sxiv.foreground: #f0f0f0
 Sxiv.font: mononoki Nerd Font:size=10
 
-! Dmenu
-dmenu.background: #111111
-dmenu.foreground: #f0f0f0
-dmenu.selbackground: #292d3e
-dmenu.selforeground: #ffffff
-dmenu.font: mononoki Nerd Font:size=14
-
 ! St
 *.alpha: 0.90
 *.alphaUnfocused: 0.90
