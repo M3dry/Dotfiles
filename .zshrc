@@ -61,7 +61,7 @@ export PATH=$HOME/bin:/usr/local/bin:$PATH
 export EDITOR="nvim"
 export VISUAL="emacsclient -c -a emacs"
 export TERMINAL="st"
-export BROWSER="librewolf"
+export BROWSER="firefox"
 export XENVIRONMENT="${HOME}/.config/x11/xresources"
 export PASSWORD_STORE_DIR="${HOME}/my-stuff/pass"
 export MANPAGER="nvim -c 'set ft=man' -"

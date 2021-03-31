@@ -87,7 +87,7 @@ export PS1="\[$(tput bold)\]\[$(tput setaf 1)\][\[$(tput setaf 226)\]\u\[$(tput 
 export PATH="$HOME/.local/bin${PATH:+:${PATH}}"
 export EDITOR="nvim"
 export TERMINAL="st"
-export BROWSER="librewolf"
+export BROWSER="firefox"
 
 # Vi mode
 set -o vi
