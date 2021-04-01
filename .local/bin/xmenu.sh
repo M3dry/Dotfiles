@@ -13,7 +13,7 @@ volume="VOL:$(cmus-remote -Q | rg "vol_right" | sed 's/set vol_right //')"
 [ $(cmus-remote -Q | rg "status" | sed "s/status //") = "playing" ] && status="Playing" || status="Paused"
 info=$(echo "$artist - $title/$album:$number 🔈$volume% $shuffle$status$repeat")
 
-cat <<EOF | xmenu | sh &
+cat <<EOF | xmenu $@ | sh &
 Applications
 	Web browsers
 		Firefox	firefox

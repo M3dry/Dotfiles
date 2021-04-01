@@ -3,7 +3,7 @@
 urlregex="(((http|https|gopher|gemini|ftp|ftps|git)://|www\\.)[a-zA-Z0-9.]*[:]?[a-zA-Z0-9./@$&%?$\#=_~-]*)|((magnet:\\?xt=urn:btih:)[a-zA-Z0-9]*)"
 
 urls="$(sed 's/.*│//g' | tr -d '\n' | # First remove linebreaks and mutt sidebars:
-	rg -aEo "$urlregex" | # grep only urls as defined above.
+	grep -aEo "$urlregex" | # grep only urls as defined above.
 	uniq | # Ignore neighboring duplicates.
 	sed 's/^www./http:\/\/www\./g')" # xdg-open will not detect url without http://
 
@@ -13,6 +13,6 @@ while getopts "hoc" o; do case "${o}" in
 	h) printf "Optional arguments for custom use:\\n  -c: copy\\n  -o: xdg-open\\n  -h: Show this message\\n" && exit 1 ;;
 	o) chosen="$(echo "$urls" | dmenu -p 'Follow which url?' -l 10)"
 	setsid xdg-open "$chosen" >/dev/null 2>&1 & ;;
-	c) echo "$urls" | dmenu -p 'Copy which url?' -l 10 | tr -d '\n' | xclip -selection clipboard ;;
+	c) echo "$urls" | sed "s/$PS1//g" | dmenu -p 'Copy which url?' -l 10 | tr -d '\n' | xclip -selection clipboard ;;
 	*) printf "Invalid option: -%s\\n" "$OPTARG" && exit 1 ;;
 esac done
