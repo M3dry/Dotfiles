@@ -3,7 +3,10 @@
 title=$(cmus-remote -Q | rg "title" | sed 's/tag title //')
 album=$(cmus-remote -Q | rg "album " | sed 's/tag album //')
 artist=$(cmus-remote -Q | rg "albumartist " | sed 's/tag albumartist //')
+[ -z "$artist" ] && artist="No artist"
 number=$(cmus-remote -Q | rg "tracknumber" | sed 's/tag tracknumber //')
+musstat="$title/$album:$number"
+[ "$musstat" = "/:" ] && musstat="Nothing is playing"
 volume="VOL:$(cmus-remote -Q | rg "vol_right" | sed 's/set vol_right //')"
 [ $(cmus-remote -C "set shuffle?" | sed "s/.*=// ; s/'//") = "true" ] && shuffle="Shuffle" || shuffle="No shuffle"
 [ $(cmus-remote -C "set repeat_current?" | sed "s/.*=// ; s/'//") = "true" ] && repeat="Repeat" || repeat="No repeat"
@@ -100,12 +103,13 @@ Dmenu scripts
 
 Cmus
 	$artist	music-changer queue
-	$title/$album:$number	music-changer play
+	$musstat	music-changer play
 	$volume	dmenu < /dev/null -p "$info" -fn "mononoki nerd font:pixelsize=19:antialias=true:autohint=true" | xargs -I {} cmus-remote -v '{}'%
 	$status	[ "$status" = "Playing" ] && cmus-remote -u || cmus-remote -p
 	$repeat	cmus-remote -C "toggle repeat_current"
 	$shuffle	cmus-remote	-S
 
+Lock		slock
 Shutdown		loginctl poweroff
 Reboot			loginctl reboot
 EOF
