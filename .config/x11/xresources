@@ -53,8 +53,8 @@ st.altbackground: #1E1C31
 *.color11:        #ffcb6b
 
 ! blue
-*.color4:         #82aaff
-*.color12:        #5fafff
+*.color4:         #5fafff
+*.color12:        #7986e7
 
 ! magenta
 *.color5:         #c792ea

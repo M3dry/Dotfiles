@@ -1,7 +1,6 @@
 # Enable colors and change prompt:
 autoload -U colors && colors	# Load colors
-# PS1="%{$fg[blue]%}[%{$fg[yellow]%}%n%{$fg[red]%}@%{$fg[cyan]%}%M %{$fg[yellow]%}%~%{$fg[blue]%}] %{$fg[green]%}%T %{$fg[red]%}Ret: %?
-# %{$fg[blue]%} λ "
+PS1="%{$fg[blue]%}[%{$fg[yellow]%}%n%{$fg[red]%}@%{$fg[cyan]%}%M%{$fg[yellow]%}%~%{$fg[blue]%}]%{$fg[blue]%}$ "
 setopt autocd
 stty stop undef
 setopt interactive_comments
@@ -85,12 +84,12 @@ export YSU_MESSAGE_POSITION="after"
 export YSU_HARDCORE=1 # Hardcode mode
 
 # Starship
-function set_win_title(){
-    echo -ne "\033]0; $USER@$HOST $PWD \007"
-}
+# function set_win_title(){
+#     echo -ne "\033]0; $USER@$HOST $PWD \007"
+# }
 
-precmd_functions+=(set_win_title)
-eval "$(starship init zsh)"
+# precmd_functions+=(set_win_title)
+# eval "$(starship init zsh)"
 
 # autopair
 source /usr/share/zsh/plugins/zsh-autopair/autopair.zsh 2>/dev/null
