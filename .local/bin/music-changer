@@ -2,7 +2,7 @@
 
 font="mononoki nerd font:pixelsize=19:antialias=true:autohint=true"
 
-cmuschoice() {
+cmusvars() {
     title=$(cmus-remote -Q | rg "title" | sed 's/tag title //')
     album=$(cmus-remote -Q | rg "album " | sed 's/tag album //')
     artist=$(cmus-remote -Q | rg "albumartist " | sed 's/tag albumartist //')
@@ -12,6 +12,10 @@ cmuschoice() {
     [ $(cmus-remote -C "set repeat_current?" | sed "s/.*=// ; s/'//") = "true" ] && repeat="🔂"
     [ $(cmus-remote -Q | rg "status" | sed "s/status //") = "playing" ] && status="⏸" || status="▶"
     info=$(echo "$artist - $title/$album:$number 🔈$volume% $shuffle$status$repeat")
+}
+
+cmuschoice() {
+    cmusvars
     choice=$(echo -e "play/pause\nqueue\nplay song\nrepeat current\n🔈${volume}%\nnext\nprev\nshuffle" | dmenu -p "$info" -l 8)
 
     case $choice in
@@ -62,4 +66,6 @@ spotchoice() {
     esac
 }
 
+[ "$1" = "play" ] && cmusvars && Cplay && exit 0
+[ "$1" = "queue" ] && cmusvars && Cqueue && exit 0
 [ "$1" = "cmus" ] && cmuschoice && exit 0 || spotchoice && exit 0
