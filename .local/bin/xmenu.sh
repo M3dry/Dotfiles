@@ -51,46 +51,55 @@ Dwm
 	View	dwmc viewex 0
 	Toggle view	dwmc toggleviewex 0
 	Tag	dwmc tagex 0
+	Tag with	dwmc tagwithex 0
 	Toggle tag	dwmc toggletagex 0
 2
 	View	dwmc viewex 1
 	Toggle view	dwmc toggleviewex 1
 	Tag	dwmc tagex 1
+	Tag with	dwmc tagwithex 1
 	Toggle tag	dwmc toggletagex 1
 3
 	View	dwmc viewex 2
 	Toggle view	dwmc toggleviewex 2
 	Tag	dwmc tagex 2
+	Tag with	dwmc tagwithex 2
 	Toggle tag	dwmc toggletagex 2
 4
 	View	dwmc viewex 3
 	Toggle view	dwmc toggleviewex 3
 	Tag	dwmc tagex 3
+	Tag with	dwmc tagwithex 3
 	Toggle tag	dwmc toggletagex 3
 5
 	View	dwmc viewex 4
 	Toggle view	dwmc toggleviewex 4
 	Tag	dwmc tagex 4
+	Tag with	dwmc tagwithex 4
 	Toggle tag	dwmc toggletagex 4
 6
 	View	dwmc viewex 5
 	Toggle view	dwmc toggleviewex 5
 	Tag	dwmc tagex 5
+	Tag with	dwmc tagwithex 5
 	Toggle tag	dwmc toggletagex 5
 7
 	View	dwmc viewex 6
 	Toggle view	dwmc toggleviewex 6
 	Tag	dwmc tagex 6
+	Tag with	dwmc tagwithex 6
 	Toggle tag	dwmc toggletagex 6
 8
 	View	dwmc viewex 7
 	Toggle view	dwmc toggleviewex 7
 	Tag	dwmc tagex 7
+	Tag with	dwmc tagwithex 7
 	Toggle tag	dwmc toggletagex 7
 9
 	View	dwmc viewex 8
 	Toggle view	dwmc toggleviewex 8
 	Tag	dwmc tagex 8
+	Tag with	dwmc tagwithex 8
 	Toggle tag	dwmc toggletagex 8
 Dmenu scripts
 	Dmenu	dmenu_run -l 5 -g 10 -p 'Run:'
