@@ -14,3 +14,5 @@ killalll emacs ; /usr/bin/emacs --daemon &
 xset r rate 400 50 &
 xclickroot -l xmenu.sh &
 killall dwmStatus ; dwmStatus &
+pipewire &
+pipewire-pulse &

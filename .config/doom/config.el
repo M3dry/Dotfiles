@@ -52,6 +52,10 @@
       :desc "Toggle rainbow mode"
       "t c" #'rainbow-mode)
 
+(require 'elfeed-goodies)
+(elfeed-goodies/setup)
+(setq elfeed-goodies/entry-pane-size 0.7)
+
 (setq elfeed-feeds '(("https://www.reddit.com/r/linux/new.rss" linux reddit)
                     ("https://www.reddit.com/r/linuxmasterrace/new/.rss" linuxmasterrace reddit memes)
                     ("https://www.reddit.com/r/linuxmemes/new/.rss" linuxmemes reddit memes)

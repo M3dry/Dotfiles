@@ -157,6 +157,11 @@ Can be an integer to determine the exact padding."
    (treemacs-directory-face :foreground dark-blue)
    (treemacs-file-face :foreground red)
 
+   ;; elfeed
+   (elfeed-search-title-face :foreground fg)
+   (elfeed-search-tag-face :foreground dark-blue)
+   (elfeed-search-unread-title-face :foreground red)
+
    ;; whichkey
    (which-key-key-face :foreground red :inherit 'bold :height 1.1)
    (which-key-group-description-face :foreground dark-blue :inherit 'bold)

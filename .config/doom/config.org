@@ -12,6 +12,7 @@
   - [[#varibles][Varibles]]
 - [[#rainbow-mode][Rainbow mode]]
 - [[#elfeed][Elfeed]]
+  - [[#elfeed-goodies][Elfeed goodies]]
   - [[#urls][Urls]]
   - [[#kebindings][Kebindings]]
 - [[#eww][Eww]]
@@ -108,6 +109,12 @@
       "t c" #'rainbow-mode)
 #+END_SRC
 * Elfeed
+** Elfeed goodies
+#+BEGIN_SRC emacs-lisp
+(require 'elfeed-goodies)
+(elfeed-goodies/setup)
+(setq elfeed-goodies/entry-pane-size 0.7)
+#+END_SRC
 ** Urls
 #+BEGIN_SRC emacs-lisp
 (setq elfeed-feeds '(("https://www.reddit.com/r/linux/new.rss" linux reddit)
