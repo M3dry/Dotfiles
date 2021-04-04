@@ -168,6 +168,12 @@ Can be an integer to determine the exact padding."
    (which-key-command-description-face :foreground fg-alt)
    (which-key-separator-face :foreground magenta)
 
+   ;; nav flash
+   (nav-flash-face :background bg :foreground red)
+
+   ;; ace window
+   (aw-leading-char-face :foreground red :height 5.0)
+
    ;; ivy
    (ivy-current-match :background bg-alt :foreground red)
 

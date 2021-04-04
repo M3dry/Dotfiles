@@ -304,3 +304,12 @@
 (setq super-save-auto-save-when-idle t)
 
 (add-hook 'Info-selection-hook 'info-colors-fontify-node)
+
+(map! :desc "Drag selection down"
+      "H-s-j" #'drag-stuff-down
+      :desc "Drag selection up"
+      "H-s-k" #'drag-stuff-up
+      :desc "Drag selection left"
+      "H-s-h" #'drag-stuff-left
+      :desc "Drag selection right"
+      "H-s-l" #'drag-stuff-right)
