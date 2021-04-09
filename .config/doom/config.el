@@ -224,7 +224,7 @@
       :desc "Edit theme"
       "v e t" #'(lambda () (interactive) (find-file "~/.config/doom/themes/paledeep-theme.el")))
 
-(setq fancy-splash-image "~/my-stuff/Pictures/emacs/doom.png")
+(setq fancy-splash-image "~/.config/doom/doom.png")
 
 (setq
  lsp-idle-delay 0

@@ -301,7 +301,7 @@
 #+END_SRC
 * Dashboard
 #+BEGIN_SRC emacs-lisp
-(setq fancy-splash-image "~/my-stuff/Pictures/emacs/doom.png")
+(setq fancy-splash-image "~/.config/doom/doom.png")
 #+END_SRC
 * Lsp
 ** Variables
