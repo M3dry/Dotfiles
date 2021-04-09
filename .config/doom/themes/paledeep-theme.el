@@ -189,6 +189,7 @@ Can be an integer to determine the exact padding."
    (rainbow-delimiters-depth-9-face     :foreground dark-cyan)
    (rainbow-delimiters-unmatched-face   :background red :foreground bg)
    (show-paren-match                    :background base7 :foreground red)
+   (highlight-parentheses-colors        :background bg :foreground dark-blue)
 
    ;; rjsx-mode
    (rjsx-tag :foreground red)

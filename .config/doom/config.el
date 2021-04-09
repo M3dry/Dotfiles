@@ -178,6 +178,7 @@
       :leader
       :desc "Tangle source blocks"
       "m m" #'org-babel-tangle)
+(add-hook 'org-agenda-finalize-hook 'org-timeline-insert-timeline :append)
 
 (setq! global-prettify-symbols-mode 't)
 
@@ -223,18 +224,21 @@
       :desc "Edit theme"
       "v e t" #'(lambda () (interactive) (find-file "~/.config/doom/themes/paledeep-theme.el")))
 
-(setq fancy-splash-image "~/my-stuff/Pictures/emacs/emacs-logo-spiral.png")
+(setq fancy-splash-image "~/my-stuff/Pictures/emacs/doom.png")
 
 (setq
  lsp-idle-delay 0
  lsp-headerline-breadcrumb-enable t
  lsp-completion-show-detail t
  lsp-completion-show-kind t
+ lsp-enable-folding t
  lsp-semantic-tokens-mode t
  lsp-enable-semantic-highlighting t
  company-idle-delay 0
  company-tooltip-limit 25
  company-tooltip-idle-delay 0)
+(after! lsp-clangd
+  (set-lsp-priority! 'clangd 1))
 
 (map! :leader
       :desc "Find definition"
