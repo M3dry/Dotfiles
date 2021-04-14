@@ -42,7 +42,8 @@
 #+BEGIN_SRC emacs-lisp
 (setq
  comp-deferred-compilation t
- comp-async-report-warnings-errors nil)
+ comp-async-report-warnings-errors nil
+ comp-always-compile t)
 #+END_SRC
 * Name and email
 #+BEGIN_SRC emacs-lisp
@@ -71,8 +72,8 @@
         (setq doom-themes-enable-bold t
               doom-themes-enable-italic t))
 (custom-set-faces!
-  '(font-lock-keyword-face :slant italic))
-  '(font-lock-comment-face :slant italic)
+  '(font-lock-keyword-face :slant italic)
+  '(font-lock-comment-face :slant italic))
 #+END_SRC
 * Frame opacity
 #+BEGIN_SRC emacs-lisp
@@ -462,10 +463,10 @@
    '((left-fringe . 8))
    ivy-posframe-display-functions-alist
    '((t                          . ivy-posframe-display-at-frame-center)
-     (counsel-describe-variable  . ivy-posframe-display-at-point)
-     (counsel-describe-function  . ivy-posframe-display-at-point)
-     (counsel-describe-symbol    . ivy-posframe-display-at-point)
-     (counsel-faces              . ivy-posframe-display-at-point)
+     (counsel-describe-variable  . ivy-posframe-display-at-frame-bottom-left)
+     (counsel-describe-function  . ivy-posframe-display-at-frame-bottom-left)
+     (counsel-describe-symbol    . ivy-posframe-display-at-frame-bottom-left)
+     (counsel-faces              . ivy-posframe-display-at-frame-bottom-left)
      (swiper                     . ivy-posframe-display-at-point)
      (counsel-find-file          . ivy-display-function-fallback))))
 #+END_SRC

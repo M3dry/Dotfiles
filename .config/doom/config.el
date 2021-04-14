@@ -1,6 +1,7 @@
 (setq
  comp-deferred-compilation t
- comp-async-report-warnings-errors nil)
+ comp-async-report-warnings-errors nil
+ comp-always-compile t)
 
 (setq user-full-name "M3dry"
       user-mail-address "m3dry@protonmail.com")
@@ -18,8 +19,8 @@
         (setq doom-themes-enable-bold t
               doom-themes-enable-italic t))
 (custom-set-faces!
-  '(font-lock-keyword-face :slant italic))
-  '(font-lock-comment-face :slant italic)
+  '(font-lock-keyword-face :slant italic)
+  '(font-lock-comment-face :slant italic))
 
 (set-frame-parameter (selected-frame) 'alpha '(90 . 90))
 (add-to-list 'default-frame-alist '(alpha . (90 . 90)))
@@ -353,9 +354,9 @@
    '((left-fringe . 8))
    ivy-posframe-display-functions-alist
    '((t                          . ivy-posframe-display-at-frame-center)
-     (counsel-describe-variable  . ivy-posframe-display-at-point)
-     (counsel-describe-function  . ivy-posframe-display-at-point)
-     (counsel-describe-symbol    . ivy-posframe-display-at-point)
-     (counsel-faces              . ivy-posframe-display-at-point)
+     (counsel-describe-variable  . ivy-posframe-display-at-frame-bottom-left)
+     (counsel-describe-function  . ivy-posframe-display-at-frame-bottom-left)
+     (counsel-describe-symbol    . ivy-posframe-display-at-frame-bottom-left)
+     (counsel-faces              . ivy-posframe-display-at-frame-bottom-left)
      (swiper                     . ivy-posframe-display-at-point)
      (counsel-find-file          . ivy-display-function-fallback))))
