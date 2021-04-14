@@ -274,69 +274,6 @@
 
 (setq which-key-idle-delay 0.5)
 
-(defun center-evil ()
-  (evil-scroll-line-to-center (if vterm-mode
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- nil)))
-(add-hook 'c-mode-hook 'center-evil)
-
 (define-key evil-insert-state-map (kbd "C-l") (lambda () (interactive) (up-list)))
 
 (setq

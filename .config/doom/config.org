@@ -27,7 +27,6 @@
   - [[#variables][Variables]]
   - [[#keybindings-2][Keybindings]]
 - [[#which-key][Which key]]
-- [[#center-buffer-when-entering-insert-mode][Center buffer when entering insert mode]]
 - [[#go-up-list][Go up list]]
 - [[#modeline][Modeline]]
 - [[#word-time][Word time]]
@@ -363,71 +362,6 @@
 * Which key
 #+BEGIN_SRC emacs-lisp
 (setq which-key-idle-delay 0.5)
-#+END_SRC
-* Center buffer when entering insert mode
-#+BEGIN_SRC emacs-lisp
-(defun center-evil ()
-  (evil-scroll-line-to-center (if vterm-mode
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- nil)))
-(add-hook 'c-mode-hook 'center-evil)
 #+END_SRC
 * Go up list
 #+BEGIN_SRC emacs-lisp
