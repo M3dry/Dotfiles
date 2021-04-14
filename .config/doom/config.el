@@ -1,3 +1,7 @@
+(setq
+ comp-deferred-compilation t
+ comp-async-report-warnings-errors nil)
+
 (setq user-full-name "M3dry"
       user-mail-address "m3dry@protonmail.com")
 
@@ -245,7 +249,10 @@
       "r d" #'lsp-find-definition
       :leader
       :desc "Find references"
-      "r R" #'lsp-find-references
+      "r r" #'lsp-find-references
+      :leader
+      :desc "Show references in treemacs"
+      "r R" #'lsp-treemacs-references
       :leader
       :desc "Find declaration"
       "r D" #'lsp-find-declaration
@@ -259,9 +266,6 @@
       :desc "Show error in treemacs"
       "r e" #'lsp-treemacs-errors-list
       :leader
-      :desc "Show references in treemacs"
-      "r r" #'lsp-treemacs-references
-      :leader
       :desc "Show symbols in treemacs"
       "r s" #'lsp-treemacs-symbols
       :leader
@@ -270,7 +274,68 @@
 
 (setq which-key-idle-delay 0.5)
 
-(add-hook 'evil-insert-state-entry-hook (lambda () (evil-scroll-line-to-center nil)))
+(defun center-evil ()
+  (evil-scroll-line-to-center (if vterm-mode
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ nil)))
+(add-hook 'c-mode-hook 'center-evil)
 
 (define-key evil-insert-state-map (kbd "C-l") (lambda () (interactive) (up-list)))
 
@@ -317,3 +382,43 @@
       "H-s-h" #'drag-stuff-left
       :desc "Drag selection right"
       "H-s-l" #'drag-stuff-right)
+
+(after! ivy
+  (setq
+   ivy-initial-inputs-alist
+   '((counsel-minor           . "^+")
+     (counsel-org-capture     . "^")
+     (counsel-M-x             . "^")
+     (counsel-describe-symbol . "^")
+     (counsel-faces           . "^")
+     (org-refile              . "^")
+     (org-agenda-refile       . "^")
+     (org-capture-refile      . "^")
+     (woman                   . "^"))
+   ivy-height 25))
+
+(map! :desc "swiper seach"
+      "C-/" #'swiper
+      :leader
+      :desc "switch buffer"
+      "<" #'counsel-switch-buffer)
+
+(after! ivy-posframe
+  (setq
+   ivy-posframe-mode t
+   ivy-posframe-border-width 0
+   ivy-posframe-font (font-spec :family "Mononoki Nerd Font" :size 17)
+   ivy-posframe-width 135
+   ivy-posframe-min-width  135
+   ivy-posframe-height 25
+   ivy-posframe-min-height 25
+   ivy-posframe-parameters
+   '((left-fringe . 8))
+   ivy-posframe-display-functions-alist
+   '((t                          . ivy-posframe-display-at-frame-center)
+     (counsel-describe-variable  . ivy-posframe-display-at-point)
+     (counsel-describe-function  . ivy-posframe-display-at-point)
+     (counsel-describe-symbol    . ivy-posframe-display-at-point)
+     (counsel-faces              . ivy-posframe-display-at-point)
+     (swiper                     . ivy-posframe-display-at-point)
+     (counsel-find-file          . ivy-display-function-fallback))))

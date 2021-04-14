@@ -2,7 +2,7 @@
 
 picom &
 numlockx on &
-xwallpaper --stretch ~/my-stuff/Pictures/wallpapers/dwm-unix.png &
+xwallpaper --stretch ~/my-stuff/Pictures/wallpapers/namenamelol.png &
 redshift &
 dunst &
 playerctld &

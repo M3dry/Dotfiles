@@ -45,8 +45,8 @@ Can be an integer to determine the exact padding."
    (dark-cyan   '("#80cbc4" "#00d7af" "cyan"))
 
    ;; face categories -- required for all themes
-   (highlight      red)
-   (vertical-bar   bg)
+   (highlight      magenta)
+   (vertical-bar   bg-alt)
    (selection      base4)
    (builtin        blue)
    (comments       base3)
@@ -98,29 +98,29 @@ Can be an integer to determine the exact padding."
     :background modeline-bg-alt :foreground modeline-fg-alt
     :box (if -modeline-pad `(:line-width ,-modeline-pad :color ,modeline-bg-alt)) :height 0.99)
 
-   (doom-modeline-evil-normal-state :foreground bg)
-   (doom-modeline-evil-insert-state :foreground dark-blue)
-   (doom-modeline-evil-visual-state :foreground green)
+   (doom-modeline-evil-normal-state  :foreground bg)
+   (doom-modeline-evil-insert-state  :foreground dark-blue)
+   (doom-modeline-evil-visual-state  :foreground green)
    (doom-modeline-evil-replace-state :foreground red)
 
    ;; major-mode faces ------------------------
    ;; man-mode
-   (Man-overstrike :inherit 'bold :foreground magenta)
-   (Man-underline :inherit 'underline :foreground blue)
+   (Man-overstrike :foreground magenta :inherit 'bold)
+   (Man-underline  :foreground blue    :inherit 'underline)
 
    ;; org-mode
-   ((org-block &override) :background base2)
+   ((org-block &override)            :background base2)
    ((org-block-background &override) :background base2)
    ((org-block-begin-line &override) :background base2)
-   (org-document-title :height 1.3 :foreground dark-blue)
-   (org-meta-line :height 1.3 :foreground yellow)
-   (org-document-info-keyword :inherit 'bold :height 1.4 :foreground yellow)
-   (org-date :height 1.2 :foreground yellow)
-   (org-tag :height 0.8 :foreground base7)
-   (org-todo :height 1.08 :foreground green)
-   (org-code :foreground blue)
-   (org-done :height 1.08 :foreground (doom-darken blue 0.28))
-   (org-checkbox :height 1.23 :foreground dark-blue)
+   (org-document-title               :foreground dark-blue               :height 1.3)
+   (org-meta-line                    :foreground yellow                  :height 1.3)
+   (org-document-info-keyword                                            :height 1.4 :foreground yellow :inherit 'bold)
+   (org-date                         :foreground yellow                  :height 1.2)
+   (org-tag                          :foreground base7                   :height 0.8)
+   (org-todo                         :foreground green                   :height 1.08)
+   (org-code                         :foreground blue)
+   (org-done                         :foreground (doom-darken blue 0.28) :height 1.08)
+   (org-checkbox                     :foreground dark-blue               :height 1.23)
 
 
    ;; --- plugin faces -------------------
@@ -132,7 +132,7 @@ Can be an integer to determine the exact padding."
    ;; dired-k
    (dired-k-commited :foreground base4)
    (dired-k-modified :foreground vc-modified)
-   (dired-k-ignored :foreground cyan)
+   (dired-k-ignored  :foreground cyan)
    (dired-k-added    :foreground vc-added)
 
    ;; js2-mode
@@ -144,29 +144,29 @@ Can be an integer to determine the exact padding."
    (js2-jsdoc-value            :foreground cyan)
 
    ;; company
-   (company-tooltip :foreground fg :background bg-alt)
-   (company-tooltip-selection :foreground dark-blue :background (doom-darken bg-alt 0.25))
-   (company-tooltip-common :foreground red :inherit 'bold)
-   (company-tooltip-mouse :foreground dark-blue :background (doom-darken bg-alt 0.25))
+   (company-tooltip           :background bg-alt                    :foreground fg)
+   (company-tooltip-selection :background (doom-darken bg-alt 0.25) :foreground dark-blue)
+   (company-tooltip-common                                          :foreground red       :inherit 'bold)
+   (company-tooltip-mouse     :background (doom-darken bg-alt 0.25) :foreground dark-blue)
 
    ;; lsp
    (lsp-ui-sideline-current-symbol :background dark-blue :foreground bg)
-   (lsp-ui-sideline-symbol-info :background bg-alt :foreground base5)
+   (lsp-ui-sideline-symbol-info    :background bg-alt    :foreground base5)
 
    ;; treemacs
    (treemacs-directory-face :foreground dark-blue)
-   (treemacs-file-face :foreground red)
+   (treemacs-file-face      :foreground red)
 
    ;; elfeed
-   (elfeed-search-title-face :foreground fg)
-   (elfeed-search-tag-face :foreground dark-blue)
+   (elfeed-search-title-face        :foreground fg)
+   (elfeed-search-tag-face          :foreground dark-blue)
    (elfeed-search-unread-title-face :foreground red)
 
    ;; whichkey
-   (which-key-key-face :foreground red :inherit 'bold :height 1.1)
-   (which-key-group-description-face :foreground dark-blue :inherit 'bold)
+   (which-key-key-face                 :foreground red       :height 1.1 :inherit 'bold)
+   (which-key-group-description-face   :foreground dark-blue             :inherit 'bold)
    (which-key-command-description-face :foreground fg-alt)
-   (which-key-separator-face :foreground magenta)
+   (which-key-separator-face           :foreground magenta)
 
    ;; nav flash
    (nav-flash-face :background bg :foreground red)
@@ -175,30 +175,33 @@ Can be an integer to determine the exact padding."
    (aw-leading-char-face :foreground red :height 5.0)
 
    ;; ivy
-   (ivy-current-match :background bg-alt :foreground red)
+   (ivy-current-match           :background bg-alt   :foreground magenta)
+   (ivy-minibuffer-match-face-2                      :foreground "#cf1de2")
+   (ivy-minibuffer-match-face-3                      :foreground "#afff00")
+   (ivy-minibuffer-match-face-4                      :foreground "#f6ff00")
 
    ;; rainbow-delimiters
-   (rainbow-delimiters-depth-1-face     :foreground magenta)
-   (rainbow-delimiters-depth-2-face     :foreground orange)
-   (rainbow-delimiters-depth-3-face     :foreground green)
-   (rainbow-delimiters-depth-4-face     :foreground cyan)
-   (rainbow-delimiters-depth-5-face     :foreground violet)
-   (rainbow-delimiters-depth-6-face     :foreground yellow)
-   (rainbow-delimiters-depth-7-face     :foreground blue)
-   (rainbow-delimiters-depth-8-face     :foreground teal)
-   (rainbow-delimiters-depth-9-face     :foreground dark-cyan)
-   (rainbow-delimiters-unmatched-face   :background red :foreground bg)
+   (rainbow-delimiters-depth-1-face                       :foreground magenta)
+   (rainbow-delimiters-depth-2-face                       :foreground orange)
+   (rainbow-delimiters-depth-3-face                       :foreground green)
+   (rainbow-delimiters-depth-4-face                       :foreground cyan)
+   (rainbow-delimiters-depth-5-face                       :foreground violet)
+   (rainbow-delimiters-depth-6-face                       :foreground yellow)
+   (rainbow-delimiters-depth-7-face                       :foreground blue)
+   (rainbow-delimiters-depth-8-face                       :foreground teal)
+   (rainbow-delimiters-depth-9-face                       :foreground dark-cyan)
+   (rainbow-delimiters-unmatched-face   :background red   :foreground bg)
    (show-paren-match                    :background base7 :foreground red)
-   (highlight-parentheses-colors        :background bg :foreground dark-blue)
+   (highlight-parentheses-colors        :background bg    :foreground dark-blue)
 
    ;; rjsx-mode
-   (rjsx-tag :foreground red)
+   (rjsx-tag  :foreground red)
    (rjsx-attr :foreground yellow :slant 'italic :weight 'medium)
 
    ;; tooltip
    (tooltip                  :background (doom-darken bg-alt 0.2) :foreground fg)
-   (line-number              :background bg :foreground base3)
-   (line-number-current-line :background bg :foreground red)
-   (lazy-highlight :background red :foreground bg :inherit 'bold)))
+   (line-number              :background bg                       :foreground base3)
+   (line-number-current-line :background bg                       :foreground magenta)
+   (lazy-highlight           :background red                      :foreground bg :inherit 'bold)))
 
 (provide 'paledeep-theme)

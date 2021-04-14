@@ -45,6 +45,7 @@ Dwm
 		HHH Grid	dwmc setlayoutex 8
 	Toggle bar	dwmc togglebar
 	Toggle vacant	dwmc togglevacant
+	Toggle padding	dwmc togglepadding
 	Quit dwm	dwmc quit 0
 	Restart dwm	dwmc quit 1
 1

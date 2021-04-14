@@ -57,6 +57,7 @@ set updatetime=300
 set signcolumn=no
 set noshowmode
 set mouse=nicr
+set mouse=a
 
 set foldmethod=syntax
 set foldnestmax=10

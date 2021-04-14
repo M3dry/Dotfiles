@@ -1,6 +1,7 @@
 #+TITLE: Config
 
 * Table of contents :toc_4:
+- [[#gccemacs][Gccemacs]]
 - [[#name-and-email][Name and email]]
 - [[#theme][Theme]]
 - [[#fringe][Fringe]]
@@ -34,7 +35,16 @@
 - [[#super-save-mode][Super save mode]]
 - [[#info-colors][Info colors]]
 - [[#drag-stuff][Drag stuff]]
+- [[#ivy][Ivy]]
+  - [[#keybindings-3][Keybindings]]
+  - [[#posframe][Posframe]]
 
+* Gccemacs
+#+BEGIN_SRC emacs-lisp
+(setq
+ comp-deferred-compilation t
+ comp-async-report-warnings-errors nil)
+#+END_SRC
 * Name and email
 #+BEGIN_SRC emacs-lisp
 (setq user-full-name "M3dry"
@@ -327,7 +337,10 @@
       "r d" #'lsp-find-definition
       :leader
       :desc "Find references"
-      "r R" #'lsp-find-references
+      "r r" #'lsp-find-references
+      :leader
+      :desc "Show references in treemacs"
+      "r R" #'lsp-treemacs-references
       :leader
       :desc "Find declaration"
       "r D" #'lsp-find-declaration
@@ -341,9 +354,6 @@
       :desc "Show error in treemacs"
       "r e" #'lsp-treemacs-errors-list
       :leader
-      :desc "Show references in treemacs"
-      "r r" #'lsp-treemacs-references
-      :leader
       :desc "Show symbols in treemacs"
       "r s" #'lsp-treemacs-symbols
       :leader
@@ -356,7 +366,68 @@
 #+END_SRC
 * Center buffer when entering insert mode
 #+BEGIN_SRC emacs-lisp
-(add-hook 'evil-insert-state-entry-hook (lambda () (evil-scroll-line-to-center nil)))
+(defun center-evil ()
+  (evil-scroll-line-to-center (if vterm-mode
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ nil)))
+(add-hook 'c-mode-hook 'center-evil)
 #+END_SRC
 * Go up list
 #+BEGIN_SRC emacs-lisp
@@ -417,4 +488,50 @@
       "H-s-h" #'drag-stuff-left
       :desc "Drag selection right"
       "H-s-l" #'drag-stuff-right)
+#+END_SRC
+* Ivy
+#+BEGIN_SRC emacs-lisp
+(after! ivy
+  (setq
+   ivy-initial-inputs-alist
+   '((counsel-minor           . "^+")
+     (counsel-org-capture     . "^")
+     (counsel-M-x             . "^")
+     (counsel-describe-symbol . "^")
+     (counsel-faces           . "^")
+     (org-refile              . "^")
+     (org-agenda-refile       . "^")
+     (org-capture-refile      . "^")
+     (woman                   . "^"))
+   ivy-height 25))
+#+END_SRC
+** Keybindings
+#+BEGIN_SRC emacs-lisp
+(map! :desc "swiper seach"
+      "C-/" #'swiper
+      :leader
+      :desc "switch buffer"
+      "<" #'counsel-switch-buffer)
+#+END_SRC
+** Posframe
+#+BEGIN_SRC emacs-lisp
+(after! ivy-posframe
+  (setq
+   ivy-posframe-mode t
+   ivy-posframe-border-width 0
+   ivy-posframe-font (font-spec :family "Mononoki Nerd Font" :size 17)
+   ivy-posframe-width 135
+   ivy-posframe-min-width  135
+   ivy-posframe-height 25
+   ivy-posframe-min-height 25
+   ivy-posframe-parameters
+   '((left-fringe . 8))
+   ivy-posframe-display-functions-alist
+   '((t                          . ivy-posframe-display-at-frame-center)
+     (counsel-describe-variable  . ivy-posframe-display-at-point)
+     (counsel-describe-function  . ivy-posframe-display-at-point)
+     (counsel-describe-symbol    . ivy-posframe-display-at-point)
+     (counsel-faces              . ivy-posframe-display-at-point)
+     (swiper                     . ivy-posframe-display-at-point)
+     (counsel-find-file          . ivy-display-function-fallback))))
 #+END_SRC
