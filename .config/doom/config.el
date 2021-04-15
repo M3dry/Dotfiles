@@ -339,7 +339,10 @@
       "C-/" #'swiper
       :leader
       :desc "switch buffer"
-      "<" #'counsel-switch-buffer)
+      "<" #'counsel-switch-buffer
+      :leader
+      :desc "Search with ripgrep in current directory"
+      "s a" #'counsel-rg)
 
 (after! ivy-posframe
   (setq
@@ -360,3 +363,7 @@
      (counsel-faces              . ivy-posframe-display-at-frame-bottom-left)
      (swiper                     . ivy-posframe-display-at-point)
      (counsel-find-file          . ivy-display-function-fallback))))
+
+(map! :leader
+      :desc "Ripgrep on projects"
+      "p h" #'counsel-projectile-rg)
