@@ -8,9 +8,10 @@
 - [[#line-numbers][Line numbers]]
 - [[#fonts][Fonts]]
 - [[#frame-opacity][Frame opacity]]
+- [[#eval-lisp][Eval lisp]]
 - [[#dired][Dired]]
-  - [[#keybindings][Keybindings]]
   - [[#varibles][Varibles]]
+  - [[#keybindings][Keybindings]]
 - [[#rainbow-mode][Rainbow mode]]
 - [[#elfeed][Elfeed]]
   - [[#elfeed-goodies][Elfeed goodies]]
@@ -81,7 +82,32 @@
 (set-frame-parameter (selected-frame) 'alpha '(90 . 90))
 (add-to-list 'default-frame-alist '(alpha . (90 . 90)))
 #+END_SRC
+* Eval lisp
+#+BEGIN_SRC emacs-lisp
+(map! :leader
+      :desc "evaluate whole buffer"
+      "e b" #'eval-buffer
+      :leader
+      :desc "evaluate a region"
+      "e r" #'eval-region
+      :leader
+      :desc "evaluate defun"
+      "e d" #'eval-defun
+      :leader
+      :desc "evaluate expression before point"
+      "e l" #'eval-last-sexp)
+#+END_SRC
 * Dired
+** Varibles
+#+BEGIN_SRC emacs-lisp
+(add-hook 'peep-dired-hook 'evil-normalize-keymaps)
+(setq dired-open-extensions '(("gif" . "sxiv -a")
+                              ("jpg" . "sxiv")
+                              ("png" . "sxiv")
+                              ("mkv" . "mpv")
+                              ("mp4" . "mpv"))
+      delete-by-moving-to-trash t)
+#+END_SRC
 ** Keybindings
 #+BEGIN_SRC emacs-lisp
 (map! :leader
@@ -99,20 +125,13 @@
          :desc "Dired view file"
          "d v" #'dired-view-file)))
 (evil-define-key 'normal dired-mode-map
-  (kbd "h") 'dired-up-directory
-  (kbd "l") 'dired-open-file)
+  (kbd "h")   'dired-single-up-directory
+  (kbd "l")   'dired-single-buffer
+  (kbd "RET") 'dired-open-file
+  (kbd "H")   'dired-hide-dotfiles-mode)
 (evil-define-key 'normal peep-dired-mode-map
-  (kbd "j") 'peep-dired-next-file
-  (kbd "k") 'peep-dired-prev-file)
-#+END_SRC
-** Varibles
-#+BEGIN_SRC emacs-lisp
-(add-hook 'peep-dired-hook 'evil-normalize-keymaps)
-(setq dired-open-extensions '(("gif" . "sxiv")
-                              ("jpg" . "sxiv")
-                              ("png" . "sxiv")
-                              ("mkv" . "mpv")
-                              ("mp4" . "mpv")))
+  (kbd "j")   'peep-dired-next-file
+  (kbd "k")   'peep-dired-prev-file)
 #+END_SRC
 * Rainbow mode
 #+BEGIN_SRC emacs-lisp
@@ -367,7 +386,7 @@
 #+END_SRC
 * Go up list
 #+BEGIN_SRC emacs-lisp
-(define-key evil-insert-state-map (kbd "C-l") (lambda () (interactive) (up-list)))
+(define-key evil-insert-state-map (kbd "C-;") (lambda () (interactive) (up-list)))
 #+END_SRC
 * Modeline
 #+BEGIN_SRC emacs-lisp
@@ -448,6 +467,9 @@
       :leader
       :desc "switch buffer"
       "<" #'counsel-switch-buffer
+      :leader
+      :desc "switch buffer"
+      "," #'+ivy/switch-buffer
       :leader
       :desc "Search with ripgrep in current directory"
       "s a" #'counsel-rg)

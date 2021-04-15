@@ -26,6 +26,27 @@
 (add-to-list 'default-frame-alist '(alpha . (90 . 90)))
 
 (map! :leader
+      :desc "evaluate whole buffer"
+      "e b" #'eval-buffer
+      :leader
+      :desc "evaluate a region"
+      "e r" #'eval-region
+      :leader
+      :desc "evaluate defun"
+      "e d" #'eval-defun
+      :leader
+      :desc "evaluate expression before point"
+      "e l" #'eval-last-sexp)
+
+(add-hook 'peep-dired-hook 'evil-normalize-keymaps)
+(setq dired-open-extensions '(("gif" . "sxiv -a")
+                              ("jpg" . "sxiv")
+                              ("png" . "sxiv")
+                              ("mkv" . "mpv")
+                              ("mp4" . "mpv"))
+      delete-by-moving-to-trash t)
+
+(map! :leader
       :desc "Dired"
       "d d" #'dired
       :leader
@@ -40,18 +61,13 @@
          :desc "Dired view file"
          "d v" #'dired-view-file)))
 (evil-define-key 'normal dired-mode-map
-  (kbd "h") 'dired-up-directory
-  (kbd "l") 'dired-open-file)
+  (kbd "h")   'dired-single-up-directory
+  (kbd "l")   'dired-single-buffer
+  (kbd "RET") 'dired-open-file
+  (kbd "H")   'dired-hide-dotfiles-mode)
 (evil-define-key 'normal peep-dired-mode-map
-  (kbd "j") 'peep-dired-next-file
-  (kbd "k") 'peep-dired-prev-file)
-
-(add-hook 'peep-dired-hook 'evil-normalize-keymaps)
-(setq dired-open-extensions '(("gif" . "sxiv")
-                              ("jpg" . "sxiv")
-                              ("png" . "sxiv")
-                              ("mkv" . "mpv")
-                              ("mp4" . "mpv")))
+  (kbd "j")   'peep-dired-next-file
+  (kbd "k")   'peep-dired-prev-file)
 
 (map! :leader
       :desc "Toggle rainbow mode"
@@ -275,7 +291,7 @@
 
 (setq which-key-idle-delay 0.5)
 
-(define-key evil-insert-state-map (kbd "C-l") (lambda () (interactive) (up-list)))
+(define-key evil-insert-state-map (kbd "C-;") (lambda () (interactive) (up-list)))
 
 (setq
  doom-modeline-height 35
@@ -340,6 +356,9 @@
       :leader
       :desc "switch buffer"
       "<" #'counsel-switch-buffer
+      :leader
+      :desc "switch buffer"
+      "," #'+ivy/switch-buffer
       :leader
       :desc "Search with ripgrep in current directory"
       "s a" #'counsel-rg)
