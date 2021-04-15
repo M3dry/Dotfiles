@@ -1,8 +1,0 @@
-# -*- mode: snippet -*-
-# name: for
-# uuid: for
-# key: for
-# --
-for (int ${1:i} = ${2:0}; ${3:i} < ${4}; ${5:i++}) {
-    $0
-}

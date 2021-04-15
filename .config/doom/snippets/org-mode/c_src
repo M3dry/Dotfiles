@@ -1,8 +1,0 @@
-# -*- mode: snippet -*-
-# name: #+begin_src c
-# key: <c
-# uuid: <c
-# --
-#+BEGIN_SRC C
-    $0
-#+END_SRC
