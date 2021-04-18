@@ -1,6 +1,6 @@
 # Enable colors and change prompt:
 autoload -U colors && colors	# Load colors
-PS1="%{$fg[blue]%}[%{$fg[yellow]%}%n%{$fg[red]%}@%{$fg[cyan]%}%M %{$fg[yellow]%}%~%{$fg[blue]%}]%{$fg[blue]%}$ %{$fg[white]%}"
+PS1="%{$fg[blue]%}[%{$fg[yellow]%}%n%{$fg[red]%}@%{$fg[cyan]%}%M %{$fg[yellow]%}%~%{$fg[blue]%}]%{$fg[blue]%}$ %{$reset_color%}"
 setopt autocd
 stty stop undef
 setopt interactive_comments
@@ -66,6 +66,8 @@ export PASSWORD_STORE_DIR="${HOME}/my-stuff/pass"
 export MANPAGER="nvim -c 'set ft=man' -"
 export MPD_HOST="localhost"
 export MPD_PORT="6600"
+export EMACS="/usr/bin/emacs"
+export GOPATH="$HOME/.local/go"
 
 bindkey '^e' edit-command-line
 

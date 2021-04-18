@@ -26,8 +26,8 @@ Sxiv.foreground: #f0f0f0
 Sxiv.font: mononoki Nerd Font:size=10
 
 ! St
-*.alpha: 0.90
-*.alphaUnfocused: 0.90
+*.alpha: 1
+*.alphaUnfocused: 1
 *.font: mononoki Nerd Font:size=13
 
 ! special
