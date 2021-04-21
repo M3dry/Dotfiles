@@ -13,7 +13,7 @@ volume="VOL:$(cmus-remote -Q | rg "vol_right" | sed 's/set vol_right //')"
 [ $(cmus-remote -Q | rg "status" | sed "s/status //") = "playing" ] && status="Playing" || status="Paused"
 info=$(echo "$artist - $title/$album:$number 🔈$volume% $shuffle$status$repeat")
 
-cat <<EOF | xmenu $@ | sh &
+cat <<EOF | xmenu "$@" | sh &
 Applications
 	Web browsers
 		Firefox	firefox
@@ -128,50 +128,3 @@ Lock		slock
 Shutdown		loginctl poweroff
 Reboot			loginctl reboot
 EOF
-
-# Applications
-# 	IMG:./icons/web.png	Web Browser	firefox
-# 	IMG:./icons/gimp.png	Image editor	gimp
-# Terminal (xterm)	xterm
-# Terminal (urxvt)	urxvt
-# Terminal (st)		st
-	# View
-	# 	1	dwmc viewex 0
-	# 	2	dwmc viewex 1
-	# 	3	dwmc viewex 2
-	# 	4	dwmc viewex 3
-	# 	5	dwmc viewex 4
-	# 	6	dwmc viewex 5
-	# 	7	dwmc viewex 6
-	# 	8	dwmc viewex 7
-	# 	9	dwmc viewex 8
-	# Toggle view
-	# 	1	dwmc toggleviewex 0
-	# 	2	dwmc toggleviewex 1
-	# 	3	dwmc toggleviewex 2
-	# 	4	dwmc toggleviewex 3
-	# 	5	dwmc toggleviewex 4
-	# 	6	dwmc toggleviewex 5
-	# 	7	dwmc toggleviewex 6
-	# 	8	dwmc toggleviewex 7
-	# 	9	dwmc toggleviewex 8
-	# Tag
-	# 	1	dwmc tagex 0
-	# 	2	dwmc tagex 1
-	# 	3	dwmc tagex 2
-	# 	4	dwmc tagex 3
-	# 	5	dwmc tagex 4
-	# 	6	dwmc tagex 5
-	# 	7	dwmc tagex 6
-	# 	8	dwmc tagex 7
-	# 	9	dwmc tagex 8
-	# Toggle tag
-	# 	1	dwmc toggletagex 0
-	# 	2	dwmc toggletagex 1
-	# 	3	dwmc toggletagex 2
-	# 	4	dwmc toggletagex 3
-	# 	5	dwmc toggletagex 4
-	# 	6	dwmc toggletagex 5
-	# 	7	dwmc toggletagex 6
-	# 	8	dwmc toggletagex 7
-	# 	9	dwmc toggletagex 8
