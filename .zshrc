@@ -1,5 +1,5 @@
 # Enable colors and change prompt:
-autoload -U colors && colors	# Load colors
+autoload -U colors && colors    # Load colors
 PS1="%{$fg[blue]%}[%{$fg[yellow]%}%n%{$fg[red]%}@%{$fg[cyan]%}%M %{$fg[yellow]%}%~%{$fg[blue]%}]%{$fg[blue]%}$ %{$reset_color%}"
 setopt autocd
 stty stop undef
@@ -16,7 +16,7 @@ zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 zmodload zsh/complist
 compinit
-_comp_options+=(globdots)		# Include hidden files.
+_comp_options+=(globdots)       # Include hidden files.
 
 # vi mode
 bindkey -v
@@ -64,9 +64,6 @@ export BROWSER="firefox"
 export XENVIRONMENT="${HOME}/.config/x11/xresources"
 export PASSWORD_STORE_DIR="${HOME}/my-stuff/pass"
 export MANPAGER="nvim -c 'set ft=man' -"
-export MPD_HOST="localhost"
-export MPD_PORT="6600"
-export EMACS="/usr/bin/emacs"
 export GOPATH="$HOME/.local/go"
 
 bindkey '^e' edit-command-line
