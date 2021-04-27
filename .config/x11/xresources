@@ -28,7 +28,7 @@ Sxiv.font: mononoki Nerd Font:size=13
 ! St
 *.alpha: 1
 *.alphaUnfocused: 1
-*.font: mononoki Nerd Font:size=13
+*.font: Source Code Variable:size=13
 
 ! special
 *.foreground:     #EEFFFF

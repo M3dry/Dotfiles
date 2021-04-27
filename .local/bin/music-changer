@@ -1,6 +1,6 @@
 #!/bin/bash
 
-font="mononoki nerd font:pixelsize=19:antialias=true:autohint=true"
+font="Source Code Variable:pixelsize=19:antialias=true:autohint=true"
 
 cmusvars() {
     title=$(cmus-remote -Q | rg "title" | sed 's/tag title //')
