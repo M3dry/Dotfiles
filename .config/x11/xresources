@@ -8,8 +8,8 @@ Xft.hintstyle: hintfull
 Xft.lcdfilter: lcdfilter
 
 XTerm*renderFont: true
-XTerm*faceName: xft:mononoki Nerd Font
-XTerm*faceSize: 13
+XTerm*faceName: xft:FiraMono Nerd Font Mono
+XTerm*faceSize: 12
 XTerm*utf8: 2
 XTerm*locale: true
 
@@ -23,12 +23,12 @@ XTerm*charClass: 33:48,36-47:48,58-59:48,61:48,63-64:48,95:48,126:48
 ! Sxiv
 Sxiv.background: #12111e
 Sxiv.foreground: #f0f0f0
-Sxiv.font: mononoki Nerd Font:size=13
+Sxiv.font: FiraMono Nerd Font Mono:size=12
 
 ! St
 *.alpha: 1
 *.alphaUnfocused: 1
-*.font: Source Code Variable:size=13
+*.font: FiraMono Nerd Font Mono:size=12
 
 ! special
 *.foreground:     #EEFFFF

@@ -4,7 +4,6 @@ picom &
 numlockx on &
 xwallpaper --stretch ~/my-stuff/Pictures/wallpapers/namenamelol.png &
 redshift &
-dunst &
 playerctld &
 setxkbmap us,cz ,qwerty -option 'ctrl:nocaps' 'grp:ctrls_toggle' &
 xcape -e "Control_L=Escape"
@@ -14,3 +13,6 @@ killalll emacs ; /usr/bin/emacs --daemon &
 xset r rate 400 50 &
 xclickroot -l xmenu.sh &
 killall dwmStatus ; dwmStatus &
+/usr/bin/pipewire &
+/usr/bin/pipewire-pulse &
+/usr/bin/pipewire-media-session &
