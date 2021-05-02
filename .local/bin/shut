@@ -1,6 +1,6 @@
 #!/bin/bash
 
-what=$(echo -e "shutdown\nreboot" | dmenu -fn "Source Code Variable:pixelsize=19:antialias=true:autohint=true")
+what=$(echo -e "shutdown\nreboot" | dmenu -fn "FiraMono Nerd Font Mono:pixelsize=19:antialias=true:autohint=true")
 
 [ $what = "shutdown" ] && prompt "Shutdown system?" "loginctl poweroff"
 [ $what = "reboot" ] && prompt "Reboot system?" "loginctl reboot"

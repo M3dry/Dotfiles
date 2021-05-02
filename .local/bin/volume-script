@@ -1,4 +1,4 @@
 #!/bin/sh
 
-dmenu < /dev/null -p 'set volume' -fn "Source Code Variable:pixelsize=19:antialias=true:autohint=true" | xargs -I {} pamixer --set-volume '{}'
+dmenu < /dev/null -p 'set volume' -fn "FiraMono Nerd Font Mono:pixelsize=19:antialias=true:autohint=true" | xargs -I {} pamixer --set-volume '{}'
 killall dwmStatus ; dwmStatus &

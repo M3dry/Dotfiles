@@ -119,7 +119,7 @@ Dmenu scripts
 Cmus
 	$artist	music-changer queue
 	$musstat	music-changer play
-	$volume	dmenu < /dev/null -p "$info" -fn "mononoki nerd font:pixelsize=19:antialias=true:autohint=true" | xargs -I {} cmus-remote -v '{}'%
+	$volume	dmenu < /dev/null -p "$info" -fn "FiraMono Nerd Font Mono:pixelsize=19:antialias=true:autohint=true" | xargs -I {} cmus-remote -v '{}'%
 	$status	[ "$status" = "Playing" ] && cmus-remote -u || cmus-remote -p
 	$repeat	cmus-remote -C "toggle repeat_current"
 	$shuffle	cmus-remote	-S
