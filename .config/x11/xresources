@@ -34,6 +34,7 @@ Sxiv.font: FiraMono Nerd Font Mono:size=12
 *.foreground:     #EEFFFF
 *.background:     #1E1C31
 st.altbackground: #1E1C31
+st.vimbrowsebg:   #12111e
 *.cursorColor:    #ff5370
 
 ! black
