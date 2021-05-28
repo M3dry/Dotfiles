@@ -5,15 +5,12 @@ numlockx on &
 xwallpaper --stretch ~/my-stuff/Pictures/wallpapers/namenamelol.png &
 redshift &
 playerctld &
-setxkbmap us,cz,us ,qwerty,colemak -option 'ctrl:nocaps' 'grp:ctrls_toggle' &
-# xmodmap ~/.config/x11/qwerty.xmodmap &
+setxkbmap us,cz ,qwerty -option 'ctrl:nocaps' 'grp:ctrls_toggle' &
 xcape -e "Control_L=Escape"
 lxpolkit &
 xrdb .config/x11/xresources &
-killalll emacs ; /usr/bin/emacs --fg-daemon &
+killalll emacs ; /usr/bin/emacs --daemon &
 xset r rate 400 50 &
 xclickroot -l xmenu.sh &
 /usr/bin/pipewire &
-/usr/bin/pipewire-pulse &
-/usr/bin/pipewire-media-session &
 killall dwmStatus ; dwmStatus &

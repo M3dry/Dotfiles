@@ -65,6 +65,8 @@ export XENVIRONMENT="${HOME}/.config/x11/xresources"
 export PASSWORD_STORE_DIR="${HOME}/my-stuff/pass"
 export MANPAGER="nvim -c 'set ft=man' -"
 export GOPATH="$HOME/.local/go"
+export COLORTERM="truecolor"
+export DOOMDIR="~/.config/emacs/doom-m3"
 
 bindkey '^e' edit-command-line
 
