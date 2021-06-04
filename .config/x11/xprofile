@@ -5,7 +5,7 @@ numlockx on &
 xwallpaper --stretch ~/my-stuff/Pictures/wallpapers/namenamelol.png &
 redshift &
 playerctld &
-setxkbmap us,cz ,qwerty -option 'ctrl:nocaps' 'grp:ctrls_toggle' &
+setxkbmap us,cz  ,qwerty -option 'ctrl:nocaps' 'grp:ctrls_toggle' &
 xcape -e "Control_L=Escape"
 lxpolkit &
 xrdb .config/x11/xresources &

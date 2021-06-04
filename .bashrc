@@ -85,17 +85,17 @@ ex ()
 export PS1="\[$(tput bold)\]\[$(tput setaf 1)\][\[$(tput setaf 226)\]\u\[$(tput setaf 29)\]@\[$(tput setaf 25)\]\h \[$(tput setaf 177)\]\W\[$(tput setaf 1)\]]\[$(tput setaf 255)\]\\$ \[$(tput sgr0)\]"
 
 export PATH="$HOME/.local/bin${PATH:+:${PATH}}"
+export PATH=$HOME/bin:/usr/local/bin:$PATH
 export EDITOR="nvim"
+export VISUAL="emacsclient -c -a emacs"
 export TERMINAL="st"
 export BROWSER="firefox"
+export XENVIRONMENT="${HOME}/.config/x11/xresources"
+export PASSWORD_STORE_DIR="${HOME}/my-stuff/pass"
+export MANPAGER="nvim -c 'set ft=man' -"
+export GOPATH="$HOME/.local/go"
+export COLORTERM="truecolor"
+export DOOMDIR="~/.config/emacs/doom-m3"
 
 # Vi mode
 set -o vi
-
-# Starship
-function set_win_title(){
-    echo -ne "\033]0; $USER@$HOSTNAME $PWD \007"
-}
-
-starship_precmd_user_func="set_win_title"
-eval "$(starship init bash)"

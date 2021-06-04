@@ -8,7 +8,7 @@ Xft.hintstyle: hintfull
 Xft.lcdfilter: lcdfilter
 
 XTerm*renderFont: true
-XTerm*faceName: xft:FiraMono Nerd Font Mono
+XTerm*faceName: xft:Operator Mono SSm Lig
 XTerm*faceSize: 12
 XTerm*utf8: 2
 XTerm*locale: true
@@ -21,20 +21,19 @@ XTerm*savelines: 16384
 XTerm*charClass: 33:48,36-47:48,58-59:48,61:48,63-64:48,95:48,126:48
 
 ! Sxiv
-Sxiv.background: #12111e
+Sxiv.background: #0f111b
 Sxiv.foreground: #f0f0f0
-Sxiv.font: FiraMono Nerd Font Mono:size=12
+Sxiv.font: Operator Mono SSm Lig:size=12
 
 ! St
 *.alpha: 1
 *.alphaUnfocused: 1
-*.font: FiraMono Nerd Font Mono:size=12
+*.font: Operator Mono SSm Lig:size=12
 
 ! special
 *.foreground:     #EEFFFF
-*.background:     #1E1C31
-st.altbackground: #1E1C31
-st.vimbrowsebg:   #12111e
+*.background:     #0f111b
+st.altbackground: #0f111b
 *.cursorColor:    #ff5370
 
 ! black

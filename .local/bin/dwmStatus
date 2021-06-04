@@ -9,6 +9,8 @@ volume() {
     vol="$(pamixer --get-volume)"
     [ "$vol" -eq "0" ] && vol="^c#ff5370^[MUTED]^d^" && return 0
     [ "$vol" -ge "50" ] && vol="^c#f78c6c^[VOL:$vol%]^d^" || vol="^c#00d7af^[VOL:$vol%]^d^"
+    [ "$vol" = "^c#f78c6c^[VOL:%]^d^" ] && sleep 1 && volume
+    [ "$vol" = "^c#00d7af^[VOL:%]^d^" ] && sleep 1 && volume
 }
 
 upTime() {
@@ -27,7 +29,7 @@ clock() {
     date +'%A, %e. %B %H:%M:%S'
 }
 
-package
+# package
 volume
 upTime
 memory
@@ -35,10 +37,10 @@ memory
 i=0
 
 while :; do
-    dwm -s "^c#c782ea^[$(clock)]^d^ $pkg $vol $upt $mem "
+    dwm -s "^c#c782ea^[$(clock)]^d^ $vol $upt $mem "
     [ "$(($i % 10))" = "0" ] && memory
     [ "$(($i % 120))" = "0" ] && upTime
-    [ "$(($i % 25000))" = "0" ] && package
+    # [ "$(($i % 25000))" = "0" ] && package
     sleep 0.5
     i=$(($i + 1))
 done

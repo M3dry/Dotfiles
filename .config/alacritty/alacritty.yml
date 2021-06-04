@@ -24,22 +24,22 @@ scrolling:
 font:
   # Normal (roman) font face
   normal:
-    family: mononoki Nerd Font
+    family: Operator Mono SSm Lig
     style: Regular
 
   # Bold font face
   bold:
-    family: mononoki Nerd Font
+    family: Operator Mono SSm Lig
     style: Bold
 
   # Italic font face
   italic:
-    family: mononoki Nerd Font
+    family: Operator Mono SSm Lig
     style: Italic
 
   # Bold italic font face
   bold_italic:
-    family: mononoki Nerd Font
+    family: Operator Mono SSm Lig
     style: Bold Italic
 
   # Point size
