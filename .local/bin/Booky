@@ -3,5 +3,12 @@
 bookys="$HOME/.config/booky/bookys"
 . $HOME/.config/booky/$3
 
-choice=$(rg "$2" "$bookys" | sed "s/$2// ; s/$2.*//" | dmenu -n -l "$lines" -bw "$border" -fn "$font" -p "$prompt")
+[ -n "$columns" ] && columns="-g $columns"
+[ -n "$height" ] && height="-h $height"
+[ -n "$prompt" ] && prompt="-p $prompt"
+[ -n "$bottom" ] && bottom="-b"
+[ -n "$casesensitive" ] && casesensitive="-s"
+[ -n "$wmmanaged" ] && wmmanaged="-wm"
+
+choice=$(rg "$2" "$bookys" | sed "s/$2// ; s/$2.*//" | dmenu -n -l "$lines" $columns -bw "$border" $height $prompt $bottom $casesensitive $wmmanaged)
 [ -n "$choice" ] && $1 "$(rg "$2$choice$2" "$bookys" | sed "s/.*$2//;")"

@@ -1,7 +1,7 @@
 #!/bin/sh
 
 while true; do
-    input=$(dmenu < /dev/null -p "$input" -fn "FiraMono Nerd Font Mono:pixelsize=19:antialias=true:autohint=true" | sed "s/@/$answer/g" | xargs -rI {} qalc "{}")
+    input=$(dmenu < /dev/null -p "$input" -h 24 | sed "s/@/$answer/g" | xargs -rI {} qalc "{}")
     answer=$(echo $input | sed "s/.* = //")
     [ -z $input ] && exit
 done

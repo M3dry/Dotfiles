@@ -1,3 +1,17 @@
+! urxvt
+URxvt.font: xft:Operator Mono SSm Lig
+URxvt.boldfont: xft:Operator Mono SSm Lig Bold
+URxvt.italicfont: xft:Operator Mono SSm Lig Italic
+URxvt.boldItalicfont: xft:Operator Mono SSm Lig Bold Italic
+URxvt.letterSpace: 0
+URxvt.lineSpace: 0
+URxvt.geometry: 92x24
+URxvt.cursorBlink: true
+URxvt.cursorUnderline: false
+URxvt.saveline: 2048
+URxvt.scrollBar: false
+URxvt.scrollBar_right: false
+
 ! Xterm
 Xft.dpi: 96
 Xft.antialias: true
@@ -26,9 +40,9 @@ Sxiv.foreground: #f0f0f0
 Sxiv.font: Operator Mono SSm Lig:size=12
 
 ! St
-*.alpha: 1
-*.alphaUnfocused: 1
-*.font: Operator Mono SSm Lig:size=12
+st.alpha: 1
+st.alphaUnfocused: 1
+st.font: Operator Mono SSm Lig:size=12
 
 ! special
 *.foreground:     #EEFFFF
@@ -67,3 +81,6 @@ st.altbackground: #0f111b
 ! white
 *.color7:         #BFC7d5
 *.color15:        #bcbcbc
+
+! dwm
+dwm.borderpx: 5

@@ -1,7 +1,5 @@
 #!/bin/bash
 
-font="FiraMono Nerd Font Mono:pixelsize=19:antialias=true:autohint=true"
-
 cmusvars() {
     title=$(cmus-remote -Q | rg "title" | sed 's/tag title //')
     album=$(cmus-remote -Q | rg "album " | sed 's/tag album //')
@@ -24,7 +22,7 @@ cmuschoice() {
         queue) Cqueue;;
         play\ song) Cplay;;
         repeat\ current) cmus-remote -C "toggle repeat_current";;
-        🔈$volume%) dmenu < /dev/null -p "$info" -fn "$font" | xargs -I {} cmus-remote -v '{}'%;;
+        🔈$volume%) dmenu < /dev/null -p "$info" -h 24 | xargs -I {} cmus-remote -v '{}'%;;
         next) cmus-remote -n;;
         prev) cmus-remote -r;;
         shuffle) cmus-remote -S;;
@@ -57,7 +55,7 @@ Cplay() {
 
 spotchoice() {
     info=$(playerctl --player spotify metadata --format "{{ artist }} - {{ title }}/{{ album }}")
-    choice=$(echo -e "play/pause\nreplay song\nnext\nprev" | dmenu -p "Now playing $info" -fn "$font")
+    choice=$(echo -e "play/pause\nreplay song\nnext\nprev" | dmenu -p "Now playing $info" -h 24)
     case $choice in
         play/pause) playerctl --player spotify play-pause;;
         replay\ song) playerctl --player spotify previous && playerctl --player spotify play;;
