@@ -29,7 +29,7 @@ clock() {
     date +'%A, %e. %B %H:%M:%S'
 }
 
-# package
+package
 volume
 upTime
 memory
@@ -37,10 +37,10 @@ memory
 i=0
 
 while :; do
-    dwm -s "^c#c782ea^[$(clock)]^d^ $vol $upt $mem "
+    dwm -s "^c#c782ea^[$(clock)]^d^ $pkg $vol $upt $mem "
     [ "$(($i % 10))" = "0" ] && memory
     [ "$(($i % 120))" = "0" ] && upTime
-    # [ "$(($i % 25000))" = "0" ] && package
+    [ "$(($i % 25000))" = "0" ] && package
     sleep 0.5
     i=$(($i + 1))
 done

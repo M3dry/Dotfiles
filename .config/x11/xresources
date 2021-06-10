@@ -42,7 +42,10 @@ Sxiv.font: Operator Mono SSm Lig:size=12
 ! St
 st.alpha: 1
 st.alphaUnfocused: 1
+st.ignoreselfg: 0
 st.font: Operator Mono SSm Lig:size=12
+st.selectionbg: #1e1c31
+st.selectionfg: #ff5370
 
 ! special
 *.foreground:     #EEFFFF
@@ -81,6 +84,3 @@ st.altbackground: #0f111b
 ! white
 *.color7:         #BFC7d5
 *.color15:        #bcbcbc
-
-! dwm
-dwm.borderpx: 5
