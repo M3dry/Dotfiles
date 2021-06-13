@@ -6,4 +6,4 @@ else
 	. "$HOME/.xprofile"
 fi
 
-exec dwm
+exec dwm > ~/.local/share/dwm.log
