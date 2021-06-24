@@ -23,6 +23,8 @@ alias ccom='config commit'
 alias cadd='config add'
 alias gc='git clone'
 alias doom="~/.config/emacs/doom-m3.d/bin/doom"
+alias f='xplr'
+alias cv='v $(xplr)'
 
 alias yta-aac="youtube-dl --extract-audio --audio-format aac "
 alias yta-best="youtube-dl --extract-audio --audio-format best "
@@ -33,6 +35,7 @@ alias yta-opus="youtube-dl --extract-audio --audio-format opus "
 alias yta-vorbis="youtube-dl --extract-audio --audio-format vorbis "
 alias yta-wav="youtube-dl --extract-audio --audio-format wav "
 alias ytv-best="youtube-dl -f bestvideo+bestaudio "
+
 
 ex ()
 {

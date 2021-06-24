@@ -58,7 +58,7 @@ autoload edit-command-line; zle -N edit-command-line
 PATH="$HOME/.local/bin${PATH:+:${PATH}}"
 export PATH=$HOME/bin:/usr/local/bin:$PATH
 export EDITOR="nvim"
-export VISUAL="emacsclient -c -a emacs"
+export VISUAL="emacsclient -c "
 export TERMINAL="st"
 export BROWSER="firefox"
 export XENVIRONMENT="${HOME}/.config/x11/xresources"
@@ -68,7 +68,8 @@ export GOPATH="$HOME/.local/go"
 export COLORTERM="truecolor"
 export DOOMDIR="~/.config/emacs/doom-m3"
 
-bindkey '^e' edit-command-line
+# xplr
+bindkey -s '^N' '^Qcd "${$(xplr):-.}"\n'
 
 source "$HOME/.config/zsh/aliasesrc"
 
@@ -82,7 +83,7 @@ bindkey '^b' autosuggest-clear
 # You should use Plugin
 source /usr/share/zsh/plugins/zsh-you-should-use/you-should-use.plugin.zsh
 export YSU_MESSAGE_POSITION="after"
-export YSU_HARDCORE=1 # Hardcode mode
+export YSU_HARDCORE=0 # Hardcode mode
 
 # Starship
 # function set_win_title(){
