@@ -1,7 +1,10 @@
 syntax enable
 
 let mapleader = " "
+set splitbelow
+set splitright
 set path+=**
+set sessionoptions+=globals
 set wildmenu
 set wildignore=**/.git/*
 set incsearch
@@ -62,7 +65,6 @@ call plug#begin("$HOME/.config/nvim/plugged")
     Plug 'windwp/nvim-autopairs'
     Plug 'nacro90/numb.nvim'
     Plug 'jghauser/mkdir.nvim'
-    Plug 'romgrk/barbar.nvim'
     Plug 'mbbill/undotree'
     Plug 'winston0410/range-highlight.nvim'
     Plug 'unblevable/quick-scope'
@@ -86,6 +88,7 @@ call plug#begin("$HOME/.config/nvim/plugged")
     Plug 'glts/vim-magnum'
     Plug 'glts/vim-radical'
     Plug 'lfilho/cosco.vim'
+    Plug 'szw/vim-maximizer'
     Plug 'lukas-reineke/indent-blankline.nvim', {'branch': 'lua'}
     Plug 'jlanzarotta/bufexplorer'
     Plug 'kyazdani42/nvim-web-devicons'
@@ -451,37 +454,6 @@ lua <<EOF
 require('mkdir')
 EOF
 
-let bufferline = get(g:, 'bufferline', {})
-let bufferline.animation = v:false
-let bufferline.auto_hide = v:false
-let bufferline.tabpages = v:true
-let bufferline.closable = v:true
-let bufferline.icons = 'both'
-let bufferline.icon_custom_colors = v:true
-let bufferline.icon_separator_active = '▎'
-let bufferline.icon_separator_inactive = '▎'
-let bufferline.icon_close_tab = ''
-let bufferline.icon_close_tab_modified = '+'
-let bufferline.maximum_padding = 0
-
-nnoremap <silent> [t        :BufferPrevious<CR>
-nnoremap <silent> ]t        :BufferNext<CR>
-nnoremap <silent> [T        :BufferMovePrevious<CR>
-nnoremap <silent> ]T        :BufferMoveNext<CR>
-nnoremap <silent> gtw       :BufferGoto 1<CR>
-nnoremap <silent> gte       :BufferGoto 2<CR>
-nnoremap <silent> gtr       :BufferGoto 3<CR>
-nnoremap <silent> gtt       :BufferGoto 4<CR>
-nnoremap <silent> gty       :BufferGoto 5<CR>
-nnoremap <silent> gtu       :BufferGoto 6<CR>
-nnoremap <silent> gti       :BufferGoto 7<CR>
-nnoremap <silent> gto       :BufferGoto 8<CR>
-nnoremap <silent> gtp       :BufferLast<CR>
-nnoremap <silent> gtc       :BufferClose<CR>
-nnoremap <silent> gtd       :BufferOrderByDirectory<CR>
-nnoremap <silent> gtl       :BufferOrderByLanguage<CR>
-nnoremap <silent> <Leader>g :BufferPick<CR>
-
 lua <<EOF
 require("range-highlight").setup {
     highlight = "Visual",
@@ -655,6 +627,10 @@ let g:cosco_ignore_comment_lines = 1
 
 autocmd FileType c,cpp nmap <silent> <Leader>; <Plug>(cosco-commaOrSemiColon)
 autocmd FileType c,cpp imap <silent> <C-l> <c-o><Plug>(cosco-commaOrSemiColon)
+
+let g:maximizer_set_default_mapping = 0
+nnoremap <silent> <Leader>wm :MaximizerToggle<CR>
+vnoremap <silent> <Leader>wm :MaximizerToggle<CR>
 
 let g:indent_blankline_indent_level = 7
 let g:indent_blankline_char = '┊'
@@ -1140,27 +1116,10 @@ highlight Special             guifg=#c3e88d    guibg=none          gui=none
 highlight SpecialChar         guifg=#c3e88d    guibg=none          gui=italic
 highlight Delimeter           guifg=#72a4ff    guibg=none          gui=none
 
-" Barbar
-highlight BufferCurrent        guifg=#72a4ff   guibg=#111111     gui=italic
-highlight BufferCurrentIcon    guifg=#72a4ff   guibg=#111111     gui=italic
-highlight BufferCurrentSign    guifg=#72a4ff   guibg=#111111     gui=italic
-highlight BufferCurrentMod     guifg=#ff5370   guibg=#111111     gui=italic
-highlight BufferCurrentTarget  guifg=#c3e88d   guibg=#111111     gui=italic
-highlight BufferCurrentIndex   guifg=#c3e88d   guibg=#111111     gui=italic
-highlight BufferVisible        guifg=#eeffff   guibg=#111111     gui=none
-highlight BufferVisibleIcon    guifg=#eeffff   guibg=#111111     gui=none
-highlight BufferVisibleSign    guifg=#ff5370   guibg=#111111     gui=none
-highlight BufferVisibleMod     guifg=#ff5370   guibg=#111111     gui=none
-highlight BufferVisibleTarget  guifg=#ff5370   guibg=#111111     gui=none
-highlight BufferVisibleIndex   guifg=#ff5370   guibg=#111111     gui=none
-highlight BufferInactive       guifg=#eeffff   guibg=#111111     gui=none
-highlight BufferInactiveIcon   guifg=#eeffff   guibg=#111111     gui=none
-highlight BufferInactiveSign   guifg=#ff5370   guibg=#111111     gui=none
-highlight BufferInactiveMod    guifg=#ff5370   guibg=#111111     gui=none
-highlight BufferInactiveTarget guifg=#ff5370   guibg=#111111     gui=none
-highlight BufferInactiveIndex  guifg=#ff5370   guibg=#111111     gui=none
-highlight BufferTabpageFill    guifg=#12111e   guibg=#111111     gui=none
-highlight BufferTabpages       guifg=#12111e   guibg=#111111     gui=none
+" Tabs
+highlight TabLine             guifg=#eeffff    guibg=#111111       gui=none
+highlight TabLineSel          guifg=#ff5370    guibg=#111111       gui=italic
+highlight TabLineFill         guifg=#eeffff    guibg=#111111       gui=none
 
 " Indent
 highlight IndentBlanklineChar               guifg=#292d3e    guibg=none          gui=none
@@ -1231,10 +1190,10 @@ nnoremap <Leader>wj <C-w>j
 nnoremap <Leader>wk <C-w>k
 nnoremap <Leader>wl <C-w>l
 nnoremap <Leader>w<C-o> <C-w><C-o>
-nnoremap <silent> <Leader>wH :vertical resize +5<CR>
-nnoremap <silent> <Leader>wJ :resize -5<CR>
-nnoremap <silent> <Leader>wK :resize +5<CR>
-nnoremap <silent> <Leader>wL :vertical resize -5<CR>
+nnoremap <silent> ]wv :vertical resize +5<CR>
+nnoremap <silent> [wv :vertical resize -5<CR>
+nnoremap <silent> [ws :resize -5<CR>
+nnoremap <silent> ]ws :resize +5<CR>
 nnoremap <leader>wc <C-w>c
 nnoremap <leader>wd <C-w>c
 nnoremap <leader>wv <C-w>v
@@ -1246,3 +1205,12 @@ nnoremap <silent> <leader>to :SymbolOutline<CR>
 nnoremap <silent> <leader>tut :UndotreeToggle<CR>
 nnoremap <silent> <leader>tuc :UndotreeHide<CR>
 nnoremap <silent> <leader>tuf :UndotreeFocus<CR>
+nnoremap <silent> [t  :tabprevious<CR>
+nnoremap <silent> ]t  :tabnext<CR>
+nnoremap <silent> [T  :tabmove -1<CR>
+nnoremap <silent> ]T  :tabmove +1<CR>
+nnoremap <silent> gtn :tabnew<CR>
+nnoremap <silent> gtc :tabclose<CR>
+nnoremap <silent> gtf :tabfirst<CR>
+nnoremap <silent> gtl :tablast<CR>
+nnoremap <silent> gtu :tabrewind<CR>
