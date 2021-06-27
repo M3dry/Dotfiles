@@ -24,26 +24,26 @@ scrolling:
 font:
   # Normal (roman) font face
   normal:
-    family: Operator Mono SSm Lig
+    family: Operator Mono SSm Lig Nerd Font
     style: Regular
 
   # Bold font face
   bold:
-    family: Operator Mono SSm Lig
+    family: Operator Mono SSm Lig Nerd Font
     style: Bold
 
   # Italic font face
   italic:
-    family: Operator Mono SSm Lig
+    family: Operator Mono SSm Lig Nerd Font
     style: Italic
 
   # Bold italic font face
   bold_italic:
-    family: Operator Mono SSm Lig
+    family: Operator Mono SSm Lig Nerd Font
     style: Bold Italic
 
   # Point size
-  size: 13.0
+  size: 12.0
 
   offset:
     x: 0
@@ -54,11 +54,11 @@ draw_bold_text_with_bright_colors: true
 colors:
   # Default colors
   primary:
-    background: '0x1E1C31'
+    background: '0x0f111b'
     foreground: '0xEEFFFF'
 
   selection:
-    text: '0xf0f0f0'
+    text: '0xff5370'
     background: '0x292d3e'
 
  # Normal colors

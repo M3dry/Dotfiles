@@ -62,7 +62,9 @@ endif
 call plug#begin("$HOME/.config/nvim/plugged")
     " Plug 'hoob3rt/lualine.nvim'
     Plug 'glepnir/galaxyline.nvim', {'branch': 'main'}
+    Plug 'rmagatti/auto-session'
     Plug 'windwp/nvim-autopairs'
+    Plug 'rmagatti/session-lens'
     Plug 'nacro90/numb.nvim'
     Plug 'jghauser/mkdir.nvim'
     Plug 'mbbill/undotree'
@@ -75,8 +77,8 @@ call plug#begin("$HOME/.config/nvim/plugged")
     Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-eunuch'
+    Plug 'ThePrimeagen/vim-be-good'
     Plug 'jremmen/vim-ripgrep'
-    Plug 'subnut/visualstar.vim'
     Plug 'nvim-lua/popup.nvim'
     Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-telescope/telescope.nvim'
@@ -87,15 +89,19 @@ call plug#begin("$HOME/.config/nvim/plugged")
     Plug 'tpope/vim-speeddating'
     Plug 'glts/vim-magnum'
     Plug 'glts/vim-radical'
+    Plug 'NFrid/due.nvim'
+    Plug 'kevinhwang91/nvim-hlslens'
     Plug 'lfilho/cosco.vim'
     Plug 'szw/vim-maximizer'
     Plug 'lukas-reineke/indent-blankline.nvim', {'branch': 'lua'}
-    Plug 'jlanzarotta/bufexplorer'
+    Plug 'matbme/JABS.nvim'
     Plug 'kyazdani42/nvim-web-devicons'
     Plug 'neovim/nvim-lspconfig'
     Plug 'folke/lsp-colors.nvim'
+    Plug 'haringsrob/nvim_context_vt'
     Plug 'onsails/lspkind-nvim'
     Plug 'michaelb/sniprun', {'do': 'bash install.sh'}
+    Plug 'kyazdani42/nvim-tree.lua'
     Plug 'simrat39/symbols-outline.nvim'
     Plug 'nvim-lua/lsp-status.nvim'
     Plug 'ahmedkhalf/lsp-rooter.nvim'
@@ -111,6 +117,9 @@ call plug#begin("$HOME/.config/nvim/plugged")
     Plug 'famiu/bufdelete.nvim'
     Plug 'mfussenegger/nvim-dap'
     Plug 'rcarriga/nvim-dap-ui'
+    Plug 'tveskag/nvim-blame-line'
+    Plug 'sindrets/diffview.nvim'
+    Plug 'TimUntersberger/neogit'
 call plug#end()
 
 lua <<EOF
@@ -270,18 +279,7 @@ gls.left[2] = {
   }
 }
 
-gls.left[3] ={
-  FileIcon = {
-    provider = 'FileIcon',
-    condition = condition.buffer_not_empty,
-    separator = '',
-    separator_highlight = {'NONE', "#292d3e"},
-    -- highlight = {require('galaxyline.provider_fileinfo').get_file_icon_color, "#c792ea"},
-    highlight = {"#12111e", "#c792ea"},
-  },
-}
-
-gls.left[4] = {
+gls.left[3] = {
   FileName = {
     provider = 'FileName',
     condition = condition.buffer_not_empty,
@@ -291,7 +289,7 @@ gls.left[4] = {
   }
 }
 
-gls.left[5] = {
+gls.left[4] = {
   LineInfo = {
     provider = function()
         return string.format("%3d:%2d ", vim.fn.line('.'), vim.fn.col('.'))
@@ -443,6 +441,20 @@ npairs.setup({
 })
 EOF
 
+lua << EOF
+local opts = {
+  log_level = 'info',
+  auto_session_enable_last_session = false,
+  auto_session_root_dir = vim.fn.stdpath('data').."/sessions/",
+  auto_session_enabled = true,
+  auto_save_enabled = true,
+  auto_restore_enabled = true,
+  auto_session_suppress_dirs = nil
+}
+
+require('auto-session').setup(opts)
+EOF
+
 lua <<EOF
 require('numb').setup {
     show_numbers = true,
@@ -528,6 +540,10 @@ lua <<EOF
 local actions = require('telescope.actions')
 local trouble = require("trouble.providers.telescope")
 
+require('telescope').load_extension('dap')
+require('telescope').load_extension('fzy_native')
+require("telescope").load_extension("session-lens")
+
 require('telescope').setup {
     defaults = {
         mappings = {
@@ -592,8 +608,11 @@ require('telescope').setup {
     }
 }
 
-require('telescope').load_extension('dap')
-require('telescope').load_extension('fzy_native')
+require('session-lens').setup {
+  shorten_path = false,
+  theme_conf = { border = true },
+  previewer = false
+}
 EOF
 
 nnoremap <silent> <C-s>      :Telescope current_buffer_fuzzy_find<CR>
@@ -605,6 +624,7 @@ nnoremap <silent> <Leader>lm :Telescope marks<CR>
 nnoremap <silent> <Leader>lk :Telescope keymaps<CR>
 nnoremap <silent> <Leader>lb :Telescope buffers<CR>
 nnoremap <silent> <Leader>lz :Telescope symbols<CR>
+nnoremap <silent> <Leader>lo :Telescope session-lens search_session<CR>
 
 " Lsp
 nnoremap <silent> <Leader>lr :Telescope lsp_references<CR>
@@ -622,6 +642,64 @@ nnoremap <silent> <Leader>dto :lua require'telescope'.extensions.dap.configurati
 nnoremap <silent> <Leader>dtb :lua require'telescope'.extensions.dap.list_breakpoints{}<CR>
 nnoremap <silent> <Leader>dtv :lua require'telescope'.extensions.dap.variables{}<CR>
 nnoremap <silent> <Leader>dtf :lua require'telescope'.extensions.dap.frames{}<CR>
+
+lua <<EOF
+require('due_nvim').setup {
+  prescript = 'due: ',
+  prescript_hi = 'Comment',
+  due_hi = 'Error',
+  ft = '*',
+  today = 'TODAY',
+  today_hi = 'Character',
+  overdue = 'OVERDUE',
+  overdue_hi = 'Error',
+  date_hi = 'Conceal',
+  pattern_start = '<',
+  pattern_end = '>'
+}
+EOF
+
+lua <<EOF
+require('hlslens').setup({
+    nearest_float_when = 'always',
+    override_lens = function(render, plist, nearest, idx, r_idx)
+        local sfw = vim.v.searchforward == 1
+        local indicator, text, chunks
+        local abs_r_idx = math.abs(r_idx)
+        if abs_r_idx > 1 then
+            indicator = ('%d%s'):format(abs_r_idx, sfw ~= (r_idx > 1) and '' or '')
+        elseif abs_r_idx == 1 then
+            indicator = sfw ~= (r_idx == 1) and '' or ''
+        else
+            indicator = ''
+        end
+
+        local lnum, col = unpack(plist[idx])
+        if nearest then
+            local cnt = #plist
+            if indicator ~= '' then
+                text = ('[%s %d/%d]'):format(indicator, idx, cnt)
+            else
+                text = ('[%d/%d]'):format(idx, cnt)
+            end
+            chunks = {{' ', 'Ignore'}, {text, 'HlSearchLensNear'}}
+        else
+            text = ('[%s %d]'):format(indicator, idx)
+            chunks = {{' ', 'Ignore'}, {text, 'HlSearchLens'}}
+        end
+        render.set_virt(0, lnum - 1, col - 1, chunks, nearest)
+    end
+})
+EOF
+
+noremap <silent> n <Cmd>execute('normal! ' . v:count1 . 'n')<CR>
+            \<Cmd>lua require('hlslens').start()<CR>
+noremap <silent> N <Cmd>execute('normal! ' . v:count1 . 'N')<CR>
+            \<Cmd>lua require('hlslens').start()<CR>
+noremap * *<Cmd>lua require('hlslens').start()<CR>
+noremap # #<Cmd>lua require('hlslens').start()<CR>
+noremap g* g*<Cmd>lua require('hlslens').start()<CR>
+noremap g# g#<Cmd>lua require('hlslens').start()<CR>
 
 let g:cosco_ignore_comment_lines = 1
 
@@ -708,6 +786,127 @@ nmap <silent> <Leader>fc :SnipClose<CR>
 nmap <silent> <Leader>fs :SnipReset<CR>
 vmap <silent>         f  :SnipRun<CR>
 
+let g:nvim_tree_side = 'left'
+let g:nvim_tree_width = 25
+let g:nvim_tree_ignore = [ '.git' ]
+let g:nvim_tree_gitignore = 0
+let g:nvim_tree_auto_open = 0
+let g:nvim_tree_auto_close = 1
+let g:nvim_tree_auto_ignore_ft = [ 'startify', 'dashboard' ]
+let g:nvim_tree_quit_on_open = 0
+let g:nvim_tree_follow = 1
+let g:nvim_tree_indent_markers = 1
+let g:nvim_tree_hide_dotfiles = 0
+let g:nvim_tree_git_hl = 1
+let g:nvim_tree_highlight_opened_files = 1
+let g:nvim_tree_root_folder_modifier = ':~'
+let g:nvim_tree_tab_open = 1
+let g:nvim_tree_width_allow_resize  = 0
+let g:nvim_tree_disable_netrw = 1
+let g:nvim_tree_hijack_netrw = 1
+let g:nvim_tree_add_trailing = 1
+let g:nvim_tree_group_empty = 1
+let g:nvim_tree_lsp_diagnostics = 1
+let g:nvim_tree_disable_window_picker = 1
+let g:nvim_tree_hijack_cursor = 1
+let g:nvim_tree_icon_padding = ' '
+let g:nvim_tree_update_cwd = 1
+let g:nvim_tree_window_picker_exclude = {
+    \   'filetype': [
+    \     'packer',
+    \     'qf'
+    \   ],
+    \   'buftype': [
+    \     'terminal'
+    \   ]
+    \ }
+let g:nvim_tree_special_files = [ 'README.md', 'README.org', 'Makefile']
+let g:nvim_tree_show_icons = {
+    \ 'git': 1,
+    \ 'folders': 1,
+    \ 'files': 1,
+    \ 'folder_arrows': 1,
+    \ }
+"If 0, do not show the icons for one of 'git' 'folder' and 'files'
+"1 by default, notice that if 'files' is 1, it will only display
+"if nvim-web-devicons is installed and on your runtimepath.
+"if folder is 1, you can also tell folder_arrows 1 to show small arrows next to the folder icons.
+"but this will not work when you set indent_markers (because of UI conflict)
+
+" default will show icon by default if no icon is provided
+" default shows no icon by default
+let g:nvim_tree_icons = {
+    \ 'default': '',
+    \ 'symlink': '',
+    \ 'git': {
+    \   'unstaged': "✗",
+    \   'staged': "✓",
+    \   'unmerged': "",
+    \   'renamed': "➜",
+    \   'untracked': "★",
+    \   'deleted': "",
+    \   'ignored': "◌"
+    \   },
+    \ 'folder': {
+    \   'arrow_open': "ﬔ",
+    \   'arrow_closed': "⬎",
+    \   'default': "",
+    \   'open': "",
+    \   'empty': "",
+    \   'empty_open': "",
+    \   'symlink': "",
+    \   'symlink_open': "",
+    \   },
+    \   'lsp': {
+    \     'hint': "",
+    \     'info': "",
+    \     'warning': "",
+    \     'error': "",
+    \   }
+    \ }
+
+lua <<EOF
+    local tree_cb = require'nvim-tree.config'.nvim_tree_callback
+    vim.g.nvim_tree_bindings = {
+      ["<CR>"] = ":YourVimFunction()<cr>",
+      ["u"] = ":lua require'some_module'.some_function()<cr>",
+
+      -- default mappings
+      ["<CR>"]           = tree_cb("edit"),
+      ["o"]              = tree_cb("edit"),
+      ["<2-LeftMouse>"]  = tree_cb("edit"),
+      ["<2-RightMouse>"] = tree_cb("cd"),
+      ["<C-]>"]          = tree_cb("cd"),
+      ["<C-v>"]          = tree_cb("vsplit"),
+      ["<C-x>"]          = tree_cb("split"),
+      ["<C-t>"]          = tree_cb("tabnew"),
+      ["<"]              = tree_cb("prev_sibling"),
+      [">"]              = tree_cb("next_sibling"),
+      ["<BS>"]           = tree_cb("close_node"),
+      ["<S-CR>"]         = tree_cb("close_node"),
+      ["<Tab>"]          = tree_cb("preview"),
+      ["I"]              = tree_cb("toggle_ignored"),
+      ["H"]              = tree_cb("toggle_dotfiles"),
+      ["R"]              = tree_cb("refresh"),
+      ["a"]              = tree_cb("create"),
+      ["d"]              = tree_cb("remove"),
+      ["r"]              = tree_cb("rename"),
+      ["<C-r>"]          = tree_cb("full_rename"),
+      ["x"]              = tree_cb("cut"),
+      ["c"]              = tree_cb("copy"),
+      ["p"]              = tree_cb("paste"),
+      ["y"]              = tree_cb("copy_name"),
+      ["Y"]              = tree_cb("copy_path"),
+      ["gy"]             = tree_cb("copy_absolute_path"),
+      ["[c"]             = tree_cb("prev_git_item"),
+      ["]c"]             = tree_cb("next_git_item"),
+      ["-"]              = tree_cb("dir_up"),
+      ["l"]              = tree_cb("cd"),
+      ["h"]              = tree_cb("dir_up"),
+      ["q"]              = tree_cb("close"),
+    }
+EOF
+
 lua <<EOF
 vim.g.symbols_outline = {
     highlight_hovered_item = true,
@@ -773,6 +972,8 @@ EOF
 nnoremap <silent> <Leader>ln     :Lspsaga rename<CR>
 nnoremap <silent> <Leader>lp     :Lspsaga preview_definition<CR>
 nnoremap <silent> <Leader>lh     :Lspsaga hover_doc<CR>
+nnoremap <silent> <Leader>lc     :Lspsaga code_action<CR>
+nnoremap <silent> <Leader>lC     :Lspsaga range_code_action<CR>
 nnoremap <silent> [e             :Lspsaga diagnostic_jump_next<CR>
 nnoremap <silent> ]e             :Lspsaga diagnostic_jump_prev<CR>
 nnoremap <silent> <Leader>lv     :Lspsaga show_line_diagnostics<CR>
@@ -825,12 +1026,10 @@ let g:completion_matching_smart_case = 1
 let g:completion_matching_strategy_list = [ 'exact', 'substring', 'fuzzy' ]
 let g:completion_enable_snippet = 'vim-vsnip'
 
-imap <expr> <C-e>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'    : '<Tab>'
-smap <expr> <C-e>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'    : '<Tab>'
-imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)' : '<Tab>'
-smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)' : '<Tab>'
-imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
-smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
+imap <expr> <Tab>   vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)' : vsnip#expandable() ? '<Plug>(vsnip-expand)' : '<Tab>'
+smap <expr> <Tab>   vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)' : vsnip#expandable() ? '<Plug>(vsnip-expand)' : '<Tab>'
+imap <expr> <S-Tab> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
+smap <expr> <S-Tab> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
 let g:vsnip_filetypes = {}
 let g:vsnip_snippet_dir = "$HOME/.config/nvim/snippets/"
 
@@ -1066,6 +1265,75 @@ nnoremap <silent> <Leader>dbm :lua require'dap'.set_breakpoint(nil, nil, vim.fn.
 nnoremap <silent> <Leader>dro :lua require'dap'.repl.open()<CR>
 nnoremap <silent> <Leader>drl :lua require'dap'.repl.run_last()<CR>
 
+let g:blameLineUseVirtualText = 1
+let g:blameLineVirtualTextHighlight = 'Comment'
+let g:blameLineGitFormat = '%an:%as - %s %h'
+
+lua <<EOF
+local cb = require'diffview.config'.diffview_callback
+
+require'diffview'.setup {
+    diff_binaries = false,
+    file_panel = {
+        width = 35,
+        use_icons = true
+    },
+    key_bindings = {
+        disable_defaults = false,
+        view = {
+            ["<tab>"]     = cb("select_next_entry"),
+            ["<s-tab>"]   = cb("select_prev_entry"),
+            ["<leader>e"] = cb("focus_files"),
+            ["<leader>b"] = cb("toggle_files"),
+        },
+        file_panel = {
+            ["j"]             = cb("next_entry"),
+            ["<down>"]        = cb("next_entry"),
+            ["k"]             = cb("prev_entry"),
+            ["<up>"]          = cb("prev_entry"),
+            ["<cr>"]          = cb("select_entry"),
+            ["o"]             = cb("select_entry"),
+            ["<2-LeftMouse>"] = cb("select_entry"),
+            ["-"]             = cb("toggle_stage_entry"),
+            ["S"]             = cb("stage_all"),
+            ["U"]             = cb("unstage_all"),
+            ["R"]             = cb("refresh_files"),
+            ["<tab>"]         = cb("select_next_entry"),
+            ["<s-tab>"]       = cb("select_prev_entry"),
+            ["<leader>e"]     = cb("focus_files"),
+            ["<leader>b"]     = cb("toggle_files"),
+        }
+    }
+}
+
+local neogit = require('neogit')
+
+neogit.setup {
+  disable_signs = false,
+  disable_context_highlighting = false,
+  disable_commit_confirmation = false,
+  signs = {
+    -- { CLOSED, OPENED }
+    section = { "⬎", "ﬔ" },
+    item = { "⬎", "ﬔ" },
+    hunk = { "", "" },
+  },
+  integrations = {
+    diffview = true  
+  },
+  mappings = {
+    status = {
+      ["p"] = "PushPopup",
+      ["P"] = "PullPopup",
+    }
+  }
+}
+EOF
+
+nnoremap <silent> <Leader>gg :Neogit<CR>
+nnoremap <silent> <Leader>gb :ToggleBlameLine<CR>
+nnoremap <silent> <Leader>gd :DiffviewOpen
+
 highlight normal              guifg=#eeffff    guibg=none          gui=none
 highlight Visual              guifg=none       guibg=#4e5579       gui=none
 highlight Search              guifg=none       guibg=#4e5579       gui=none
@@ -1075,8 +1343,14 @@ highlight SignColumn          guifg=#eeffff    guibg=none          gui=none
 highlight VertSplit           guifg=none       guibg=none          gui=none
 highlight ColorColumn         guifg=none       guibg=#300000       gui=none
 highlight Title               guifg=#ecbe7b    guibg=none          gui=none
+highlight diffAdded           guifg=#c3e88d    guibg=#353c34       gui=none
+highlight diffRemoved         guifg=#ff5370    guibg=#634661       gui=none
+highlight DiffAdd             guifg=#c3e88d    guibg=#353c34       gui=none
+highlight DiffDelete          guifg=#ff5370    guibg=#634661       gui=none
 highlight StatusLine          guifg=#eeffff    guibg=#292d3e       gui=none
 highlight StatusLineNC        guifg=#eeffff    guibg=#292d3e       gui=none
+highlight Error               guifg=#ff5370    guibg=none          gui=none
+highlight WarningMsg          guifg=#f78c6c    guibg=none          gui=none
 highlight Directory           guifg=#51afef    guibg=none          gui=none
 highlight Pmenu               guifg=#eeffff    guibg=#12111e       gui=none
 highlight PmenuSel            guifg=#12111e    guibg=#c792ea       gui=none
@@ -1084,8 +1358,6 @@ highlight PmenuSbar           guifg=none       guibg=#12111e       gui=none
 highlight PmenuThumb          guifg=none       guibg=#c792ea       gui=none
 highlight Folded              guifg=#308ac3    guibg=none          gui=none
 highlight EndOfBuffer         guifg=#292d3e    guibg=none          gui=none
-highlight QuickScopePrimary   guifg=#ff79c6    guibg=none          gui=bold,italic
-highlight QuickScopeSecondary guifg=#ffffff    guibg=none          gui=bold,italic
 highlight MatchParen          guifg=#f78c6c    guibg=none          gui=none
 highlight Comment             guifg=#3c435e    guibg=none          gui=italic
 highlight Constant            guifg=#89ddff    guibg=none          gui=bold
@@ -1116,37 +1388,14 @@ highlight Special             guifg=#c3e88d    guibg=none          gui=none
 highlight SpecialChar         guifg=#c3e88d    guibg=none          gui=italic
 highlight Delimeter           guifg=#72a4ff    guibg=none          gui=none
 
-" Tabs
-highlight TabLine             guifg=#eeffff    guibg=#111111       gui=none
-highlight TabLineSel          guifg=#ff5370    guibg=#111111       gui=italic
-highlight TabLineFill         guifg=#eeffff    guibg=#111111       gui=none
+" Quick scope
+highlight QuickScopePrimary   guifg=#ff79c6    guibg=none          gui=bold,italic
+highlight QuickScopeSecondary guifg=#ffffff    guibg=none          gui=bold,italic
 
-" Indent
-highlight IndentBlanklineChar               guifg=#292d3e    guibg=none          gui=none
-highlight IndentBlanklineSpaceChar          guifg=#292d3e    guibg=none          gui=none
-highlight IndentBlanklineSpaceCharBlankline guifg=#292d3e    guibg=none          gui=none
-
-" Lsp
-highlight LspDiagnosticsDefaultError           guifg=#ff5370 guibg=none gui=none
-highlight LspDiagnosticsDefaultWarning         guifg=#f78c6c guibg=none gui=none
-highlight LspDiagnosticsDefaultHint            guifg=#72a4ff guibg=none gui=none
-highlight LspDiagnosticsDefaultInformation     guifg=#c3e88d guibg=none gui=none
-highlight LspDiagnosticsFloatingError          guifg=#ff5370 guibg=none gui=none
-highlight LspDiagnosticsFloatingWarning        guifg=#f78c6c guibg=none gui=none
-highlight LspDiagnosticsFloatingHint           guifg=#72a4ff guibg=none gui=none
-highlight LspDiagnosticsFloatingInformation    guifg=#c3e88d guibg=none gui=none
-highlight LspDiagnosticsSignError              guifg=#ff5370 guibg=none gui=none
-highlight LspDiagnosticsSignWarning            guifg=#f78c6c guibg=none gui=none
-highlight LspDiagnosticsSignHint               guifg=#72a4ff guibg=none gui=none
-highlight LspDiagnosticsSignInformation        guifg=#c3e88d guibg=none gui=none
-highlight LspDiagnosticsUnderlineError         guifg=#ff5370 guibg=none gui=undercurl
-highlight LspDiagnosticsUnderlineWarning       guifg=#f78c6c guibg=none gui=undercurl
-highlight LspDiagnosticsUnderlineHint          guifg=#72a4ff guibg=none gui=undercurl
-highlight LspDiagnosticsUnderlineInformation   guifg=#c3e88d guibg=none gui=undercurl
-highlight LspDiagnosticsVirtualTextError       guifg=#ff5370 guibg=none gui=none
-highlight LspDiagnosticsVirtualTextWarning     guifg=#f78c6c guibg=none gui=none
-highlight LspDiagnosticsVirtualTextHint        guifg=#72a4ff guibg=none gui=none
-highlight LspDiagnosticsVirtualTextInformation guifg=#c3e88d guibg=none gui=none
+" Hlslens
+highlight HlSearchFloat       guifg=#72a4ff    guibg=none          gui=none
+highlight HlSearchNear        guifg=none       guibg=#4e5579       gui=none
+highlight HlSearchLens        guifg=#ff5370    guibg=#12111e       gui=none
 
 " Tree sitter
 highlight TSBoolean           guifg=#89ddff    guibg=none          gui=italic
@@ -1179,10 +1428,65 @@ highlight TSVariableBuiltin   guifg=#89ddff    guibg=none          gui=bold
 highlight TSNamespace         guifg=#c792ea    guibg=none          gui=italic
 highlight TSKeyword           guifg=#89ddff    guibg=none          gui=italic
 
-imap jk <Esc>
+" Tabs
+highlight TabLine             guifg=#eeffff    guibg=#111111       gui=none
+highlight TabLineSel          guifg=#ff5370    guibg=#111111       gui=italic
+highlight TabLineFill         guifg=#eeffff    guibg=#111111       gui=none
+
+" Nvim Tree
+highligh NvimTreeFolderName       guifg=#c792ea    guibg=none          gui=none
+highligh NvimTreeFolderIcon       guifg=#c792ea    guibg=none          gui=none
+highligh NvimTreeEmptyFolderName  guifg=#c792ea    guibg=none          gui=none
+highligh NvimTreeOpenedFolderName guifg=#c792ea    guibg=none          gui=none
+highligh NvimTreeNormal           guifg=#eeffff    guibg=none          gui=none
+highligh NvimTreeSymlink          guifg=#72a4ff    guibg=none          gui=none
+highligh NvimTreeRootFolder       guifg=#ffcb6b    guibg=none          gui=italic
+highligh NvimTreeSpecialFile      guifg=#ff5370    guibg=none          gui=italic
+highligh NvimTreeExecFile         guifg=#c3e88d    guibg=none          gui=none
+highligh NvimTreeImageFile        guifg=#89ddff    guibg=none          gui=none
+
+" Neogit
+highligh NeogitDiffAdd              guifg=#9cb970    guibg=#232629          gui=none
+highligh NeogitDiffAddHighlight     guifg=#c3e88d    guibg=#353c34          gui=none
+highligh NeogitDiffDelete           guifg=#cc4259    guibg=#4f445f          gui=none
+highligh NeogitDiffDeleteHighlight  guifg=#ff5370    guibg=#634661          gui=none
+highligh NeogitDiffContextHighlight guifg=none       guibg=none             gui=none
+highligh NeogitHunkHeader           guifg=#12111e    guibg=#44324a          gui=none
+highligh NeogitHunkHeaderHighlight  guifg=#12111e    guibg=#bb80b3          gui=none
+highligh NeogitstagedChanges        guifg=#c3e88d    guibg=none             gui=italic
+highligh NeogitUnstagedChanges      guifg=#ff5370    guibg=none             gui=italic
+
+" Indent
+highlight IndentBlanklineChar               guifg=#292d3e    guibg=none          gui=none
+highlight IndentBlanklineSpaceChar          guifg=#292d3e    guibg=none          gui=none
+highlight IndentBlanklineSpaceCharBlankline guifg=#292d3e    guibg=none          gui=none
+
+" Lsp
+highlight LspDiagnosticsDefaultError           guifg=#ff5370 guibg=none gui=none
+highlight LspDiagnosticsDefaultWarning         guifg=#f78c6c guibg=none gui=none
+highlight LspDiagnosticsDefaultHint            guifg=#72a4ff guibg=none gui=none
+highlight LspDiagnosticsDefaultInformation     guifg=#c3e88d guibg=none gui=none
+highlight LspDiagnosticsFloatingError          guifg=#ff5370 guibg=none gui=none
+highlight LspDiagnosticsFloatingWarning        guifg=#f78c6c guibg=none gui=none
+highlight LspDiagnosticsFloatingHint           guifg=#72a4ff guibg=none gui=none
+highlight LspDiagnosticsFloatingInformation    guifg=#c3e88d guibg=none gui=none
+highlight LspDiagnosticsSignError              guifg=#ff5370 guibg=none gui=none
+highlight LspDiagnosticsSignWarning            guifg=#f78c6c guibg=none gui=none
+highlight LspDiagnosticsSignHint               guifg=#72a4ff guibg=none gui=none
+highlight LspDiagnosticsSignInformation        guifg=#c3e88d guibg=none gui=none
+highlight LspDiagnosticsUnderlineError         guifg=#ff5370 guibg=none gui=undercurl
+highlight LspDiagnosticsUnderlineWarning       guifg=#f78c6c guibg=none gui=undercurl
+highlight LspDiagnosticsUnderlineHint          guifg=#72a4ff guibg=none gui=undercurl
+highlight LspDiagnosticsUnderlineInformation   guifg=#c3e88d guibg=none gui=undercurl
+highlight LspDiagnosticsVirtualTextError       guifg=#ff5370 guibg=none gui=none
+highlight LspDiagnosticsVirtualTextWarning     guifg=#f78c6c guibg=none gui=none
+highlight LspDiagnosticsVirtualTextHint        guifg=#72a4ff guibg=none gui=none
+highlight LspDiagnosticsVirtualTextInformation guifg=#c3e88d guibg=none gui=none
+
 nmap ;s ysiw
-nnoremap zq :q<CR>
-nnoremap zx :q!<CR>
+nnoremap zq :qa<CR>
+nnoremap zx :qa!<CR>
+nnoremap <silent> <Leader>, :JABSOpen<CR>
 nnoremap <silent> <Leader>fs :w<CR>
 nnoremap <silent><Esc> :noh<CR>
 nnoremap <Leader>wh <C-w>h
@@ -1214,3 +1518,6 @@ nnoremap <silent> gtc :tabclose<CR>
 nnoremap <silent> gtf :tabfirst<CR>
 nnoremap <silent> gtl :tablast<CR>
 nnoremap <silent> gtu :tabrewind<CR>
+nnoremap <silent> <Leader>fo :NvimTreeOpen<CR>
+nnoremap <silent> <Leader>fc :NvimTreeClose<CR>
+nnoremap <silent> <Leader>ff :NvimTreeFindFile<CR>

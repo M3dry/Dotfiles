@@ -42,7 +42,7 @@ Sxiv.font: Operator Mono SSm Lig:size=12
 ! St
 st.alpha: 0.9
 st.alphaUnfocused: 0.9
-ft.ignoreselfg: 0
+st.ignoreselfg: 0
 st.font: Operator Mono SSm Lig Nerd Font:size=12
 st.selectionbg: #1e1c31
 st.selectionfg: #ff5370
