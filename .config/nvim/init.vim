@@ -17,6 +17,7 @@ set nu
 set relativenumber
 set clipboard=unnamedplus
 set termguicolors
+set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50,a:blinkwait600-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175
 set autoindent
 set cmdheight=2
 set updatetime=300
@@ -48,6 +49,7 @@ set completeopt=menuone,noinsert,noselect
 set shortmess+=c
 set updatetime=50
 set cmdheight=2
+set list listchars=eol:↴,trail:␣,tab:»\ ,nbsp:␣,extends:»
 
 autocmd BufRead,BufNewFile xresources,xdefaults set filetype=xdefaults
 autocmd BufWritePost xresources !xrdb %
@@ -107,7 +109,7 @@ call plug#begin("$HOME/.config/nvim/plugged")
     Plug 'ahmedkhalf/lsp-rooter.nvim'
     Plug 'glepnir/lspsaga.nvim'
     Plug 'akinsho/nvim-toggleterm.lua'
-    Plug 'nvim-lua/completion-nvim'
+    Plug 'hrsh7th/nvim-compe'
     Plug 'hrsh7th/vim-vsnip'
     Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
     Plug 'nvim-treesitter/playground'
@@ -410,34 +412,9 @@ gls.right[12] = {
 EOF
 
 lua <<EOF
-local remap = vim.api.nvim_set_keymap
-local npairs = require('nvim-autopairs')
-
-_G.MUtils= {}
-
-vim.g.completion_confirm_key = ""
-
-MUtils.completion_confirm=function()
-  if vim.fn.pumvisible() ~= 0  then
-    if vim.fn.complete_info()["selected"] ~= -1 then
-      require'completion'.confirmCompletion()
-      return npairs.esc("<c-y>")
-    else
-      vim.api.nvim_select_popupmenu_item(0 , false , false ,{})
-      require'completion'.confirmCompletion()
-      return npairs.esc("<c-n><c-y>")
-    end
-  else
-    return npairs.autopairs_cr()
-  end
-end
-
-remap('i' , '<CR>','v:lua.MUtils.completion_confirm()', {expr = true , noremap = true})
-
-npairs.setup({
-    disable_filetype = { "TelescopePrompt" },
-    enable_check_bracket_line = false,
-    check_ts = true,
+require("nvim-autopairs.completion.compe").setup({
+  map_cr = true, --  map <CR> on insert mode
+  map_complete = true -- it will auto insert `(` after select function or method item
 })
 EOF
 
@@ -711,16 +688,18 @@ nnoremap <silent> <Leader>wm :MaximizerToggle<CR>
 vnoremap <silent> <Leader>wm :MaximizerToggle<CR>
 
 let g:indent_blankline_indent_level = 7
-let g:indent_blankline_char = '┊'
-let g:indent_blankline_space_char = '.'
-let g:indent_blankline_space_char_blankline = '.'
-let g:indent_blankline_use_treesitter = v:false
-let g:indent_blankline_show_first_indent_level = v:false
-let g:indent_blankline_show_trailing_blankline_indent = v:true
+let g:indent_blankline_char = '│'
+let g:indent_blankline_space_char = '·'
+let g:indent_blankline_space_char_blankline = '·'
+let g:indent_blankline_show_trailing_blankline_indent = v:false
 let g:indent_blankline_bufname_exclude = ['README\..*', '.*\.md', '.*\.org']
 
-lua require'lspconfig'.clangd.setup{}
-autocmd BufEnter * lua require'completion'.on_attach()
+lua <<EOF
+require'lspconfig'.clangd.setup {}
+require'lspconfig'.sumneko_lua.setup {
+    cmd = { "lua-language-server" },
+}
+EOF
 
 lua <<EOF
 require("lsp-colors").setup({
@@ -763,19 +742,16 @@ EOF
 lua <<EOF
 require'sniprun'.setup({
     display = {
-      "Classic",                    -- "display results in the command-line  area
-      "VirtualTextOk",              -- "display ok results as virtual text (multiline is shortened)
-      -- "VirtualTextErr",          -- "display error results as virtual text
-      -- "TempFloatingWindow",      -- "display results in a floating window
-      -- "LongTempFloatingWindow",  -- "same as above, but only long results. To use with VirtualText__
-      -- "Terminal"                 -- "display results in a vertical split
+      "Classic",
+      "VirtualTextOk",
+      -- "VirtualTextErr",
+      -- "TempFloatingWindow",
+      -- "LongTempFloatingWindow",
+      -- "Terminal"
       },
-
-    --" customize highlight groups (setting this overrides colorscheme)
     snipruncolors = {
       SniprunVirtualTextOk   =  {fg="#72a4ff"},
     },
-
     inline_messages = 0,
     borders = 'double'
 })
@@ -827,14 +803,6 @@ let g:nvim_tree_show_icons = {
     \ 'files': 1,
     \ 'folder_arrows': 1,
     \ }
-"If 0, do not show the icons for one of 'git' 'folder' and 'files'
-"1 by default, notice that if 'files' is 1, it will only display
-"if nvim-web-devicons is installed and on your runtimepath.
-"if folder is 1, you can also tell folder_arrows 1 to show small arrows next to the folder icons.
-"but this will not work when you set indent_markers (because of UI conflict)
-
-" default will show icon by default if no icon is provided
-" default shows no icon by default
 let g:nvim_tree_icons = {
     \ 'default': '',
     \ 'symlink': '',
@@ -1014,22 +982,42 @@ require("toggleterm").setup{
 }
 EOF
 
+lua <<EOF
+require'compe'.setup {
+  enabled = true,
+  autocomplete = true,
+  debug = false,
+  min_length = 1,
+  preselect = 'enable',
+  throttle_time = 80,
+  source_timeout = 200,
+  resolve_timeout = 800,
+  incomplete_delay = 400,
+  max_abbr_width = 100,
+  max_kind_width = 100,
+  max_menu_width = 100,
+  documentation = true,
+  source = {
+    path = true,
+    buffer = true,
+    calc = true,
+    nvim_lsp = true,
+    nvim_lua = true,
+    vsnip = true,
+    tags = true,
+    spell = true,
+    emoji = true
+  }
+}
+EOF
+
 inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
 inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
-imap <silent> <C-f> <Plug>(completion_trigger)
-let g:completion_enable_auto_popup = 1
-let g:completion_timer_cycle = 400
-let g:completion_trigger_keyword_length = 1
-let g:completion_sorting = "length"
-let g:completion_trigger_on_delete = 0
-let g:completion_matching_smart_case = 1
-let g:completion_matching_strategy_list = [ 'exact', 'substring', 'fuzzy' ]
-let g:completion_enable_snippet = 'vim-vsnip'
 
 imap <expr> <Tab>   vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)' : vsnip#expandable() ? '<Plug>(vsnip-expand)' : '<Tab>'
 smap <expr> <Tab>   vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)' : vsnip#expandable() ? '<Plug>(vsnip-expand)' : '<Tab>'
-imap <expr> <S-Tab> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
-smap <expr> <S-Tab> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : '<S-Tab>'
+imap <expr> <S-Tab> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : vsnip#expandable() ? '<Plug>(vsnip-expand)' : '<Tab>'
+smap <expr> <S-Tab> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : vsnip#expandable() ? '<Plug>(vsnip-expand)' : '<Tab>'
 let g:vsnip_filetypes = {}
 let g:vsnip_snippet_dir = "$HOME/.config/nvim/snippets/"
 
@@ -1349,6 +1337,7 @@ highlight DiffAdd             guifg=#c3e88d    guibg=#353c34       gui=none
 highlight DiffDelete          guifg=#ff5370    guibg=#634661       gui=none
 highlight StatusLine          guifg=#eeffff    guibg=#292d3e       gui=none
 highlight StatusLineNC        guifg=#eeffff    guibg=#292d3e       gui=none
+highlight NonText             guifg=#3c435e    guibg=none          gui=none
 highlight Error               guifg=#ff5370    guibg=none          gui=none
 highlight WarningMsg          guifg=#f78c6c    guibg=none          gui=none
 highlight Directory           guifg=#51afef    guibg=none          gui=none
