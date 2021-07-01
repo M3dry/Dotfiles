@@ -42,14 +42,18 @@ set undofile
 set undodir=$HOME/.config/nvim/undo
 set undolevels=10000000
 set undoreload=10000000
-set fillchars+=vert:\ 
+set fillchars+=vert:│
 set scrolloff=7
-set signcolumn=yes
+if exists('g:started_by_firenvim')
+    set signcolumn=no
+else
+    set signcolumn=yes
+endif
 set completeopt=menuone,noinsert,noselect
 set shortmess+=c
 set updatetime=50
 set cmdheight=2
-set list listchars=eol:↴,trail:␣,tab:»\ ,nbsp:␣,extends:»
+set list listchars=eol:↴,trail:·,tab:»\ ,nbsp:␣,extends:»
 
 autocmd BufRead,BufNewFile xresources,xdefaults set filetype=xdefaults
 autocmd BufWritePost xresources !xrdb %
@@ -62,6 +66,7 @@ if empty(glob(data_dir . '/autoload/plug.vim'))
 endif
 
 call plug#begin("$HOME/.config/nvim/plugged")
+    Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
     " Plug 'hoob3rt/lualine.nvim'
     Plug 'glepnir/galaxyline.nvim', {'branch': 'main'}
     Plug 'rmagatti/auto-session'
@@ -77,7 +82,7 @@ call plug#begin("$HOME/.config/nvim/plugged")
     Plug 'easymotion/vim-easymotion'
     Plug 'tommcdo/vim-lion'
     Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
-    Plug 'tpope/vim-commentary'
+    Plug 'winston0410/commented.nvim'
     Plug 'tpope/vim-eunuch'
     Plug 'ThePrimeagen/vim-be-good'
     Plug 'jremmen/vim-ripgrep'
@@ -87,6 +92,7 @@ call plug#begin("$HOME/.config/nvim/plugged")
     Plug 'nvim-telescope/telescope-fzy-native.nvim'
     Plug 'nvim-telescope/telescope-symbols.nvim'
     Plug 'nvim-telescope/telescope-dap.nvim'
+    Plug 'oberblastmeister/neuron.nvim'
     Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-speeddating'
     Plug 'glts/vim-magnum'
@@ -98,7 +104,9 @@ call plug#begin("$HOME/.config/nvim/plugged")
     Plug 'lukas-reineke/indent-blankline.nvim', {'branch': 'lua'}
     Plug 'matbme/JABS.nvim'
     Plug 'kyazdani42/nvim-web-devicons'
+    Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
     Plug 'neovim/nvim-lspconfig'
+    Plug 'ray-x/lsp_signature.nvim'
     Plug 'folke/lsp-colors.nvim'
     Plug 'haringsrob/nvim_context_vt'
     Plug 'onsails/lspkind-nvim'
@@ -114,6 +122,8 @@ call plug#begin("$HOME/.config/nvim/plugged")
     Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
     Plug 'nvim-treesitter/playground'
     Plug 'p00f/nvim-ts-rainbow'
+    Plug 'mfussenegger/nvim-ts-hint-textobject'
+    Plug 'lewis6991/spellsitter.nvim'
     Plug 'folke/trouble.nvim'
     Plug 'folke/todo-comments.nvim'
     Plug 'famiu/bufdelete.nvim'
@@ -412,9 +422,13 @@ gls.right[12] = {
 EOF
 
 lua <<EOF
+require("nvim-autopairs").setup({
+    check_ts = true,
+})
+
 require("nvim-autopairs.completion.compe").setup({
-  map_cr = true, --  map <CR> on insert mode
-  map_complete = true -- it will auto insert `(` after select function or method item
+  map_cr = true,
+  map_complete = true
 })
 EOF
 
@@ -508,6 +522,15 @@ let g:Hexokinase_optInPatterns = [
 \     'hsla',
 \     'colour_names'
 \ ]
+
+lua <<EOF
+require('commented').setup({
+    comment_padding = " ",
+	keybindings = {n = "gc", v = "gc", nl = "gcc"},
+	set_keybindings = true,
+	ex_mode_cmd = "Comment"
+})
+EOF
 
 if executable('rg')
     let g:rg_derivative_root='true'
@@ -621,6 +644,32 @@ nnoremap <silent> <Leader>dtv :lua require'telescope'.extensions.dap.variables{}
 nnoremap <silent> <Leader>dtf :lua require'telescope'.extensions.dap.frames{}<CR>
 
 lua <<EOF
+require'neuron'.setup {
+    virtual_titles = true,
+    mappings = false,
+    run = nil,
+    neuron_dir = "~/my-stuff/Neuron",
+    leader = "<Leader>n"
+}
+EOF
+
+nnoremap <silent> <Leader>nn :lua require'neuron/cmd'.new_edit(require'neuron'.config.neuron_dir)<CR>
+nnoremap <silent> <Leader>nf :lua require'neuron/telescope'.find_zettels()<CR>
+nnoremap <silent> <Leader>ni :lua require'neuron/telescope'.find_zettels {insert = true}<CR>
+nnoremap <silent> <Leader>ns :lua require'neuron'.rib {address = "127.0.0.1:8200", verbose = true}<CR>
+
+function NeuronBinds()
+    nnoremap <buffer> <CR> :lua require'neuron'.enter_link()<CR>
+    nnoremap <buffer> <Leader>nb :lua require'neuron/telescope'.find_backlinks()<CR>
+    nnoremap <buffer> <Leader>nB :lua require'neuron/telescope'.find_backlinks {insert = true}<CR>
+    nnoremap <buffer> <Leader>nt :lua require'neuron/telescope'.find_tags()<CR>
+    nnoremap <buffer> gn] :lua require'neuron'.goto_next_extmark()<CR>
+    nnoremap <buffer> gn[ :lua require'neuron'.goto_prev_extmark()<CR>
+endfunction
+
+autocmd BufRead "/home/m3/my-stuff/Neuron/*.md" :call NeuronBinds()<CR>
+
+lua <<EOF
 require('due_nvim').setup {
   prescript = 'due: ',
   prescript_hi = 'Comment',
@@ -692,12 +741,36 @@ let g:indent_blankline_char = '│'
 let g:indent_blankline_space_char = '·'
 let g:indent_blankline_space_char_blankline = '·'
 let g:indent_blankline_show_trailing_blankline_indent = v:false
-let g:indent_blankline_bufname_exclude = ['README\..*', '.*\.md', '.*\.org']
+let g:indent_blankline_bufname_exclude = ['README\..*', '.*\.md']
+
+let g:doge_doc_standard_c = 'kernel_doc'
+
+nnoremap <silent> <Leader>l; :DogeGenerate<CR>
 
 lua <<EOF
 require'lspconfig'.clangd.setup {}
 require'lspconfig'.sumneko_lua.setup {
     cmd = { "lua-language-server" },
+}
+EOF
+
+lua <<EOF
+require'lsp_signature'.on_attach {
+    bind = true,
+    doc_lines = 10,
+    floating_window = true,
+    fix_pos = true,
+    hint_enable = true,
+    hint_prefix = "",
+    hint_scheme = "Search",
+    use_lspsaga = false,
+    hi_parameter = "Search",
+    max_height = 12,
+    max_width = 120,
+    handler_opts = {
+      border = "single"
+    },
+    extra_trigger_chars = {"(", ","}
 }
 EOF
 
@@ -713,7 +786,6 @@ EOF
 lua <<EOF
 require('lspkind').init({
     with_text = true,
-    preset = 'codicons',
     symbol_map = {
         Text = '',
         Method = 'ƒ',
@@ -779,6 +851,7 @@ let g:nvim_tree_root_folder_modifier = ':~'
 let g:nvim_tree_tab_open = 1
 let g:nvim_tree_width_allow_resize  = 0
 let g:nvim_tree_disable_netrw = 1
+let g:nvim_tree_disable_default_keybindings = 1
 let g:nvim_tree_hijack_netrw = 1
 let g:nvim_tree_add_trailing = 1
 let g:nvim_tree_group_empty = 1
@@ -834,45 +907,41 @@ let g:nvim_tree_icons = {
     \ }
 
 lua <<EOF
-    local tree_cb = require'nvim-tree.config'.nvim_tree_callback
-    vim.g.nvim_tree_bindings = {
-      ["<CR>"] = ":YourVimFunction()<cr>",
-      ["u"] = ":lua require'some_module'.some_function()<cr>",
+local tree_cb = require'nvim-tree.config'.nvim_tree_callback
 
-      -- default mappings
-      ["<CR>"]           = tree_cb("edit"),
-      ["o"]              = tree_cb("edit"),
-      ["<2-LeftMouse>"]  = tree_cb("edit"),
-      ["<2-RightMouse>"] = tree_cb("cd"),
-      ["<C-]>"]          = tree_cb("cd"),
-      ["<C-v>"]          = tree_cb("vsplit"),
-      ["<C-x>"]          = tree_cb("split"),
-      ["<C-t>"]          = tree_cb("tabnew"),
-      ["<"]              = tree_cb("prev_sibling"),
-      [">"]              = tree_cb("next_sibling"),
-      ["<BS>"]           = tree_cb("close_node"),
-      ["<S-CR>"]         = tree_cb("close_node"),
-      ["<Tab>"]          = tree_cb("preview"),
-      ["I"]              = tree_cb("toggle_ignored"),
-      ["H"]              = tree_cb("toggle_dotfiles"),
-      ["R"]              = tree_cb("refresh"),
-      ["a"]              = tree_cb("create"),
-      ["d"]              = tree_cb("remove"),
-      ["r"]              = tree_cb("rename"),
-      ["<C-r>"]          = tree_cb("full_rename"),
-      ["x"]              = tree_cb("cut"),
-      ["c"]              = tree_cb("copy"),
-      ["p"]              = tree_cb("paste"),
-      ["y"]              = tree_cb("copy_name"),
-      ["Y"]              = tree_cb("copy_path"),
-      ["gy"]             = tree_cb("copy_absolute_path"),
-      ["[c"]             = tree_cb("prev_git_item"),
-      ["]c"]             = tree_cb("next_git_item"),
-      ["-"]              = tree_cb("dir_up"),
-      ["l"]              = tree_cb("cd"),
-      ["h"]              = tree_cb("dir_up"),
-      ["q"]              = tree_cb("close"),
-    }
+vim.g.nvim_tree_bindings = {
+  { key = {"<CR>", "o", "<2-LeftMouse>"},   cb = tree_cb("edit") },
+  { key = {"<2-RightMouse>", "<C-}>", "l"}, cb = tree_cb("cd") },
+  { key = "<C-v>",                          cb = tree_cb("vsplit") },
+  { key = "<C-x>",                          cb = tree_cb("split") },
+  { key = "<C-t>",                          cb = tree_cb("tabnew") },
+  { key = "<",                              cb = tree_cb("prev_sibling") },
+  { key = ">",                              cb = tree_cb("next_sibling") },
+  { key = "P",                              cb = tree_cb("parent_node") },
+  { key = "<BS>",                           cb = tree_cb("close_node") },
+  { key = "<S-CR>",                         cb = tree_cb("close_node") },
+  { key = "<Tab>",                          cb = tree_cb("preview") },
+  { key = "K",                              cb = tree_cb("first_sibling") },
+  { key = "J",                              cb = tree_cb("last_sibling") },
+  { key = "I",                              cb = tree_cb("toggle_ignored") },
+  { key = "H",                              cb = tree_cb("toggle_dotfiles") },
+  { key = "R",                              cb = tree_cb("refresh") },
+  { key = "a",                              cb = tree_cb("create") },
+  { key = "d",                              cb = tree_cb("remove") },
+  { key = "r",                              cb = tree_cb("rename") },
+  { key = "<C-r",                           cb = tree_cb("full_rename") },
+  { key = "x",                              cb = tree_cb("cut") },
+  { key = "c",                              cb = tree_cb("copy") },
+  { key = "p",                              cb = tree_cb("paste") },
+  { key = "y",                              cb = tree_cb("copy_name") },
+  { key = "Y",                              cb = tree_cb("copy_path") },
+  { key = "gy",                             cb = tree_cb("copy_absolute_path") },
+  { key = "[c",                             cb = tree_cb("prev_git_item") },
+  { key = "}c",                             cb = tree_cb("next_git_item") },
+  { key = {"-", "h"},                       cb = tree_cb("dir_up") },
+  { key = "q",                              cb = tree_cb("close") },
+  { key = "g?",                             cb = tree_cb("toggle_help") },
+}
 EOF
 
 lua <<EOF
@@ -988,7 +1057,7 @@ require'compe'.setup {
   autocomplete = true,
   debug = false,
   min_length = 1,
-  preselect = 'enable',
+  preselect = 'always',
   throttle_time = 80,
   source_timeout = 200,
   resolve_timeout = 800,
@@ -998,21 +1067,52 @@ require'compe'.setup {
   max_menu_width = 100,
   documentation = true,
   source = {
-    path = true,
-    buffer = true,
-    calc = true,
-    nvim_lsp = true,
-    nvim_lua = true,
-    vsnip = true,
-    tags = true,
-    spell = true,
-    emoji = true
+    nvim_lsp =
+    {
+        true,
+        priority = 1000
+    },
+    vsnip = {
+        true,
+        kind = '﬌ Snippet',
+        priority = 950
+    },
+    nvim_lua =
+    {
+        true,
+        priority = 900
+    },
+    path =
+    {
+        true,
+        kind = ' Path',
+        priority = 700
+    },
+    buffer = {
+        true,
+        kind = '﬘ Buffer',
+        priority = 600
+    },
+    calc =
+    {
+        true,
+        kind = ' Math',
+        priority = 500
+    },
+    spell =
+    {
+        true,
+        kind = ' Spell',
+        priority = 100
+    }
   }
 }
 EOF
 
 inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
 inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
+cnoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
+cnoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
 
 imap <expr> <Tab>   vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)' : vsnip#expandable() ? '<Plug>(vsnip-expand)' : '<Tab>'
 smap <expr> <Tab>   vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)' : vsnip#expandable() ? '<Plug>(vsnip-expand)' : '<Tab>'
@@ -1021,16 +1121,12 @@ smap <expr> <S-Tab> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : vsnip#expan
 let g:vsnip_filetypes = {}
 let g:vsnip_snippet_dir = "$HOME/.config/nvim/snippets/"
 
+autocmd FileType * call vsnip#get_complete_items(bufnr())
+
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
     highlight = {
         enable = true,
-    },
-    incremental_selection = {
-        enable = true,
-        keymaps = {
-            init_selection = "gn",
-        },
     },
     indent = {
         enable = false
@@ -1058,9 +1154,6 @@ require'nvim-treesitter.configs'.setup {
         use_virtual_text = true,
         lint_events = {"BufWrite", "CursorHold"},
     },
-}
-
-require'nvim-treesitter.configs'.setup {
     rainbow = {
         enable = true,
         extended_mode = false,
@@ -1074,9 +1167,19 @@ require'nvim-treesitter.configs'.setup {
             "#f78c6c",
             "#ff5370",
         }
+    },
+    autopairs = {
+        enable = true
     }
 }
+
+require('spellsitter').setup {
+  hl = 'SpellBad',
+  captures = {'comment'},
+}
 EOF
+
+nnoremap <silent> <Leader><Leader>u :lua require('tsht').nodes()<CR>
 
 lua << EOF
 require("trouble").setup {
@@ -1163,11 +1266,10 @@ require("todo-comments").setup {
 }
 EOF
 
-nnoremap <silent> <Leader>te :TroubleToggle lsp_document_diagnostics<CR>
-nnoremap <silent> <Leader>tw :TroubleToggle lsp_workspace_diagnostics<CR>
-nnoremap <silent> <Leader>tr :TroubleToggle lsp_references<CR>
-nnoremap <silent> <Leader>td :TroubleToggle lsp_definitions<CR>
-nnoremap <silent> <Leader>tc :TroubleClose<CR>
+nnoremap <silent> gle :TroubleToggle lsp_document_diagnostics<CR>
+nnoremap <silent> glw :TroubleToggle lsp_workspace_diagnostics<CR>
+nnoremap <silent> glr :TroubleToggle lsp_references<CR>
+nnoremap <silent> glc :TroubleClose<CR>
 
 lua <<EOF
 local dap = require('dap')
@@ -1320,15 +1422,15 @@ EOF
 
 nnoremap <silent> <Leader>gg :Neogit<CR>
 nnoremap <silent> <Leader>gb :ToggleBlameLine<CR>
-nnoremap <silent> <Leader>gd :DiffviewOpen
+nnoremap <Leader>gd :DiffviewOpen
 
 highlight normal              guifg=#eeffff    guibg=none          gui=none
 highlight Visual              guifg=none       guibg=#4e5579       gui=none
 highlight Search              guifg=none       guibg=#4e5579       gui=none
 highlight LineNr              guifg=#eeffff    guibg=#111111       gui=none
+highlight VertSplit           guifg=#72a4ff    guibg=none          gui=none
 highlight CursorLineNr        guifg=#c792ea    guibg=#111111       gui=none
 highlight SignColumn          guifg=#eeffff    guibg=none          gui=none
-highlight VertSplit           guifg=none       guibg=none          gui=none
 highlight ColorColumn         guifg=none       guibg=#300000       gui=none
 highlight Title               guifg=#ecbe7b    guibg=none          gui=none
 highlight diffAdded           guifg=#c3e88d    guibg=#353c34       gui=none
@@ -1483,15 +1585,22 @@ nnoremap <Leader>wj <C-w>j
 nnoremap <Leader>wk <C-w>k
 nnoremap <Leader>wl <C-w>l
 nnoremap <Leader>w<C-o> <C-w><C-o>
-nnoremap <silent> ]wv :vertical resize +5<CR>
-nnoremap <silent> [wv :vertical resize -5<CR>
-nnoremap <silent> [ws :resize -5<CR>
-nnoremap <silent> ]ws :resize +5<CR>
+nnoremap <Leader>wH <C-w>H
+nnoremap <Leader>wJ <C-w>J
+nnoremap <Leader>wK <C-w>K
+nnoremap <Leader>wL <C-w>L
+nnoremap <Leader>w<C-o> <C-w><C-o>
 nnoremap <leader>wc <C-w>c
 nnoremap <leader>wd <C-w>c
 nnoremap <leader>wv <C-w>v
 nnoremap <leader>ws <C-w>s
 nnoremap <leader>wr <C-w>R
+nnoremap <silent> ]wv :vertical resize +5<CR>
+nnoremap <silent> [wv :vertical resize -5<CR>
+nnoremap <silent> [ws :resize -5<CR>
+nnoremap <silent> ]ws :resize +5<CR>
+nnoremap <silent> <leader>wq :q!<CR>
+nnoremap <silent> <leader>wi :so %<CR>
 nnoremap <silent> <leader>bk :lua require('bufdelete').bufdelete(0, true)<CR>
 nnoremap <silent> <leader>bd :bd<CR>
 nnoremap <silent> <leader>to :SymbolOutline<CR>
