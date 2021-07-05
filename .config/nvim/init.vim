@@ -4,7 +4,6 @@ let mapleader = " "
 set splitbelow
 set splitright
 set path+=**
-set sessionoptions+=globals
 set wildmenu
 set wildignore=**/.git/*
 set incsearch
@@ -12,7 +11,6 @@ set hidden
 set nobackup
 set notimeout
 set noswapfile
-set nowrap
 set nu
 set relativenumber
 set clipboard=unnamedplus
@@ -44,11 +42,7 @@ set undolevels=10000000
 set undoreload=10000000
 set fillchars+=vert:│
 set scrolloff=7
-if exists('g:started_by_firenvim')
-    set signcolumn=no
-else
-    set signcolumn=yes
-endif
+set signcolumn=yes
 set completeopt=menuone,noinsert,noselect
 set shortmess+=c
 set updatetime=50
@@ -66,12 +60,9 @@ if empty(glob(data_dir . '/autoload/plug.vim'))
 endif
 
 call plug#begin("$HOME/.config/nvim/plugged")
-    Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
     " Plug 'hoob3rt/lualine.nvim'
     Plug 'glepnir/galaxyline.nvim', {'branch': 'main'}
-    Plug 'rmagatti/auto-session'
     Plug 'windwp/nvim-autopairs'
-    Plug 'rmagatti/session-lens'
     Plug 'nacro90/numb.nvim'
     Plug 'jghauser/mkdir.nvim'
     Plug 'mbbill/undotree'
@@ -80,12 +71,14 @@ call plug#begin("$HOME/.config/nvim/plugged")
     Plug 'famiu/nvim-reload'
     Plug 'tpope/vim-surround'
     Plug 'easymotion/vim-easymotion'
+    Plug 'mizlan/iswap.nvim'
+    Plug 't9md/vim-choosewin'
     Plug 'tommcdo/vim-lion'
     Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
     Plug 'winston0410/commented.nvim'
+    Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
     Plug 'tpope/vim-eunuch'
     Plug 'ThePrimeagen/vim-be-good'
-    Plug 'jremmen/vim-ripgrep'
     Plug 'nvim-lua/popup.nvim'
     Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-telescope/telescope.nvim'
@@ -106,9 +99,9 @@ call plug#begin("$HOME/.config/nvim/plugged")
     Plug 'kyazdani42/nvim-web-devicons'
     Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
     Plug 'neovim/nvim-lspconfig'
+    Plug 'tjdevries/nlua.nvim'
     Plug 'ray-x/lsp_signature.nvim'
     Plug 'folke/lsp-colors.nvim'
-    Plug 'haringsrob/nvim_context_vt'
     Plug 'onsails/lspkind-nvim'
     Plug 'michaelb/sniprun', {'do': 'bash install.sh'}
     Plug 'kyazdani42/nvim-tree.lua'
@@ -119,6 +112,7 @@ call plug#begin("$HOME/.config/nvim/plugged")
     Plug 'akinsho/nvim-toggleterm.lua'
     Plug 'hrsh7th/nvim-compe'
     Plug 'hrsh7th/vim-vsnip'
+    Plug 'hrsh7th/vim-vsnip-integ'
     Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
     Plug 'nvim-treesitter/playground'
     Plug 'p00f/nvim-ts-rainbow'
@@ -133,6 +127,8 @@ call plug#begin("$HOME/.config/nvim/plugged")
     Plug 'sindrets/diffview.nvim'
     Plug 'TimUntersberger/neogit'
 call plug#end()
+
+autocmd BufEnter github.com_*.txt set filetype=markdown
 
 lua <<EOF
 -- require('lualine').setup {
@@ -304,7 +300,7 @@ gls.left[3] = {
 gls.left[4] = {
   LineInfo = {
     provider = function()
-        return string.format("%3d:%2d ", vim.fn.line('.'), vim.fn.col('.'))
+        return string.format("%d:%d %d", vim.fn.line('.'), vim.fn.col('.'), vim.fn.line('$'))
     end,
     separator = '',
     separator_highlight = {'NONE', "#292d3e"},
@@ -432,20 +428,6 @@ require("nvim-autopairs.completion.compe").setup({
 })
 EOF
 
-lua << EOF
-local opts = {
-  log_level = 'info',
-  auto_session_enable_last_session = false,
-  auto_session_root_dir = vim.fn.stdpath('data').."/sessions/",
-  auto_session_enabled = true,
-  auto_save_enabled = true,
-  auto_restore_enabled = true,
-  auto_session_suppress_dirs = nil
-}
-
-require('auto-session').setup(opts)
-EOF
-
 lua <<EOF
 require('numb').setup {
     show_numbers = true,
@@ -510,6 +492,27 @@ nmap <Leader><Leader>L <Plug>(easymotion-overwin-line)
 map  <Leader><Leader>w <Plug>(easymotion-bd-w)
 nmap <Leader><Leader>w <Plug>(easymotion-overwin-w)
 
+lua <<EOF
+require('iswap').setup{
+  keys = 'sdfghjkl',
+  grey = 'disable',
+  hl_snipe = 'CursorLineNr',
+  hl_selection = 'Visual',
+}
+EOF
+
+nnoremap <silent> <Leader>ly :ISwap<CR>
+
+let g:choosewin_overlay_enable = 1
+let g:choosewin_statusline_replace = 0
+let g:choosewin_color_label = { 'gui': ['#12111e', '#72a4ff'] }
+let g:choosewin_color_label_current = { 'gui': ['#12111e', '#ff5370'] }
+let g:choosewin_color_overlay = { 'gui': ['#72a4ff', '#72a4ff'] }
+let g:choosewin_color_overlay_current = { 'gui': ['#ff5370', '#ff5370'] }
+let g:choosewin_color_other = { 'gui': ['#12111e', '#12111e'] }
+
+nnoremap <silent> <Leader>ww :ChooseWin<CR>
+
 let b:lion_squeeze_spaces = 1
 
 let g:Hexokinase_highlighters = [ 'backgroundfull' ]
@@ -532,9 +535,37 @@ require('commented').setup({
 })
 EOF
 
-if executable('rg')
-    let g:rg_derivative_root='true'
-endif
+let g:mkdp_auto_start = 0
+let g:mkdp_auto_close = 1
+let g:mkdp_refresh_slow = 0
+let g:mkdp_command_for_global = 0
+let g:mkdp_open_to_the_world = 0
+let g:mkdp_open_ip = ''
+let g:mkdp_browser = ''
+let g:mkdp_echo_preview_url = 0
+let g:mkdp_browserfunc = ''
+let g:mkdp_preview_options = {
+    \ 'mkit': {},
+    \ 'katex': {},
+    \ 'uml': {},
+    \ 'maid': {},
+    \ 'disable_sync_scroll': 0,
+    \ 'sync_scroll_type': 'middle',
+    \ 'hide_yaml_meta': 1,
+    \ 'sequence_diagrams': {},
+    \ 'flowchart_diagrams': {},
+    \ 'content_editable': v:false,
+    \ 'disable_filename': 0
+    \ }
+let g:mkdp_markdown_css = ''
+let g:mkdp_highlight_css = ''
+let g:mkdp_port = ''
+let g:mkdp_page_title = '「${name}」'
+let g:mkdp_filetypes = ['markdown']
+
+nnoremap <Leader>mp <Plug>MarkdownPreview
+nnoremap <Leader>ms <Plug>MarkdownPreviewStop
+nnoremap <Leader>mt <Plug>MarkdownPreviewToggle
 
 lua <<EOF
 local actions = require('telescope.actions')
@@ -542,7 +573,6 @@ local trouble = require("trouble.providers.telescope")
 
 require('telescope').load_extension('dap')
 require('telescope').load_extension('fzy_native')
-require("telescope").load_extension("session-lens")
 
 require('telescope').setup {
     defaults = {
@@ -550,7 +580,8 @@ require('telescope').setup {
             i = {
                 ["<C-j>"] = actions.move_selection_next,
                 ["<C-k>"] = actions.move_selection_previous,
-                ["<C-o>"] = trouble.open_with_trouble
+                ["<C-o>"] = trouble.open_with_trouble,
+                ["<C-q>"] = actions.send_to_qflist
             },
             n = {
                 ["<C-o>"] = trouble.open_with_trouble
@@ -581,8 +612,8 @@ require('telescope').setup {
                 mirror = false,
             },
         },
-        file_sorter = require'telescope.sorters'.get_fzy_sorter,
         file_ignore_patterns = {},
+        file_sorter = require'telescope.sorters'.get_fzy_sorter,
         generic_sorter =  require'telescope.sorters'.get_generic_fuzzy_sorter,
         shorten_path = true,
         winblend = 0,
@@ -607,12 +638,6 @@ require('telescope').setup {
         }
     }
 }
-
-require('session-lens').setup {
-  shorten_path = false,
-  theme_conf = { border = true },
-  previewer = false
-}
 EOF
 
 nnoremap <silent> <C-s>      :Telescope current_buffer_fuzzy_find<CR>
@@ -622,9 +647,16 @@ nnoremap <silent> <Leader>ll :Telescope live_grep<CR>
 nnoremap <silent> <Leader>lg :Telescope grep_string<CR>
 nnoremap <silent> <Leader>lm :Telescope marks<CR>
 nnoremap <silent> <Leader>lk :Telescope keymaps<CR>
+nnoremap <silent> <Leader>lu :Telescope spell_suggest<CR>
 nnoremap <silent> <Leader>lb :Telescope buffers<CR>
 nnoremap <silent> <Leader>lz :Telescope symbols<CR>
-nnoremap <silent> <Leader>lo :Telescope session-lens search_session<CR>
+
+" Project
+nnoremap <silent> <Leader>pf  :Telescope git_files<CR>
+nnoremap <silent> <Leader>ps  :Telescope git_status<CR>
+nnoremap <silent> <Leader>pb  :lua require('m3dry.telescope').git_branches()<CR>
+nnoremap <silent> <Leader>pc  :Telescope git_bcommits<CR>
+nnoremap <silent> <Leader>pv  :Telescope git_commits<CR>
 
 " Lsp
 nnoremap <silent> <Leader>lr :Telescope lsp_references<CR>
@@ -748,10 +780,12 @@ let g:doge_doc_standard_c = 'kernel_doc'
 nnoremap <silent> <Leader>l; :DogeGenerate<CR>
 
 lua <<EOF
+local custom_nvim_lspconfig_attach = function(...) end
+
 require'lspconfig'.clangd.setup {}
-require'lspconfig'.sumneko_lua.setup {
-    cmd = { "lua-language-server" },
-}
+require('nlua.lsp.nvim').setup(require('lspconfig'), {
+    on_attach = custom_nvim_lspconfig_attach
+})
 EOF
 
 lua <<EOF
@@ -906,6 +940,16 @@ let g:nvim_tree_icons = {
     \   }
     \ }
 
+function TreeOpen()
+    NvimTreeClose
+    NvimTreeOpen
+    wincmd p
+endfunction
+
+nnoremap <silent> <Leader>fo :call TreeOpen()<CR>
+nnoremap <silent> <Leader>fc :NvimTreeClose<CR>
+nnoremap <silent> <Leader>ff :NvimTreeFindFile<CR>
+
 lua <<EOF
 local tree_cb = require'nvim-tree.config'.nvim_tree_callback
 
@@ -1053,59 +1097,59 @@ EOF
 
 lua <<EOF
 require'compe'.setup {
-  enabled = true,
-  autocomplete = true,
-  debug = false,
-  min_length = 1,
-  preselect = 'always',
-  throttle_time = 80,
-  source_timeout = 200,
-  resolve_timeout = 800,
-  incomplete_delay = 400,
-  max_abbr_width = 100,
-  max_kind_width = 100,
-  max_menu_width = 100,
-  documentation = true,
-  source = {
-    nvim_lsp =
-    {
-        true,
-        priority = 1000
-    },
-    vsnip = {
-        true,
-        kind = '﬌ Snippet',
-        priority = 950
-    },
-    nvim_lua =
-    {
-        true,
-        priority = 900
-    },
-    path =
-    {
-        true,
-        kind = ' Path',
-        priority = 700
-    },
-    buffer = {
-        true,
-        kind = '﬘ Buffer',
-        priority = 600
-    },
-    calc =
-    {
-        true,
-        kind = ' Math',
-        priority = 500
-    },
-    spell =
-    {
-        true,
-        kind = ' Spell',
-        priority = 100
+    enabled = true,
+    autocomplete = true,
+    debug = false,
+    min_length = 1,
+    preselect = 'always',
+    throttle_time = 80,
+    source_timeout = 200,
+    resolve_timeout = 800,
+    incomplete_delay = 400,
+    max_abbr_width = 100,
+    max_kind_width = 100,
+    max_menu_width = 100,
+    documentation = true,
+    source = {
+        nvim_lsp =
+        {
+            true,
+            priority = 1000
+        },
+        vsnip = {
+            true,
+            kind = '﬌ Snippet',
+            priority = 950
+        },
+        nvim_lua =
+        {
+            true,
+            priority = 900
+        },
+        path =
+        {
+            true,
+            kind = ' Path',
+            priority = 700
+        },
+        buffer = {
+            true,
+            kind = '﬘ Buffer',
+            priority = 600
+        },
+        calc =
+        {
+            true,
+            kind = ' Math',
+            priority = 500
+        },
+        spell =
+        {
+            true,
+            kind = ' Spell',
+            priority = 100
+        }
     }
-  }
 }
 EOF
 
@@ -1424,161 +1468,164 @@ nnoremap <silent> <Leader>gg :Neogit<CR>
 nnoremap <silent> <Leader>gb :ToggleBlameLine<CR>
 nnoremap <Leader>gd :DiffviewOpen
 
-highlight normal              guifg=#eeffff    guibg=none          gui=none
-highlight Visual              guifg=none       guibg=#4e5579       gui=none
-highlight Search              guifg=none       guibg=#4e5579       gui=none
-highlight LineNr              guifg=#eeffff    guibg=#111111       gui=none
-highlight VertSplit           guifg=#72a4ff    guibg=none          gui=none
-highlight CursorLineNr        guifg=#c792ea    guibg=#111111       gui=none
-highlight SignColumn          guifg=#eeffff    guibg=none          gui=none
-highlight ColorColumn         guifg=none       guibg=#300000       gui=none
-highlight Title               guifg=#ecbe7b    guibg=none          gui=none
-highlight diffAdded           guifg=#c3e88d    guibg=#353c34       gui=none
-highlight diffRemoved         guifg=#ff5370    guibg=#634661       gui=none
-highlight DiffAdd             guifg=#c3e88d    guibg=#353c34       gui=none
-highlight DiffDelete          guifg=#ff5370    guibg=#634661       gui=none
-highlight StatusLine          guifg=#eeffff    guibg=#292d3e       gui=none
-highlight StatusLineNC        guifg=#eeffff    guibg=#292d3e       gui=none
-highlight NonText             guifg=#3c435e    guibg=none          gui=none
-highlight Error               guifg=#ff5370    guibg=none          gui=none
-highlight WarningMsg          guifg=#f78c6c    guibg=none          gui=none
-highlight Directory           guifg=#51afef    guibg=none          gui=none
-highlight Pmenu               guifg=#eeffff    guibg=#12111e       gui=none
-highlight PmenuSel            guifg=#12111e    guibg=#c792ea       gui=none
-highlight PmenuSbar           guifg=none       guibg=#12111e       gui=none
-highlight PmenuThumb          guifg=none       guibg=#c792ea       gui=none
-highlight Folded              guifg=#308ac3    guibg=none          gui=none
-highlight EndOfBuffer         guifg=#292d3e    guibg=none          gui=none
-highlight MatchParen          guifg=#f78c6c    guibg=none          gui=none
-highlight Comment             guifg=#3c435e    guibg=none          gui=italic
-highlight Constant            guifg=#89ddff    guibg=none          gui=bold
-highlight String              guifg=#c3e88d    guibg=none          gui=none
-highlight Character           guifg=#f78c6c    guibg=none          gui=bold
-highlight Number              guifg=#f78c6c    guibg=none          gui=bold
-highlight Boolean             guifg=#89ddff    guibg=none          gui=bold,italic
-highlight Float               guifg=#ffcb6b    guibg=none          gui=italic
-highlight Identifier          guifg=#ffcb6b    guibg=none          gui=none
-highlight Function            guifg=#82aaff    guibg=none          gui=italic
-highlight Statement           guifg=#89ddff    guibg=none          gui=italic
-highlight Conditional         guifg=#89ddff    guibg=none          gui=bold,italic
-highlight Repeat              guifg=#89ddff    guibg=none          gui=bold,italic
-highlight Label               guifg=#89ddff    guibg=none          gui=italic
-highlight Operator            guifg=#72a4ff    guibg=none          gui=none
-highlight Keyword             guifg=#89ddff    guibg=none          gui=bold,italic
-highlight Exception           guifg=#89ddff    guibg=none          gui=bold,italic
-highlight PreProc             guifg=#89ddff    guibg=none          gui=bold
-highlight Include             guifg=#72a4ff    guibg=none          gui=bold,italic
-highlight Define              guifg=#72a4ff    guibg=none          gui=bold,italic
-highlight Macro               guifg=#72a4ff    guibg=none          gui=bold
-highlight PreCondit           guifg=#72a4ff    guibg=none          gui=bold,italic
-highlight Type                guifg=#c792ea    guibg=none          gui=none
-highlight StorageClass        guifg=#89ddff    guibg=none          gui=italic
-highlight Structure           guifg=#89ddff    guibg=none          gui=italic
-highlight Typedef             guifg=#89ddff    guibg=none          gui=italic
-highlight Special             guifg=#c3e88d    guibg=none          gui=none
-highlight SpecialChar         guifg=#c3e88d    guibg=none          gui=italic
-highlight Delimeter           guifg=#72a4ff    guibg=none          gui=none
+highlight normal              guifg=#eeffff    guibg=NONE          gui=NONE
+highlight Visual              guifg=NONE       guibg=#4e5579       gui=NONE
+highlight Search              guifg=NONE       guibg=#4e5579       gui=NONE
+highlight LineNr              guifg=#eeffff    guibg=#111111       gui=NONE
+highlight VertSplit           guifg=#72a4ff    guibg=NONE          gui=NONE
+highlight CursorLineNr        guifg=#c792ea    guibg=#111111       gui=NONE
+highlight SignColumn          guifg=#eeffff    guibg=NONE          gui=NONE
+highlight ColorColumn         guifg=NONE       guibg=#300000       gui=NONE
+highlight Title               guifg=#ecbe7b    guibg=NONE          gui=NONE
+highlight diffAdded           guifg=#c3e88d    guibg=#353c34       gui=NONE
+highlight diffRemoved         guifg=#ff5370    guibg=#634661       gui=NONE
+highlight DiffAdd             guifg=#c3e88d    guibg=#353c34       gui=NONE
+highlight DiffDelete          guifg=#ff5370    guibg=#634661       gui=NONE
+highlight StatusLine          guifg=#eeffff    guibg=#292d3e       gui=NONE
+highlight StatusLineNC        guifg=#eeffff    guibg=#292d3e       gui=NONE
+highlight NonText             guifg=#3c435e    guibg=NONE          gui=NONE
+highlight Error               guifg=#ff5370    guibg=NONE          gui=NONE
+highlight ErrorMsg            guifg=#ff5370    guibg=NONE          gui=NONE
+highlight WarningMsg          guifg=#f78c6c    guibg=NONE          gui=NONE
+highlight Directory           guifg=#51afef    guibg=NONE          gui=NONE
+highlight Pmenu               guifg=#eeffff    guibg=#12111e       gui=NONE
+highlight PmenuSel            guifg=#12111e    guibg=#c792ea       gui=NONE
+highlight PmenuSbar           guifg=NONE       guibg=#12111e       gui=NONE
+highlight PmenuThumb          guifg=NONE       guibg=#c792ea       gui=NONE
+highlight Folded              guifg=#308ac3    guibg=NONE          gui=NONE
+highlight EndOfBuffer         guifg=#292d3e    guibg=NONE          gui=NONE
+highlight MatchParen          guifg=#f78c6c    guibg=NONE          gui=NONE
+highlight Comment             guifg=#3c435e    guibg=NONE          gui=italic
+highlight Constant            guifg=#89ddff    guibg=NONE          gui=bold
+highlight String              guifg=#c3e88d    guibg=NONE          gui=NONE
+highlight Character           guifg=#f78c6c    guibg=NONE          gui=bold
+highlight Number              guifg=#f78c6c    guibg=NONE          gui=bold
+highlight Boolean             guifg=#89ddff    guibg=NONE          gui=bold,italic
+highlight Float               guifg=#ffcb6b    guibg=NONE          gui=italic
+highlight Identifier          guifg=#ffcb6b    guibg=NONE          gui=NONE
+highlight Function            guifg=#82aaff    guibg=NONE          gui=italic
+highlight Statement           guifg=#89ddff    guibg=NONE          gui=italic
+highlight Conditional         guifg=#89ddff    guibg=NONE          gui=bold,italic
+highlight Repeat              guifg=#89ddff    guibg=NONE          gui=bold,italic
+highlight Label               guifg=#89ddff    guibg=NONE          gui=italic
+highlight Operator            guifg=#72a4ff    guibg=NONE          gui=NONE
+highlight Keyword             guifg=#89ddff    guibg=NONE          gui=bold,italic
+highlight Exception           guifg=#89ddff    guibg=NONE          gui=bold,italic
+highlight PreProc             guifg=#89ddff    guibg=NONE          gui=bold
+highlight Include             guifg=#72a4ff    guibg=NONE          gui=bold,italic
+highlight Define              guifg=#72a4ff    guibg=NONE          gui=bold,italic
+highlight Macro               guifg=#72a4ff    guibg=NONE          gui=bold
+highlight PreCondit           guifg=#72a4ff    guibg=NONE          gui=bold,italic
+highlight Type                guifg=#c792ea    guibg=NONE          gui=NONE
+highlight StorageClass        guifg=#89ddff    guibg=NONE          gui=italic
+highlight Structure           guifg=#89ddff    guibg=NONE          gui=italic
+highlight Typedef             guifg=#89ddff    guibg=NONE          gui=italic
+highlight Special             guifg=#c3e88d    guibg=NONE          gui=NONE
+highlight SpecialChar         guifg=#c3e88d    guibg=NONE          gui=italic
+highlight Delimeter           guifg=#72a4ff    guibg=NONE          gui=NONE
 
 " Quick scope
-highlight QuickScopePrimary   guifg=#ff79c6    guibg=none          gui=bold,italic
-highlight QuickScopeSecondary guifg=#ffffff    guibg=none          gui=bold,italic
+highlight QuickScopePrimary   guifg=#ff79c6    guibg=NONE          gui=bold,italic
+highlight QuickScopeSecondary guifg=#ffffff    guibg=NONE          gui=bold,italic
 
 " Hlslens
-highlight HlSearchFloat       guifg=#72a4ff    guibg=none          gui=none
-highlight HlSearchNear        guifg=none       guibg=#4e5579       gui=none
-highlight HlSearchLens        guifg=#ff5370    guibg=#12111e       gui=none
+highlight HlSearchFloat       guifg=#72a4ff    guibg=NONE          gui=NONE
+highlight HlSearchNear        guifg=NONE       guibg=#4e5579       gui=NONE
+highlight HlSearchLens        guifg=#ff5370    guibg=#12111e       gui=NONE
 
 " Tree sitter
-highlight TSBoolean           guifg=#89ddff    guibg=none          gui=italic
-highlight TSCharacter         guifg=#f78c6c    guibg=none          gui=none
-highlight TSComment           guifg=#3c435e    guibg=none          gui=italic
-highlight TSConditional       guifg=#89ddff    guibg=none          gui=italic
-highlight TSConstant          guifg=#89ddff    guibg=none          gui=bold
-highlight TSConstBuiltin      guifg=#89ddff    guibg=none          gui=bold,italic
-highlight TSConstMacro        guifg=#72a4ff    guibg=none          gui=bold,italic
-highlight TSConstructor       guifg=#89ddff    guibg=none          gui=bold,italic
-highlight TSFunction          guifg=#82aaff    guibg=none          gui=none
-highlight TSFuncMacro         guifg=#ffcb6b    guibg=none          gui=bold
-highlight TSInclude           guifg=#72a4ff    guibg=none          gui=bold,italic
-highlight TSNumber            guifg=#f78c6c    guibg=none          gui=bold
-highlight TSOperator          guifg=#72a4ff    guibg=none          gui=none
-highlight TSParameter         guifg=#ffcb6b    guibg=none          gui=italic
-highlight TSProperty          guifg=#ff5370    guibg=none          gui=italic
-highlight TSPunctBracket      guifg=#72a4ff    guibg=none          gui=none
-highlight TSPunctDelimeter    guifg=#72a4ff    guibg=none          gui=none
-highlight TSPunctDelimiter    guifg=#72a4ff    guibg=none          gui=none
-highlight TSPunctSpecial      guifg=#72a4ff    guibg=none          gui=none
-highlight TSString            guifg=#c3e88d    guibg=none          gui=none
-highlight TSStringEscape      guifg=#72a4ff    guibg=none          gui=italic
-highlight TSStringRegex       guifg=#ff5370    guibg=none          gui=italic
-highlight TSType              guifg=#c792ea    guibg=none          gui=none
-highlight TSTypeBuiltin       guifg=#c792ea    guibg=none          gui=italic
-highlight TSURI               guifg=#ffcb6b    guibg=none          gui=underline
-highlight TSVariable          guifg=#ffcb6b    guibg=none          gui=none
-highlight TSVariableBuiltin   guifg=#89ddff    guibg=none          gui=bold
-highlight TSNamespace         guifg=#c792ea    guibg=none          gui=italic
-highlight TSKeyword           guifg=#89ddff    guibg=none          gui=italic
+highlight TSBoolean           guifg=#89ddff    guibg=NONE          gui=italic
+highlight TSCharacter         guifg=#f78c6c    guibg=NONE          gui=NONE
+highlight TSComment           guifg=#3c435e    guibg=NONE          gui=italic
+highlight TSConditional       guifg=#89ddff    guibg=NONE          gui=italic
+highlight TSConstant          guifg=#89ddff    guibg=NONE          gui=bold
+highlight TSConstBuiltin      guifg=#89ddff    guibg=NONE          gui=bold,italic
+highlight TSConstMacro        guifg=#72a4ff    guibg=NONE          gui=bold,italic
+highlight TSConstructor       guifg=#89ddff    guibg=NONE          gui=bold,italic
+highlight TSFunction          guifg=#82aaff    guibg=NONE          gui=NONE
+highlight TSFuncMacro         guifg=#ffcb6b    guibg=NONE          gui=bold
+highlight TSInclude           guifg=#72a4ff    guibg=NONE          gui=bold,italic
+highlight TSNumber            guifg=#f78c6c    guibg=NONE          gui=bold
+highlight TSOperator          guifg=#72a4ff    guibg=NONE          gui=NONE
+highlight TSParameter         guifg=#ffcb6b    guibg=NONE          gui=italic
+highlight TSProperty          guifg=#ff5370    guibg=NONE          gui=italic
+highlight TSPunctBracket      guifg=#72a4ff    guibg=NONE          gui=NONE
+highlight TSPunctDelimeter    guifg=#72a4ff    guibg=NONE          gui=NONE
+highlight TSPunctDelimiter    guifg=#72a4ff    guibg=NONE          gui=NONE
+highlight TSPunctSpecial      guifg=#72a4ff    guibg=NONE          gui=NONE
+highlight TSString            guifg=#c3e88d    guibg=NONE          gui=NONE
+highlight TSStringEscape      guifg=#72a4ff    guibg=NONE          gui=italic
+highlight TSStringRegex       guifg=#ff5370    guibg=NONE          gui=italic
+highlight TSType              guifg=#c792ea    guibg=NONE          gui=NONE
+highlight TSTypeBuiltin       guifg=#c792ea    guibg=NONE          gui=italic
+highlight TSURI               guifg=#ffcb6b    guibg=NONE          gui=underline
+highlight TSVariable          guifg=#ffcb6b    guibg=NONE          gui=NONE
+highlight TSVariableBuiltin   guifg=#89ddff    guibg=NONE          gui=bold
+highlight TSNamespace         guifg=#c792ea    guibg=NONE          gui=italic
+highlight TSKeyword           guifg=#89ddff    guibg=NONE          gui=italic
 
 " Tabs
-highlight TabLine             guifg=#eeffff    guibg=#111111       gui=none
+highlight TabLine             guifg=#eeffff    guibg=#111111       gui=NONE
 highlight TabLineSel          guifg=#ff5370    guibg=#111111       gui=italic
-highlight TabLineFill         guifg=#eeffff    guibg=#111111       gui=none
+highlight TabLineFill         guifg=#eeffff    guibg=#111111       gui=NONE
 
 " Nvim Tree
-highligh NvimTreeFolderName       guifg=#c792ea    guibg=none          gui=none
-highligh NvimTreeFolderIcon       guifg=#c792ea    guibg=none          gui=none
-highligh NvimTreeEmptyFolderName  guifg=#c792ea    guibg=none          gui=none
-highligh NvimTreeOpenedFolderName guifg=#c792ea    guibg=none          gui=none
-highligh NvimTreeNormal           guifg=#eeffff    guibg=none          gui=none
-highligh NvimTreeSymlink          guifg=#72a4ff    guibg=none          gui=none
-highligh NvimTreeRootFolder       guifg=#ffcb6b    guibg=none          gui=italic
-highligh NvimTreeSpecialFile      guifg=#ff5370    guibg=none          gui=italic
-highligh NvimTreeExecFile         guifg=#c3e88d    guibg=none          gui=none
-highligh NvimTreeImageFile        guifg=#89ddff    guibg=none          gui=none
+highligh NvimTreeFolderName       guifg=#c792ea    guibg=NONE          gui=NONE
+highligh NvimTreeFolderIcon       guifg=#c792ea    guibg=NONE          gui=NONE
+highligh NvimTreeEmptyFolderName  guifg=#c792ea    guibg=NONE          gui=NONE
+highligh NvimTreeOpenedFolderName guifg=#c792ea    guibg=NONE          gui=NONE
+highligh NvimTreeNormal           guifg=#eeffff    guibg=NONE          gui=NONE
+highligh NvimTreeSymlink          guifg=#72a4ff    guibg=NONE          gui=NONE
+highligh NvimTreeRootFolder       guifg=#ffcb6b    guibg=NONE          gui=italic
+highligh NvimTreeSpecialFile      guifg=#ff5370    guibg=NONE          gui=italic
+highligh NvimTreeExecFile         guifg=#c3e88d    guibg=NONE          gui=NONE
+highligh NvimTreeImageFile        guifg=#89ddff    guibg=NONE          gui=NONE
 
 " Neogit
-highligh NeogitDiffAdd              guifg=#9cb970    guibg=#232629          gui=none
-highligh NeogitDiffAddHighlight     guifg=#c3e88d    guibg=#353c34          gui=none
-highligh NeogitDiffDelete           guifg=#cc4259    guibg=#4f445f          gui=none
-highligh NeogitDiffDeleteHighlight  guifg=#ff5370    guibg=#634661          gui=none
-highligh NeogitDiffContextHighlight guifg=none       guibg=none             gui=none
-highligh NeogitHunkHeader           guifg=#12111e    guibg=#44324a          gui=none
-highligh NeogitHunkHeaderHighlight  guifg=#12111e    guibg=#bb80b3          gui=none
-highligh NeogitstagedChanges        guifg=#c3e88d    guibg=none             gui=italic
-highligh NeogitUnstagedChanges      guifg=#ff5370    guibg=none             gui=italic
+highligh NeogitDiffAdd              guifg=#9cb970    guibg=#232629          gui=NONE
+highligh NeogitDiffAddHighlight     guifg=#c3e88d    guibg=#353c34          gui=NONE
+highligh NeogitDiffDelete           guifg=#cc4259    guibg=#4f445f          gui=NONE
+highligh NeogitDiffDeleteHighlight  guifg=#ff5370    guibg=#634661          gui=NONE
+highligh NeogitDiffContextHighlight guifg=NONE       guibg=NONE             gui=NONE
+highligh NeogitHunkHeader           guifg=#12111e    guibg=#44324a          gui=NONE
+highligh NeogitHunkHeaderHighlight  guifg=#12111e    guibg=#bb80b3          gui=NONE
+highligh NeogitstagedChanges        guifg=#c3e88d    guibg=NONE             gui=italic
+highligh NeogitUnstagedChanges      guifg=#ff5370    guibg=NONE             gui=italic
 
 " Indent
-highlight IndentBlanklineChar               guifg=#292d3e    guibg=none          gui=none
-highlight IndentBlanklineSpaceChar          guifg=#292d3e    guibg=none          gui=none
-highlight IndentBlanklineSpaceCharBlankline guifg=#292d3e    guibg=none          gui=none
+highlight IndentBlanklineChar               guifg=#292d3e    guibg=NONE          gui=NONE
+highlight IndentBlanklineSpaceChar          guifg=#292d3e    guibg=NONE          gui=NONE
+highlight IndentBlanklineSpaceCharBlankline guifg=#292d3e    guibg=NONE          gui=NONE
 
 " Lsp
-highlight LspDiagnosticsDefaultError           guifg=#ff5370 guibg=none gui=none
-highlight LspDiagnosticsDefaultWarning         guifg=#f78c6c guibg=none gui=none
-highlight LspDiagnosticsDefaultHint            guifg=#72a4ff guibg=none gui=none
-highlight LspDiagnosticsDefaultInformation     guifg=#c3e88d guibg=none gui=none
-highlight LspDiagnosticsFloatingError          guifg=#ff5370 guibg=none gui=none
-highlight LspDiagnosticsFloatingWarning        guifg=#f78c6c guibg=none gui=none
-highlight LspDiagnosticsFloatingHint           guifg=#72a4ff guibg=none gui=none
-highlight LspDiagnosticsFloatingInformation    guifg=#c3e88d guibg=none gui=none
-highlight LspDiagnosticsSignError              guifg=#ff5370 guibg=none gui=none
-highlight LspDiagnosticsSignWarning            guifg=#f78c6c guibg=none gui=none
-highlight LspDiagnosticsSignHint               guifg=#72a4ff guibg=none gui=none
-highlight LspDiagnosticsSignInformation        guifg=#c3e88d guibg=none gui=none
-highlight LspDiagnosticsUnderlineError         guifg=#ff5370 guibg=none gui=undercurl
-highlight LspDiagnosticsUnderlineWarning       guifg=#f78c6c guibg=none gui=undercurl
-highlight LspDiagnosticsUnderlineHint          guifg=#72a4ff guibg=none gui=undercurl
-highlight LspDiagnosticsUnderlineInformation   guifg=#c3e88d guibg=none gui=undercurl
-highlight LspDiagnosticsVirtualTextError       guifg=#ff5370 guibg=none gui=none
-highlight LspDiagnosticsVirtualTextWarning     guifg=#f78c6c guibg=none gui=none
-highlight LspDiagnosticsVirtualTextHint        guifg=#72a4ff guibg=none gui=none
-highlight LspDiagnosticsVirtualTextInformation guifg=#c3e88d guibg=none gui=none
+highlight LspDiagnosticsDefaultError           guifg=#ff5370 guibg=NONE gui=NONE
+highlight LspDiagnosticsDefaultWarning         guifg=#f78c6c guibg=NONE gui=NONE
+highlight LspDiagnosticsDefaultHint            guifg=#72a4ff guibg=NONE gui=NONE
+highlight LspDiagnosticsDefaultInformation     guifg=#c3e88d guibg=NONE gui=NONE
+highlight LspDiagnosticsFloatingError          guifg=#ff5370 guibg=NONE gui=NONE
+highlight LspDiagnosticsFloatingWarning        guifg=#f78c6c guibg=NONE gui=NONE
+highlight LspDiagnosticsFloatingHint           guifg=#72a4ff guibg=NONE gui=NONE
+highlight LspDiagnosticsFloatingInformation    guifg=#c3e88d guibg=NONE gui=NONE
+highlight LspDiagnosticsSignError              guifg=#ff5370 guibg=NONE gui=NONE
+highlight LspDiagnosticsSignWarning            guifg=#f78c6c guibg=NONE gui=NONE
+highlight LspDiagnosticsSignHint               guifg=#72a4ff guibg=NONE gui=NONE
+highlight LspDiagnosticsSignInformation        guifg=#c3e88d guibg=NONE gui=NONE
+highlight LspDiagnosticsUnderlineError         guifg=#ff5370 guibg=NONE gui=undercurl
+highlight LspDiagnosticsUnderlineWarning       guifg=#f78c6c guibg=NONE gui=undercurl
+highlight LspDiagnosticsUnderlineHint          guifg=#72a4ff guibg=NONE gui=undercurl
+highlight LspDiagnosticsUnderlineInformation   guifg=#c3e88d guibg=NONE gui=undercurl
+highlight LspDiagnosticsVirtualTextError       guifg=#ff5370 guibg=NONE gui=NONE
+highlight LspDiagnosticsVirtualTextWarning     guifg=#f78c6c guibg=NONE gui=NONE
+highlight LspDiagnosticsVirtualTextHint        guifg=#72a4ff guibg=NONE gui=NONE
+highlight LspDiagnosticsVirtualTextInformation guifg=#c3e88d guibg=NONE gui=NONE
 
 nmap ;s ysiw
+nnoremap ]q :cnext<CR>zz
+nnoremap [q :cprev<CR>zz
 nnoremap zq :qa<CR>
 nnoremap zx :qa!<CR>
 nnoremap <silent> <Leader>, :JABSOpen<CR>
-nnoremap <silent> <Leader>fs :w<CR>
+nnoremap <silent> <Leader>s :w<CR>
 nnoremap <silent><Esc> :noh<CR>
 nnoremap <Leader>wh <C-w>h
 nnoremap <Leader>wj <C-w>j
@@ -1595,10 +1642,10 @@ nnoremap <leader>wd <C-w>c
 nnoremap <leader>wv <C-w>v
 nnoremap <leader>ws <C-w>s
 nnoremap <leader>wr <C-w>R
-nnoremap <silent> ]wv :vertical resize +5<CR>
-nnoremap <silent> [wv :vertical resize -5<CR>
-nnoremap <silent> [ws :resize -5<CR>
-nnoremap <silent> ]ws :resize +5<CR>
+nnoremap <silent> ]w :vertical resize +5<CR>
+nnoremap <silent> [w :vertical resize -5<CR>
+nnoremap <silent> [W :resize -5<CR>
+nnoremap <silent> ]W :resize +5<CR>
 nnoremap <silent> <leader>wq :q!<CR>
 nnoremap <silent> <leader>wi :so %<CR>
 nnoremap <silent> <leader>bk :lua require('bufdelete').bufdelete(0, true)<CR>
@@ -1616,6 +1663,3 @@ nnoremap <silent> gtc :tabclose<CR>
 nnoremap <silent> gtf :tabfirst<CR>
 nnoremap <silent> gtl :tablast<CR>
 nnoremap <silent> gtu :tabrewind<CR>
-nnoremap <silent> <Leader>fo :NvimTreeOpen<CR>
-nnoremap <silent> <Leader>fc :NvimTreeClose<CR>
-nnoremap <silent> <Leader>ff :NvimTreeFindFile<CR>

@@ -63,7 +63,8 @@ export TERMINAL="st"
 export BROWSER="firefox"
 export XENVIRONMENT="${HOME}/.config/x11/xresources"
 export PASSWORD_STORE_DIR="${HOME}/my-stuff/pass"
-export MANPAGER="nvim -c 'set ft=man' -"
+export PAGER="nvimpager"
+export MANPAGER="/bin/sh -c \"nvim -c 'set ft=man ts=8 nomod nolist noma nu relativenumber' -\""
 export GOPATH="$HOME/.local/go"
 export COLORTERM="truecolor"
 export DOOMDIR="~/.config/emacs/doom-m3"
@@ -101,3 +102,5 @@ source /usr/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.
 
 # Shorts
 source "$HOME/.config/zsh/marks"
+
+alias luamake=/home/m3/.cache/nvim/nlua/sumneko_lua/lua-language-server/3rd/luamake/luamake

@@ -26,7 +26,7 @@ memory() {
 }
 
 clock() {
-    date +'%A, %e. %B %H:%M:%S'
+    date +'%A, %e. %B %H:%M:%S' | sed "s/,  /, /"
 }
 
 package
