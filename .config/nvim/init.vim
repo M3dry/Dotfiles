@@ -55,14 +55,16 @@ autocmd BufWritePost DirMarks !shorts DirConf
 
 let data_dir = stdpath('data') . '/site'
 if empty(glob(data_dir . '/autoload/plug.vim'))
-  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
 call plug#begin("$HOME/.config/nvim/plugged")
     " Plug 'hoob3rt/lualine.nvim'
     Plug 'glepnir/galaxyline.nvim', {'branch': 'main'}
     Plug 'windwp/nvim-autopairs'
+    Plug 'Iron-E/nvim-cartographer'
+    Plug 'Pocco81/AutoSave.nvim'
     Plug 'nacro90/numb.nvim'
     Plug 'jghauser/mkdir.nvim'
     Plug 'mbbill/undotree'
@@ -79,6 +81,7 @@ call plug#begin("$HOME/.config/nvim/plugged")
     Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
     Plug 'tpope/vim-eunuch'
     Plug 'ThePrimeagen/vim-be-good'
+    Plug 'crispgm/nvim-tabline'
     Plug 'nvim-lua/popup.nvim'
     Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-telescope/telescope.nvim'
@@ -94,8 +97,9 @@ call plug#begin("$HOME/.config/nvim/plugged")
     Plug 'kevinhwang91/nvim-hlslens'
     Plug 'lfilho/cosco.vim'
     Plug 'szw/vim-maximizer'
-    Plug 'lukas-reineke/indent-blankline.nvim', {'branch': 'lua'}
+    Plug 'lukas-reineke/indent-blankline.nvim'
     Plug 'matbme/JABS.nvim'
+    Plug 'johann2357/nvim-smartbufs'
     Plug 'kyazdani42/nvim-web-devicons'
     Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
     Plug 'neovim/nvim-lspconfig'
@@ -271,149 +275,149 @@ local gls = gl.section
 local condition = require('galaxyline.condition')
 
 gls.left[1] = {
-  RainbowRed = {
-    provider = function() return ' ' end,
-    highlight = {'NONE', "#ff5370"}
-  },
+    RainbowRed = {
+        provider = function() return ' ' end,
+        highlight = {'NONE', "#ff5370"}
+    },
 }
 
 gls.left[2] = {
-  FileSize = {
-    provider = 'FileSize',
-    condition = condition.buffer_not_empty,
-    separator = ' ',
-    separator_highlight = {'#ff5370', "#c792ea"},
-    highlight = {"#12111e", "#ff5370"}
-  }
+    FileSize = {
+        provider = 'FileSize',
+        condition = condition.buffer_not_empty,
+        separator = ' ',
+        separator_highlight = {'#ff5370', "#c792ea"},
+        highlight = {"#12111e", "#ff5370"}
+    }
 }
 
 gls.left[3] = {
-  FileName = {
-    provider = 'FileName',
-    condition = condition.buffer_not_empty,
-    separator = ' ',
-    separator_highlight = {'NONE', "#72a4ff"},
-    highlight = {"#12111e", "#c792ea",'italic'}
-  }
+    FileName = {
+        provider = 'FileName',
+        condition = condition.buffer_not_empty,
+        separator = ' ',
+        separator_highlight = {'NONE', "#72a4ff"},
+        highlight = {"#12111e", "#c792ea",'italic'}
+    }
 }
 
 gls.left[4] = {
-  LineInfo = {
-    provider = function()
-        return string.format("%d:%d %d", vim.fn.line('.'), vim.fn.col('.'), vim.fn.line('$'))
-    end,
-    separator = '',
-    separator_highlight = {'NONE', "#292d3e"},
-    highlight = {"#12111e", "#72a4ff"},
-  },
+    LineInfo = {
+        provider = function()
+            return string.format("%d:%d %d", vim.fn.line('.'), vim.fn.col('.'), vim.fn.line('$'))
+        end,
+        separator = '',
+        separator_highlight = {'NONE', "#292d3e"},
+        highlight = {"#12111e", "#72a4ff"},
+    }
 }
 
 gls.right[1] = {
-  GitIcon = {
-    provider = function() return '  ' end,
-    condition = condition.check_git_workspace,
-    highlight = {"#c792ea", "#292d3e"},
-  }
+    GitIcon = {
+        provider = function() return '  ' end,
+        condition = condition.check_git_workspace,
+        highlight = {"#c792ea", "#292d3e"},
+    }
 }
 
 gls.right[2] = {
-  GitBranch = {
-    provider = 'GitBranch',
-    condition = condition.check_git_workspace,
-    highlight = {"#c792ea", "#292d3e"},
-  }
+    GitBranch = {
+        provider = 'GitBranch',
+        condition = condition.check_git_workspace,
+        highlight = {"#c792ea", "#292d3e"},
+    }
 }
 
 gls.right[3] = {
-  DiffAdd = {
-    provider = 'DiffAdd',
-    condition = condition.hide_in_width,
-    icon = '  ',
-    highlight = {"#c3e88d", "#292d3e"},
-  }
+    DiffAdd = {
+        provider = 'DiffAdd',
+        condition = condition.hide_in_width,
+        icon = '  ',
+        highlight = {"#c3e88d", "#292d3e"},
+    }
 }
 gls.right[4] = {
-  DiffModified = {
-    provider = 'DiffModified',
-    condition = condition.hide_in_width,
-    icon = ' 柳',
-    highlight = {"#f78c6c", "#292d3e"},
-  }
+    DiffModified = {
+        provider = 'DiffModified',
+        condition = condition.hide_in_width,
+        icon = ' 柳',
+        highlight = {"#f78c6c", "#292d3e"},
+    }
 }
 gls.right[5] = {
-  DiffRemove = {
-    provider = 'DiffRemove',
-    condition = condition.hide_in_width,
-    icon = '  ',
-    highlight = {"#ff5370", "#292d3e"},
-  }
+    DiffRemove = {
+        provider = 'DiffRemove',
+        condition = condition.hide_in_width,
+        icon = '  ',
+        highlight = {"#ff5370", "#292d3e"},
+    }
 }
 
 gls.right[6] = {
-  DiagnosticError = {
-    provider = 'DiagnosticError',
-    icon = ' ',
-    separator = ' ',
-    separator_highlight = {'NONE', "#292d3e"},
-    highlight = {"#ff5370", "#292d3e"}
-  }
+    DiagnosticError = {
+        provider = 'DiagnosticError',
+        icon = ' ',
+        separator = ' ',
+        separator_highlight = {'NONE', "#292d3e"},
+        highlight = {"#ff5370", "#292d3e"}
+    }
 }
 
 gls.right[7] = {
-  DiagnosticWarn = {
-    provider = 'DiagnosticWarn',
-    icon = ' ',
-    highlight = {"#f78c6c", "#292d3e"},
-  }
+    DiagnosticWarn = {
+        provider = 'DiagnosticWarn',
+        icon = ' ',
+        highlight = {"#f78c6c", "#292d3e"},
+    }
 }
 
 gls.right[8] = {
-  DiagnosticHint = {
-    provider = 'DiagnosticHint',
-    icon = ' ',
-    highlight = {"#72a4ff", "#292d3e"},
-  }
+    DiagnosticHint = {
+        provider = 'DiagnosticHint',
+        icon = ' ',
+        highlight = {"#72a4ff", "#292d3e"},
+    }
 }
 
 gls.right[9] = {
-  DiagnosticInfo = {
-    provider = 'DiagnosticInfo',
-    icon = ' ',
-    highlight = {"#c3e88d", "#292d3e"},
-  }
+    DiagnosticInfo = {
+        provider = 'DiagnosticInfo',
+        icon = ' ',
+        highlight = {"#c3e88d", "#292d3e"},
+    }
 }
 
 gls.right[10] = {
-  ShowLspClient = {
-    provider = 'GetLspClient',
-    condition = function ()
-      local tbl = {['dashboard'] = true,['']=true}
-      if tbl[vim.bo.filetype] then
-        return false
-      end
-      return true
-    end,
-    icon = '  ',
-    separator = '',
-    separator_highlight = {'NONE', "#292d3e"},
-    highlight = {"#c3e88d", "#292d3e"}
-  }
+    ShowLspClient = {
+        provider = 'GetLspClient',
+        condition = function ()
+            local tbl = {['dashboard'] = true,['']=true}
+            if tbl[vim.bo.filetype] then
+                return false
+            end
+            return true
+        end,
+        icon = '  ',
+        separator = '',
+        separator_highlight = {'NONE', "#292d3e"},
+        highlight = {"#c3e88d", "#292d3e"}
+    }
 }
 
 gls.right[11] = {
-  PerCent = {
-    provider = 'LinePercent',
-    separator = ' ',
-    separator_highlight = {'NONE', "#292d3e"},
-    highlight = {"#eeffff", "#292d3e"},
-  }
+    PerCent = {
+        provider = 'LinePercent',
+        separator = ' ',
+        separator_highlight = {'NONE', "#292d3e"},
+        highlight = {"#eeffff", "#292d3e"},
+    }
 }
 
 gls.right[12] = {
-  RainbowBlue = {
-    provider = function() return '' end,
-    highlight = {'NONE', "#292d3e"}
-  },
+    RainbowBlue = {
+        provider = function() return '' end,
+        highlight = {'NONE', "#292d3e"}
+    }
 }
 EOF
 
@@ -423,9 +427,25 @@ require("nvim-autopairs").setup({
 })
 
 require("nvim-autopairs.completion.compe").setup({
-  map_cr = true,
-  map_complete = true
+    map_cr = true,
+    map_complete = true
 })
+EOF
+
+lua <<EOF
+require("autosave").setup {
+    enabled = true,
+    execution_message = "AutoSave: " .. vim.fn.strftime("%H:%M:%S"),
+    events = {"InsertLeave", "WinEnter"},
+    conditions = {
+        exists = true,
+        filetype_is_not = {},
+        modifiable = true
+    },
+    write_all_buffers = false,
+    on_off_commands = true,
+    clean_command_line_interval = 2500
+}
 EOF
 
 lua <<EOF
@@ -480,28 +500,14 @@ EOF
 
 let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
 
-map  <Leader><Leader>r <Plug>(easymotion-jumptoanywhere)
-map  <Leader><Leader>h <Plug>(easymotion-linebackward)
-map  <Leader><Leader>l <Plug>(easymotion-lineforward)
-map  <Leader><Leader>H <Plug>(easymotion-lineanywhere)
-map  <Leader><Leader>f <Plug>(easymotion-bd-f)
-nmap <Leader><Leader>f <Plug>(easymotion-overwin-f)
-nmap s <Plug>(easymotion-overwin-f2)
-map  <Leader><Leader>L <Plug>(easymotion-bd-jk)
-nmap <Leader><Leader>L <Plug>(easymotion-overwin-line)
-map  <Leader><Leader>w <Plug>(easymotion-bd-w)
-nmap <Leader><Leader>w <Plug>(easymotion-overwin-w)
-
 lua <<EOF
 require('iswap').setup{
-  keys = 'sdfghjkl',
-  grey = 'disable',
-  hl_snipe = 'CursorLineNr',
-  hl_selection = 'Visual',
+    keys = 'sdfghjkl',
+    grey = 'enable',
+    hl_snipe = 'CursorLineNr',
+    hl_selection = 'Visual',
 }
 EOF
-
-nnoremap <silent> <Leader>ly :ISwap<CR>
 
 let g:choosewin_overlay_enable = 1
 let g:choosewin_statusline_replace = 0
@@ -510,8 +516,6 @@ let g:choosewin_color_label_current = { 'gui': ['#12111e', '#ff5370'] }
 let g:choosewin_color_overlay = { 'gui': ['#72a4ff', '#72a4ff'] }
 let g:choosewin_color_overlay_current = { 'gui': ['#ff5370', '#ff5370'] }
 let g:choosewin_color_other = { 'gui': ['#12111e', '#12111e'] }
-
-nnoremap <silent> <Leader>ww :ChooseWin<CR>
 
 let b:lion_squeeze_spaces = 1
 
@@ -563,9 +567,13 @@ let g:mkdp_port = ''
 let g:mkdp_page_title = '「${name}」'
 let g:mkdp_filetypes = ['markdown']
 
-nnoremap <Leader>mp <Plug>MarkdownPreview
-nnoremap <Leader>ms <Plug>MarkdownPreviewStop
-nnoremap <Leader>mt <Plug>MarkdownPreviewToggle
+lua <<EOF
+require'tabline'.setup{
+    show_index = true,
+    show_modify = true,
+    no_name = '[--x--]'
+}
+EOF
 
 lua <<EOF
 local actions = require('telescope.actions')
@@ -596,7 +604,6 @@ require('telescope').setup {
             '--column',
             '--smart-case'
         },
-        prompt_position = "bottom",
         prompt_prefix = " ",
         selection_caret = " ",
         entry_prefix = " ",
@@ -604,27 +611,26 @@ require('telescope').setup {
         selection_strategy = "reset",
         sorting_strategy = "ascending",
         layout_strategy = "horizontal",
-        layout_defaults = {
+        layout_config = {
             horizontal = {
                 mirror = false,
             },
             vertical = {
                 mirror = false,
             },
+            prompt_position = "bottom",
+            preview_cutoff = 120,
+            width = 0.75,
         },
         file_ignore_patterns = {},
         file_sorter = require'telescope.sorters'.get_fzy_sorter,
         generic_sorter =  require'telescope.sorters'.get_generic_fuzzy_sorter,
-        shorten_path = true,
         winblend = 0,
-        width = 0.75,
-        preview_cutoff = 120,
-        results_height = 1,
-        results_width = 0.8,
         border = {},
         borderchars = { '─', '│', '─', '│', '╭', '╮', '╯', '╰' },
         color_devicons = true,
         use_less = true,
+        path_display = {},
         set_env = { ['COLORTERM'] = 'truecolor' },
         file_previewer = require'telescope.previewers'.vim_buffer_cat.new,
         grep_previewer = require'telescope.previewers'.vim_buffer_vimgrep.new,
@@ -640,41 +646,6 @@ require('telescope').setup {
 }
 EOF
 
-nnoremap <silent> <C-s>      :Telescope current_buffer_fuzzy_find<CR>
-nnoremap <silent> <Leader>.  :Telescope file_browser<CR>
-nnoremap <silent> <Leader>lf :Telescope fd<CR>
-nnoremap <silent> <Leader>ll :Telescope live_grep<CR>
-nnoremap <silent> <Leader>lg :Telescope grep_string<CR>
-nnoremap <silent> <Leader>lm :Telescope marks<CR>
-nnoremap <silent> <Leader>lk :Telescope keymaps<CR>
-nnoremap <silent> <Leader>lu :Telescope spell_suggest<CR>
-nnoremap <silent> <Leader>lb :Telescope buffers<CR>
-nnoremap <silent> <Leader>lz :Telescope symbols<CR>
-
-" Project
-nnoremap <silent> <Leader>pf  :Telescope git_files<CR>
-nnoremap <silent> <Leader>ps  :Telescope git_status<CR>
-nnoremap <silent> <Leader>pb  :lua require('m3dry.telescope').git_branches()<CR>
-nnoremap <silent> <Leader>pc  :Telescope git_bcommits<CR>
-nnoremap <silent> <Leader>pv  :Telescope git_commits<CR>
-
-" Lsp
-nnoremap <silent> <Leader>lr :Telescope lsp_references<CR>
-nnoremap <silent> <Leader>ld :Telescope lsp_definitions<CR>
-nnoremap <silent> <Leader>lt :Telescope treesitter<CR>
-nnoremap <silent> <Leader>ls :Telescope lsp_document_symbols<CR>
-nnoremap <silent> <Leader>lS :Telescope lsp_dynamic_workspace_symbols<CR>
-nnoremap <silent> <Leader>le :Telescope lsp_document_diagnostics<CR>
-nnoremap <silent> <Leader>lE :Telescope lsp_workspace_diagnostics<CR>
-nnoremap <silent> <Leader>la :TSHighlightCapturesUnderCursor<CR>
-
-" Dap
-nnoremap <silent> <Leader>dtc :lua require'telescope'.extensions.dap.commands{}<CR>
-nnoremap <silent> <Leader>dto :lua require'telescope'.extensions.dap.configurations{}<CR>
-nnoremap <silent> <Leader>dtb :lua require'telescope'.extensions.dap.list_breakpoints{}<CR>
-nnoremap <silent> <Leader>dtv :lua require'telescope'.extensions.dap.variables{}<CR>
-nnoremap <silent> <Leader>dtf :lua require'telescope'.extensions.dap.frames{}<CR>
-
 lua <<EOF
 require'neuron'.setup {
     virtual_titles = true,
@@ -685,35 +656,19 @@ require'neuron'.setup {
 }
 EOF
 
-nnoremap <silent> <Leader>nn :lua require'neuron/cmd'.new_edit(require'neuron'.config.neuron_dir)<CR>
-nnoremap <silent> <Leader>nf :lua require'neuron/telescope'.find_zettels()<CR>
-nnoremap <silent> <Leader>ni :lua require'neuron/telescope'.find_zettels {insert = true}<CR>
-nnoremap <silent> <Leader>ns :lua require'neuron'.rib {address = "127.0.0.1:8200", verbose = true}<CR>
-
-function NeuronBinds()
-    nnoremap <buffer> <CR> :lua require'neuron'.enter_link()<CR>
-    nnoremap <buffer> <Leader>nb :lua require'neuron/telescope'.find_backlinks()<CR>
-    nnoremap <buffer> <Leader>nB :lua require'neuron/telescope'.find_backlinks {insert = true}<CR>
-    nnoremap <buffer> <Leader>nt :lua require'neuron/telescope'.find_tags()<CR>
-    nnoremap <buffer> gn] :lua require'neuron'.goto_next_extmark()<CR>
-    nnoremap <buffer> gn[ :lua require'neuron'.goto_prev_extmark()<CR>
-endfunction
-
-autocmd BufRead "/home/m3/my-stuff/Neuron/*.md" :call NeuronBinds()<CR>
-
 lua <<EOF
 require('due_nvim').setup {
-  prescript = 'due: ',
-  prescript_hi = 'Comment',
-  due_hi = 'Error',
-  ft = '*',
-  today = 'TODAY',
-  today_hi = 'Character',
-  overdue = 'OVERDUE',
-  overdue_hi = 'Error',
-  date_hi = 'Conceal',
-  pattern_start = '<',
-  pattern_end = '>'
+    prescript = 'due: ',
+    prescript_hi = 'Comment',
+    due_hi = 'Error',
+    ft = '*',
+    today = 'TODAY',
+    today_hi = 'Character',
+    overdue = 'OVERDUE',
+    overdue_hi = 'Error',
+    date_hi = 'Conceal',
+    pattern_start = '<',
+    pattern_end = '>'
 }
 EOF
 
@@ -750,23 +705,9 @@ require('hlslens').setup({
 })
 EOF
 
-noremap <silent> n <Cmd>execute('normal! ' . v:count1 . 'n')<CR>
-            \<Cmd>lua require('hlslens').start()<CR>
-noremap <silent> N <Cmd>execute('normal! ' . v:count1 . 'N')<CR>
-            \<Cmd>lua require('hlslens').start()<CR>
-noremap * *<Cmd>lua require('hlslens').start()<CR>
-noremap # #<Cmd>lua require('hlslens').start()<CR>
-noremap g* g*<Cmd>lua require('hlslens').start()<CR>
-noremap g# g#<Cmd>lua require('hlslens').start()<CR>
-
 let g:cosco_ignore_comment_lines = 1
 
-autocmd FileType c,cpp nmap <silent> <Leader>; <Plug>(cosco-commaOrSemiColon)
-autocmd FileType c,cpp imap <silent> <C-l> <c-o><Plug>(cosco-commaOrSemiColon)
-
 let g:maximizer_set_default_mapping = 0
-nnoremap <silent> <Leader>wm :MaximizerToggle<CR>
-vnoremap <silent> <Leader>wm :MaximizerToggle<CR>
 
 let g:indent_blankline_indent_level = 7
 let g:indent_blankline_char = '│'
@@ -776,8 +717,6 @@ let g:indent_blankline_show_trailing_blankline_indent = v:false
 let g:indent_blankline_bufname_exclude = ['README\..*', '.*\.md']
 
 let g:doge_doc_standard_c = 'kernel_doc'
-
-nnoremap <silent> <Leader>l; :DogeGenerate<CR>
 
 lua <<EOF
 local custom_nvim_lspconfig_attach = function(...) end
@@ -810,10 +749,10 @@ EOF
 
 lua <<EOF
 require("lsp-colors").setup({
-  Error = "#ff5370",
-  Warning = "#f78c6c",
-  Hint = "#72a4ff",
-  Information = "#c3e88d",
+    Error = "#ff5370",
+    Warning = "#f78c6c",
+    Hint = "#72a4ff",
+    Information = "#c3e88d",
 })
 EOF
 
@@ -848,25 +787,20 @@ EOF
 lua <<EOF
 require'sniprun'.setup({
     display = {
-      "Classic",
-      "VirtualTextOk",
-      -- "VirtualTextErr",
-      -- "TempFloatingWindow",
-      -- "LongTempFloatingWindow",
-      -- "Terminal"
-      },
+        "Classic",
+        "VirtualTextOk",
+        -- "VirtualTextErr",
+        -- "TempFloatingWindow",
+        -- "LongTempFloatingWindow",
+        -- "Terminal"
+        },
     snipruncolors = {
-      SniprunVirtualTextOk   =  {fg="#72a4ff"},
+        SniprunVirtualTextOk   =  {fg="#72a4ff"},
     },
     inline_messages = 0,
     borders = 'double'
 })
 EOF
-
-nmap <silent> <Leader>fr :SnipRun<CR>
-nmap <silent> <Leader>fc :SnipClose<CR>
-nmap <silent> <Leader>fs :SnipReset<CR>
-vmap <silent>         f  :SnipRun<CR>
 
 let g:nvim_tree_side = 'left'
 let g:nvim_tree_width = 25
@@ -940,51 +874,41 @@ let g:nvim_tree_icons = {
     \   }
     \ }
 
-function TreeOpen()
-    NvimTreeClose
-    NvimTreeOpen
-    wincmd p
-endfunction
-
-nnoremap <silent> <Leader>fo :call TreeOpen()<CR>
-nnoremap <silent> <Leader>fc :NvimTreeClose<CR>
-nnoremap <silent> <Leader>ff :NvimTreeFindFile<CR>
-
 lua <<EOF
 local tree_cb = require'nvim-tree.config'.nvim_tree_callback
 
 vim.g.nvim_tree_bindings = {
-  { key = {"<CR>", "o", "<2-LeftMouse>"},   cb = tree_cb("edit") },
-  { key = {"<2-RightMouse>", "<C-}>", "l"}, cb = tree_cb("cd") },
-  { key = "<C-v>",                          cb = tree_cb("vsplit") },
-  { key = "<C-x>",                          cb = tree_cb("split") },
-  { key = "<C-t>",                          cb = tree_cb("tabnew") },
-  { key = "<",                              cb = tree_cb("prev_sibling") },
-  { key = ">",                              cb = tree_cb("next_sibling") },
-  { key = "P",                              cb = tree_cb("parent_node") },
-  { key = "<BS>",                           cb = tree_cb("close_node") },
-  { key = "<S-CR>",                         cb = tree_cb("close_node") },
-  { key = "<Tab>",                          cb = tree_cb("preview") },
-  { key = "K",                              cb = tree_cb("first_sibling") },
-  { key = "J",                              cb = tree_cb("last_sibling") },
-  { key = "I",                              cb = tree_cb("toggle_ignored") },
-  { key = "H",                              cb = tree_cb("toggle_dotfiles") },
-  { key = "R",                              cb = tree_cb("refresh") },
-  { key = "a",                              cb = tree_cb("create") },
-  { key = "d",                              cb = tree_cb("remove") },
-  { key = "r",                              cb = tree_cb("rename") },
-  { key = "<C-r",                           cb = tree_cb("full_rename") },
-  { key = "x",                              cb = tree_cb("cut") },
-  { key = "c",                              cb = tree_cb("copy") },
-  { key = "p",                              cb = tree_cb("paste") },
-  { key = "y",                              cb = tree_cb("copy_name") },
-  { key = "Y",                              cb = tree_cb("copy_path") },
-  { key = "gy",                             cb = tree_cb("copy_absolute_path") },
-  { key = "[c",                             cb = tree_cb("prev_git_item") },
-  { key = "}c",                             cb = tree_cb("next_git_item") },
-  { key = {"-", "h"},                       cb = tree_cb("dir_up") },
-  { key = "q",                              cb = tree_cb("close") },
-  { key = "g?",                             cb = tree_cb("toggle_help") },
+    { key = {"<CR>", "o", "<2-LeftMouse>"},   cb = tree_cb("edit") },
+    { key = {"<2-RightMouse>", "<C-}>", "l"}, cb = tree_cb("cd") },
+    { key = "<C-v>",                          cb = tree_cb("vsplit") },
+    { key = "<C-x>",                          cb = tree_cb("split") },
+    { key = "<C-t>",                          cb = tree_cb("tabnew") },
+    { key = "<",                              cb = tree_cb("prev_sibling") },
+    { key = ">",                              cb = tree_cb("next_sibling") },
+    { key = "P",                              cb = tree_cb("parent_node") },
+    { key = "<BS>",                           cb = tree_cb("close_node") },
+    { key = "<S-CR>",                         cb = tree_cb("close_node") },
+    { key = "<Tab>",                          cb = tree_cb("preview") },
+    { key = "K",                              cb = tree_cb("first_sibling") },
+    { key = "J",                              cb = tree_cb("last_sibling") },
+    { key = "I",                              cb = tree_cb("toggle_ignored") },
+    { key = "H",                              cb = tree_cb("toggle_dotfiles") },
+    { key = "R",                              cb = tree_cb("refresh") },
+    { key = "a",                              cb = tree_cb("create") },
+    { key = "d",                              cb = tree_cb("remove") },
+    { key = "r",                              cb = tree_cb("rename") },
+    { key = "<C-r",                           cb = tree_cb("full_rename") },
+    { key = "x",                              cb = tree_cb("cut") },
+    { key = "c",                              cb = tree_cb("copy") },
+    { key = "p",                              cb = tree_cb("paste") },
+    { key = "y",                              cb = tree_cb("copy_name") },
+    { key = "Y",                              cb = tree_cb("copy_path") },
+    { key = "gy",                             cb = tree_cb("copy_absolute_path") },
+    { key = "[c",                             cb = tree_cb("prev_git_item") },
+    { key = "}c",                             cb = tree_cb("next_git_item") },
+    { key = {"-", "h"},                       cb = tree_cb("dir_up") },
+    { key = "q",                              cb = tree_cb("close") },
+    { key = "g?",                             cb = tree_cb("toggle_help") },
 }
 EOF
 
@@ -1015,9 +939,7 @@ require("lsp-rooter").setup()
 EOF
 
 lua <<EOF
-local saga = require 'lspsaga'
-
-saga.init_lsp_saga {
+require('lspsaga').init_lsp_saga {
     use_saga_diagnostic_sign = true,
     error_sign = '',
     warn_sign = '',
@@ -1026,23 +948,23 @@ saga.init_lsp_saga {
     dianostic_header_icon = ' ',
     code_action_icon = '',
     code_action_prompt = {
-      enable = true,
-      sign = true,
-      sign_priority = 20,
-      virtual_text = true,
+        enable = true,
+        sign = true,
+        sign_priority = 20,
+        virtual_text = true,
     },
     finder_definition_icon = ' ',
     finder_reference_icon = ' ',
     max_preview_lines = 30,
     finder_action_keys = {
-      open = '<CR>', vsplit = 's', split = 'i',
-      quit = '<C-c>', scroll_down = '<C-f>', scroll_up = '<C-b>',
+        open = '<CR>', vsplit = 's', split = 'i',
+        quit = '<C-c>', scroll_down = '<C-f>', scroll_up = '<C-b>',
     },
     code_action_keys = {
-      quit = 'q',exec = '<CR>'
+        quit = 'q',exec = '<CR>'
     },
     rename_action_keys = {
-      quit = '<C-c>', exec = '<CR>'
+        quit = '<C-c>', exec = '<CR>'
     },
     definition_preview_icon = ' ',
     border_style = "single",
@@ -1050,23 +972,8 @@ saga.init_lsp_saga {
 }
 EOF
 
-nnoremap <silent> <Leader>ln     :Lspsaga rename<CR>
-nnoremap <silent> <Leader>lp     :Lspsaga preview_definition<CR>
-nnoremap <silent> <Leader>lh     :Lspsaga hover_doc<CR>
-nnoremap <silent> <Leader>lc     :Lspsaga code_action<CR>
-nnoremap <silent> <Leader>lC     :Lspsaga range_code_action<CR>
-nnoremap <silent> [e             :Lspsaga diagnostic_jump_next<CR>
-nnoremap <silent> ]e             :Lspsaga diagnostic_jump_prev<CR>
-nnoremap <silent> <Leader>lv     :Lspsaga show_line_diagnostics<CR>
-nnoremap <silent> <Leader>lc     :Lspsaga show_cursor_diagnostics<CR>
-nnoremap <silent> <Leader>li     :Lspsaga lsp_finder<CR>
-nnoremap <silent> <Leader>lj     :Lspsaga signature_help<CR>
-nnoremap <silent> <C-f>          :lua require('lspsaga.action').smart_scroll_with_saga(1)<CR>
-nnoremap <silent> <C-b>          :lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>
-
 lua <<EOF
 require("toggleterm").setup{
-   
     size = function(term)
         if term.direction == "horizontal" then
             return 15
@@ -1153,15 +1060,6 @@ require'compe'.setup {
 }
 EOF
 
-inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
-inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
-cnoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
-cnoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
-
-imap <expr> <Tab>   vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)' : vsnip#expandable() ? '<Plug>(vsnip-expand)' : '<Tab>'
-smap <expr> <Tab>   vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)' : vsnip#expandable() ? '<Plug>(vsnip-expand)' : '<Tab>'
-imap <expr> <S-Tab> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : vsnip#expandable() ? '<Plug>(vsnip-expand)' : '<Tab>'
-smap <expr> <S-Tab> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : vsnip#expandable() ? '<Plug>(vsnip-expand)' : '<Tab>'
 let g:vsnip_filetypes = {}
 let g:vsnip_snippet_dir = "$HOME/.config/nvim/snippets/"
 
@@ -1218,12 +1116,10 @@ require'nvim-treesitter.configs'.setup {
 }
 
 require('spellsitter').setup {
-  hl = 'SpellBad',
-  captures = {'comment'},
+    hl = 'SpellBad',
+    captures = {'comment'},
 }
 EOF
-
-nnoremap <silent> <Leader><Leader>u :lua require('tsht').nodes()<CR>
 
 lua << EOF
 require("trouble").setup {
@@ -1283,12 +1179,12 @@ require("todo-comments").setup {
     },
     merge_keywords = true,
     highlight = {
-      before = "",
-      keyword = "bg",
-      after = "bg",
-      pattern = [[.*<(KEYWORDS)\s*:]],
-      comments_only = true,
-      max_line_len = 10000,
+        before = "",
+        keyword = "bg",
+        after = "bg",
+        pattern = [[.*<(KEYWORDS)\s*:]],
+        comments_only = true,
+        max_line_len = 10000,
     },
     colors = {
         error = { "#ff5370" },
@@ -1297,23 +1193,18 @@ require("todo-comments").setup {
         hint = { "#72a4ff" },
     },
     search = {
-      command = "rg",
-      args = {
-        "--color=never",
-        "--no-heading",
-        "--with-filename",
-        "--line-number",
-        "--column",
-      },
-      pattern = [[\b(KEYWORDS):]],
+        command = "rg",
+        args = {
+            "--color=never",
+            "--no-heading",
+            "--with-filename",
+            "--line-number",
+            "--column",
+        },
+        pattern = [[\b(KEYWORDS):]],
     },
 }
 EOF
-
-nnoremap <silent> gle :TroubleToggle lsp_document_diagnostics<CR>
-nnoremap <silent> glw :TroubleToggle lsp_workspace_diagnostics<CR>
-nnoremap <silent> glr :TroubleToggle lsp_references<CR>
-nnoremap <silent> glc :TroubleClose<CR>
 
 lua <<EOF
 local dap = require('dap')
@@ -1332,72 +1223,62 @@ dap.adapters.c = {
 }
 
 dap.configurations.c = {
-  {
-    type = "c",
-    name = "Debug",
-    request = "launch",
-    program = function()
-      return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
-    end,
-  },
+    {
+        type = "c",
+        name = "Debug",
+        request = "launch",
+        program = function()
+            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+        end,
+    },
 }
 
 env = function()
-  local variables = {}
-  for k, v in pairs(vim.fn.environ()) do
-    table.insert(variables, string.format("%s=%s", k, v))
-  end
-  return variables
+    local variables = {}
+    for k, v in pairs(vim.fn.environ()) do
+        table.insert(variables, string.format("%s=%s", k, v))
+    end
+    return variables
 end,
 
-require("dapui").setup({
-  icons = {
-    expanded = "⯆",
-    collapsed = "⯈"
-  },
-  mappings = {
-    -- Use a table to apply multiple mappings
-    expand = {"<CR>", "<2-LeftMouse>"},
-    open = "o",
-    remove = "d",
-    edit = "e",
-  },
-  sidebar = {
-    open_on_start = true,
-    elements = {
-      -- You can change the order of elements in the sidebar
-      "scopes",
-      "breakpoints",
-      "stacks",
-      "watches"
+require("dapui").setup{
+    icons = {
+        expanded = "⯆",
+        collapsed = "⯈"
     },
-    width = 40,
-    position = "left" -- Can be "left" or "right"
-  },
-  tray = {
-    open_on_start = true,
-    elements = {
-      "repl"
+    mappings = {
+        -- Use a table to apply multiple mappings
+        expand = {"<CR>", "<2-LeftMouse>"},
+        open = "o",
+        remove = "d",
+        edit = "e",
     },
-    height = 10,
-    position = "bottom" -- Can be "bottom" or "top"
-  },
-  floating = {
-    max_height = nil, -- These can be integers or a float between 0 and 1.
-    max_width = nil   -- Floats will be treated as percentage of your screen.
-  }
-})
+    sidebar = {
+        open_on_start = true,
+        elements = {
+            -- You can change the order of elements in the sidebar
+            "scopes",
+            "breakpoints",
+            "stacks",
+            "watches"
+        },
+        width = 40,
+        position = "left" -- Can be "left" or "right"
+    },
+    tray = {
+        open_on_start = true,
+        elements = {
+          "repl"
+        },
+        height = 10,
+        position = "bottom" -- Can be "bottom" or "top"
+    },
+    floating = {
+        max_height = nil, -- These can be integers or a float between 0 and 1.
+        max_width = nil   -- Floats will be treated as percentage of your screen.
+    }
+}
 EOF
-
-nnoremap <silent> <Leader>dc  :lua require'dap'.continue()<CR>
-nnoremap <silent> <Leader>do  :lua require'dap'.step_over()<CR>
-nnoremap <silent> <Leader>di  :lua require'dap'.step_into()<CR>
-nnoremap <silent> <Leader>ds  :lua require'dap'.step_out()<CR>
-nnoremap <silent> <Leader>dbt :lua require'dap'.toggle_breakpoint()<CR>
-nnoremap <silent> <Leader>dbc :lua require'dap'.set_breakpoint(vim.fn.input("Breakpoint condition: "))<CR>
-nnoremap <silent> <Leader>dbm :lua require'dap'.set_breakpoint(nil, nil, vim.fn.input("Log point message: "))<CR>
-nnoremap <silent> <Leader>dro :lua require'dap'.repl.open()<CR>
-nnoremap <silent> <Leader>drl :lua require'dap'.repl.run_last()<CR>
 
 let g:blameLineUseVirtualText = 1
 let g:blameLineVirtualTextHighlight = 'Comment'
@@ -1443,30 +1324,26 @@ require'diffview'.setup {
 local neogit = require('neogit')
 
 neogit.setup {
-  disable_signs = false,
-  disable_context_highlighting = false,
-  disable_commit_confirmation = false,
-  signs = {
-    -- { CLOSED, OPENED }
-    section = { "⬎", "ﬔ" },
-    item = { "⬎", "ﬔ" },
-    hunk = { "", "" },
-  },
-  integrations = {
-    diffview = true  
-  },
-  mappings = {
-    status = {
-      ["p"] = "PushPopup",
-      ["P"] = "PullPopup",
+    disable_signs = false,
+    disable_context_highlighting = false,
+    disable_commit_confirmation = false,
+    signs = {
+        -- { CLOSED, OPENED }
+        section = { "⬎", "ﬔ" },
+        item = { "⬎", "ﬔ" },
+        hunk = { "", "" },
+    },
+    integrations = {
+        diffview = true  
+    },
+    mappings = {
+        status = {
+            ["p"] = "PushPopup",
+            ["P"] = "PullPopup",
+        }
     }
-  }
 }
 EOF
-
-nnoremap <silent> <Leader>gg :Neogit<CR>
-nnoremap <silent> <Leader>gb :ToggleBlameLine<CR>
-nnoremap <Leader>gd :DiffviewOpen
 
 highlight normal              guifg=#eeffff    guibg=NONE          gui=NONE
 highlight Visual              guifg=NONE       guibg=#4e5579       gui=NONE
@@ -1619,47 +1496,4 @@ highlight LspDiagnosticsVirtualTextWarning     guifg=#f78c6c guibg=NONE gui=NONE
 highlight LspDiagnosticsVirtualTextHint        guifg=#72a4ff guibg=NONE gui=NONE
 highlight LspDiagnosticsVirtualTextInformation guifg=#c3e88d guibg=NONE gui=NONE
 
-nmap ;s ysiw
-nnoremap ]q :cnext<CR>zz
-nnoremap [q :cprev<CR>zz
-nnoremap zq :qa<CR>
-nnoremap zx :qa!<CR>
-nnoremap <silent> <Leader>, :JABSOpen<CR>
-nnoremap <silent> <Leader>s :w<CR>
-nnoremap <silent><Esc> :noh<CR>
-nnoremap <Leader>wh <C-w>h
-nnoremap <Leader>wj <C-w>j
-nnoremap <Leader>wk <C-w>k
-nnoremap <Leader>wl <C-w>l
-nnoremap <Leader>w<C-o> <C-w><C-o>
-nnoremap <Leader>wH <C-w>H
-nnoremap <Leader>wJ <C-w>J
-nnoremap <Leader>wK <C-w>K
-nnoremap <Leader>wL <C-w>L
-nnoremap <Leader>w<C-o> <C-w><C-o>
-nnoremap <leader>wc <C-w>c
-nnoremap <leader>wd <C-w>c
-nnoremap <leader>wv <C-w>v
-nnoremap <leader>ws <C-w>s
-nnoremap <leader>wr <C-w>R
-nnoremap <silent> ]w :vertical resize +5<CR>
-nnoremap <silent> [w :vertical resize -5<CR>
-nnoremap <silent> [W :resize -5<CR>
-nnoremap <silent> ]W :resize +5<CR>
-nnoremap <silent> <leader>wq :q!<CR>
-nnoremap <silent> <leader>wi :so %<CR>
-nnoremap <silent> <leader>bk :lua require('bufdelete').bufdelete(0, true)<CR>
-nnoremap <silent> <leader>bd :bd<CR>
-nnoremap <silent> <leader>to :SymbolOutline<CR>
-nnoremap <silent> <leader>tut :UndotreeToggle<CR>
-nnoremap <silent> <leader>tuc :UndotreeHide<CR>
-nnoremap <silent> <leader>tuf :UndotreeFocus<CR>
-nnoremap <silent> [t  :tabprevious<CR>
-nnoremap <silent> ]t  :tabnext<CR>
-nnoremap <silent> [T  :tabmove -1<CR>
-nnoremap <silent> ]T  :tabmove +1<CR>
-nnoremap <silent> gtn :tabnew<CR>
-nnoremap <silent> gtc :tabclose<CR>
-nnoremap <silent> gtf :tabfirst<CR>
-nnoremap <silent> gtl :tablast<CR>
-nnoremap <silent> gtu :tabrewind<CR>
+lua require('m3dry.keybinds')
