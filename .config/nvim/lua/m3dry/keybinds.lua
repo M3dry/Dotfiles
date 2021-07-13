@@ -13,53 +13,60 @@ local inoresmap = inoremap.silent
 local cnoremap  = map.c.nore
 local cnoresmap = cnoremap.silent
 
-nmap[';s']                         = 'ysiw'
-nnoremap['[q']                     = '<Cmd>cnext<CR>zz'
-nnoremap[']q']                     = '<Cmd>cprev<CR>zz'
-nnoresmap['zq']                    = '<Cmd>qa<CR>'
-nnoresmap['zx']                    = '<Cmd>qa!<CR>'
-nnoresmap['<Leader>,']             = '<Cmd>JABSOpen<CR>'
-nnoresmap['<Leader>s']             = '<Cmd>w<CR>'
-nnoresmap['<Esc>']                 = '<Cmd>noh<CR>'
-nnoresmap['<Leader>wh']            = '<C-w>h'
-nnoresmap['<Leader>wj']            = '<C-w>j'
-nnoresmap['<Leader>wk']            = '<C-w>k'
-nnoresmap['<Leader>wl']            = '<C-w>l'
-nnoresmap['<Leader>wH']            = '<C-w>H'
-nnoresmap['<Leader>wJ']            = '<C-w>J'
-nnoresmap['<Leader>wK']            = '<C-w>K'
-nnoresmap['<Leader>wL']            = '<C-w>L'
-nnoresmap['<Leader>w<C-o>']        = '<C-w><C-o>'
-nnoresmap['<Leader>wc']            = '<C-w>c'
-nnoresmap['<Leader>wd']            = '<C-w>c'
-nnoresmap['<Leader>wv']            = '<C-w>v'
-nnoresmap['<Leader>ws']            = '<C-w>s'
-nnoresmap['<Leader>wr']            = '<C-w>R'
-nnoresmap['<Leader>wq']            = '<Cmd>q!<CR>'
-nnoresmap['<Leader>wi']            = '<Cmd>so %<CR>'
-nnoresmap['<Leader>wm']            = '<Cmd>MaximizerToggle<CR>'
-nnoresmap['<Leader>ww']            = '<Cmd>ChooseWin<CR>'
-nnoresmap[']w']                    = '<Cmd>vertical resize +5<CR>'
-nnoresmap['[w']                    = '<Cmd>vertical resize -5<CR>'
-nnoresmap[']W']                    = '<Cmd>resize +5<CR>'
-nnoresmap['[W']                    = '<Cmd>resize -5<CR>'
-nnoresmap['<Leader>bk']            = '<Cmd>lua require(\'bufdelete\').bufdelete(0, true)<CR>'
-nnoresmap['<Leader>bd']            = '<Cmd>bd<CR>'
-nnoresmap['<Leader>to']            = '<Cmd>SymbolsOutline<CR>'
-nnoresmap['<Leader>tut']           = '<Cmd>UndotreeToggle<CR>'
-nnoresmap['<Leader>tuc']           = '<Cmd>UndotreeHide<CR>'
-nnoresmap['<Leader>tuf']           = '<Cmd>UndotreeFocus<CR>'
-nnoresmap['[t']                    = '<Cmd>tabprevious<CR>'
-nnoresmap[']t']                    = '<Cmd>tabnext<CR>'
-nnoresmap['[T']                    = '<Cmd>tabmove -1<CR>'
-nnoresmap[']T']                    = '<Cmd>tabmove +1<CR>'
-nnoresmap['gtk']                   = '<Cmd>tabprevious<CR>'
-nnoresmap['gtj']                   = '<Cmd>tabnext<CR>'
-nnoresmap['gtn']                   = '<Cmd>tabnew<CR>'
-nnoresmap['gtc']                   = '<Cmd>tabclose<CR>'
-nnoresmap['gtf']                   = '<Cmd>tabfirst<CR>'
-nnoresmap['gtl']                   = '<Cmd>tablast<CR>'
-nnoresmap['gtu']                   = '<Cmd>tabrewind<CR>'
+-- Save & exit
+    nnoresmap['zq']                = '<Cmd>qa<CR>'
+    nnoresmap['zx']                = '<Cmd>qa!<CR>'
+    nnoresmap['<Leader>s']         = '<Cmd>w<CR>'
+
+-- Surround
+    nmap[';s']                     = 'ysiw'
+
+-- Quickfix
+    nnoremap['[q']                 = '<Cmd>cnext<CR>zz'
+    nnoremap[']q']                 = '<Cmd>cprev<CR>zz'
+
+-- Buffers
+    nnoresmap['<Leader>bk']        = '<Cmd>lua require(\'bufdelete\').bufdelete(0, true)<CR>'
+    nnoresmap['<Leader>bd']        = '<Cmd>bd<CR>'
+    nnoresmap['<Leader>,']         = '<Cmd>JABSOpen<CR>'
+
+-- Tabs
+    nnoresmap['[t']                = '<Cmd>tabprevious<CR>'
+    nnoresmap[']t']                = '<Cmd>tabnext<CR>'
+    nnoresmap['[T']                = '<Cmd>tabmove -1<CR>'
+    nnoresmap[']T']                = '<Cmd>tabmove +1<CR>'
+    nnoresmap['gt']                = ''
+    nnoresmap['gtk']               = '<Cmd>tabprevious<CR>'
+    nnoresmap['gtj']               = '<Cmd>tabnext<CR>'
+    nnoresmap['gtn']               = '<Cmd>tabnew<CR>'
+    nnoresmap['gtc']               = '<Cmd>tabclose<CR>'
+    nnoresmap['gtf']               = '<Cmd>tabfirst<CR>'
+    nnoresmap['gtl']               = '<Cmd>tablast<CR>'
+    nnoresmap['gtu']               = '<Cmd>tabrewind<CR>'
+
+-- Splits
+    nnoresmap['<Leader>wh']        = '<C-w>h'
+    nnoresmap['<Leader>wj']        = '<C-w>j'
+    nnoresmap['<Leader>wk']        = '<C-w>k'
+    nnoresmap['<Leader>wl']        = '<C-w>l'
+    nnoresmap['<Leader>wH']        = '<C-w>H'
+    nnoresmap['<Leader>wJ']        = '<C-w>J'
+    nnoresmap['<Leader>wK']        = '<C-w>K'
+    nnoresmap['<Leader>wL']        = '<C-w>L'
+    nnoresmap['<Leader>w<C-o>']    = '<C-w><C-o>'
+    nnoresmap['<Leader>wc']        = '<C-w>c'
+    nnoresmap['<Leader>wd']        = '<C-w>c'
+    nnoresmap['<Leader>wv']        = '<C-w>v'
+    nnoresmap['<Leader>ws']        = '<C-w>s'
+    nnoresmap['<Leader>wr']        = '<C-w>R'
+    nnoresmap['<Leader>wq']        = '<Cmd>q!<CR>'
+    nnoresmap['<Leader>wi']        = '<Cmd>so %<CR>'
+    nnoresmap['<Leader>wm']        = '<Cmd>MaximizerToggle<CR>'
+    nnoresmap['<Leader>ww']        = '<Cmd>ChooseWin<CR>'
+    nnoresmap[']w']                = '<Cmd>vertical resize +5<CR>'
+    nnoresmap['[w']                = '<Cmd>vertical resize -5<CR>'
+    nnoresmap[']W']                = '<Cmd>resize +5<CR>'
+    nnoresmap['[W']                = '<Cmd>resize -5<CR>'
 
 -- Easymotion
     map['<Leader><Leader>r']       = '<Plug>(easymotion-jumptoanywhere)'
@@ -73,7 +80,8 @@ nnoresmap['gtu']                   = '<Cmd>tabrewind<CR>'
     nmap['<Leader><Leader>L']      = '<Plug>(easymotion-overwin-f)'
     nmap['s']                      = '<Plug>(easymotion-overwin-f2)'
 
-nnoresmap['<Leader>ly']            = '<Cmd>ISwap<CR>'
+-- ISwap
+    nnoresmap['<Leader>ly']        = '<Cmd>ISwap<CR>'
 
 -- Markdown
     nnoremap['<Leader>mp']         = '<Plug>MarkDownPreview'
@@ -130,10 +138,17 @@ nnoresmap['<Leader>la']            = '<Cmd>TSHighlightCapturesUnderCursor<CR>'
         bind['gn]']                = '<Cmd>lua require(\'neuron\').goto_next_extmark()<CR>'
         bind['gn[']                = '<Cmd>lua require(\'neuron\').goto_prev_extmark()<CR>'
     end
-    
-    vim.cmd(string.format("au BufRead %s/*.md lua require('m3dry.keybinds').neuronbinds()", require('neuron').config.neuron_dir))
+
+-- Symbol Outline
+    nnoresmap['<Leader>to']        = '<Cmd>SymbolsOutline<CR>'
+
+-- Undo Tree
+    nnoresmap['<Leader>tut']       = '<Cmd>UndotreeToggle<CR>'
+    nnoresmap['<Leader>tuc']       = '<Cmd>UndotreeHide<CR>'
+    nnoresmap['<Leader>tuf']       = '<Cmd>UndotreeFocus<CR>'
 
 -- Hlslens
+    nnoresmap['<Esc>']             = '<Cmd>noh<CR>'
     nnoresmap['n']                 = '<Cmd>execute(\'normal! \' . v:count1 . \'n\')<CR><Cmd>lua require(\'hlslens\').start()<CR>'
     nnoresmap['N']                 = '<Cmd>execute(\'normal! \' . v:count1 . \'N\')<CR><Cmd>lua require(\'hlslens\').start()<CR>'
     nnoremap['*']                  = '*<Cmd>lua require(\'hlslens\').start()<CR>'
@@ -143,11 +158,9 @@ nnoresmap['<Leader>la']            = '<Cmd>TSHighlightCapturesUnderCursor<CR>'
 
 -- Cosco
     function M.cosco()
-        nmap['<Leader>;']         = '<Plug>(cosco-commaOrSemiColon)'
-        imap['<C-l>']             = '<C-o><Plug>(cosco-commaOrSemiColon)'
+        nmap['<Leader>;']          = '<Plug>(cosco-commaOrSemiColon)'
+        imap['<C-l>']              = '<C-o><Plug>(cosco-commaOrSemiColon)'
     end
-
-    vim.cmd("au FileType c,cpp lua require('m3dry.keybinds').cosco()")
 
 -- Smart buffers
     nnoresmap['<Leader>qq']        = '<Cmd>lua require(\'nvim-smartbufs\').close_current_buffer()<CR>'
@@ -171,9 +184,9 @@ nnoresmap['<Leader>la']            = '<Cmd>TSHighlightCapturesUnderCursor<CR>'
 
 -- NvimTree
     function M.TreeOpen()
-        vim.cmd("NvimTreeClose")
-        vim.cmd("NvimTreeOpen")
-        vim.cmd("wincmd p")
+        vim.cmd([[NvimTreeClose
+NvimTreeOpen
+wincmd p]])
     end
 
     nnoresmap['<Leader>fo']        = '<Cmd>lua require(\'m3dry.keybinds\').TreeOpen()<CR>'
@@ -227,5 +240,8 @@ nnoresmap['<Leader>la']            = '<Cmd>TSHighlightCapturesUnderCursor<CR>'
     nnoresmap['<Leader>gg']        = '<Cmd>Neogit<CR>'
     nnoresmap['<Leader>gb']        = '<Cmd>ToggleBlameLine<CR>'
     nnoremap['<Leader>gd']         = ':DiffviewOpen '
+
+-- Parrot
+    nnoresmap['<Leader>ti']        = '<Cmd>lua require(\'m3dry.parrot\').replace()<CR>'
 
 return M
