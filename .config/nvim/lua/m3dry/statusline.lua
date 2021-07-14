@@ -21,8 +21,36 @@ gls.left[2] = {
 
 gls.left[3] = {
     FileName = {
-        provider = 'FileName',
-        condition = condition.buffer_not_empty,
+        provider = function()
+            local fullpath = vim.fn.expand('%:p')
+            local icon = ''
+
+            if vim.fn.empty(vim.fn.expand('%:t')) == 1 then
+                return '-x---x-'
+            end
+
+            if fullpath:sub(1, fullpath.len(os.getenv("HOME"))) == os.getenv("HOME") then
+                fullpath = '~' .. fullpath:sub(fullpath.len(os.getenv("HOME")) + 1, fullpath.len(fullpath))
+            end
+
+            if not vim.bo.modifiable then
+                icon = ' '
+            end
+
+            if vim.bo.readonly then
+                icon = icon .. ' '
+            end
+
+            if vim.bo.modified then
+                icon = icon .. ' '
+            end
+
+            if vim.bo.filetype == 'help' then
+                return 'Help '
+            end
+            return icon .. fullpath .. ' '
+        end,
+        -- provider = 'FileName',
         separator = ' ',
         separator_highlight = {'none', "#72a4ff"},
         highlight = {"#12111e", "#c792ea",'italic'}

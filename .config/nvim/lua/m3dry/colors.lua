@@ -4,6 +4,7 @@ hi['normal'] =                               { fg = "#eeffff" }
 hi['Visual'] =                               { bg = "#4e5579" }
 hi['Search'] =                               { bg = "#4e5579" }
 hi['LineNr'] =                               { fg = "#eeffff", bg = "#111111" }
+hi['Todo'] =                                 { fg = "#000000", bg = "#c3e88d" }
 hi['VertSplit'] =                            { fg = "#72a4ff" }
 hi['CursorLineNr'] =                         { fg = "#c792ea", bg = "#111111" }
 hi['SignColumn'] =                           { fg = "#eeffff" }
@@ -34,6 +35,8 @@ hi['Character'] =                            { fg = "#f78c6c", style = "bold" }
 hi['Number'] =                               { fg = "#f78c6c", style = "bold" }
 hi['Boolean'] =                              { fg = "#89ddff", style = "bold,italic" }
 hi['Float'] =                                { fg = "#ffcb6b", style = "italic" }
+hi['NormalFloat'] =                          { fg = "#eeffff" }
+hi['FloatBorder'] =                          { fg = "#ff5370" }
 hi['Identifier'] =                           { fg = "#ffcb6b" }
 hi['Function'] =                             { fg = "#82aaff", style = "italic" }
 hi['Statement'] =                            { fg = "#89ddff", style = "italic" }
@@ -57,16 +60,16 @@ hi['SpecialChar'] =                          { fg = "#c3e88d", style = "italic" 
 hi['Delimeter'] =                            { fg = "#72a4ff" }
 hi['IndentContext'] =                        { fg = "#c792ea" }
 
--- " Quick scope
+-- Quick scope
 hi['QuickScopePrimary'] =                    { fg = "#ff79c6", style = "bold,italic" }
 hi['QuickScopeSecondary'] =                  { fg = "#ffffff", style = "bold,italic" }
 
--- " Hlslens
+-- Hlslens
 hi['HlSearchFloat'] =                        { fg = "#72a4ff" }
 hi['HlSearchNear'] =                         { bg = "#4e5579" }
 hi['HlSearchLens'] =                         { fg = "#ff5370", bg = "#12111e" }
 
--- " Tree sitter
+-- Tree sitter
 hi['TSBoolean'] =                            { fg = "#89ddff", style = "italic" }
 hi['TSCharacter'] =                          { fg = "#f78c6c" }
 hi['TSComment'] =                            { fg = "#3c435e", style = "italic" }
@@ -91,13 +94,16 @@ hi['TSStringEscape'] =                       { fg = "#72a4ff", style = "italic" 
 hi['TSStringRegex'] =                        { fg = "#ff5370", style = "italic" }
 hi['TSType'] =                               { fg = "#c792ea" }
 hi['TSTypeBuiltin'] =                        { fg = "#c792ea", style = "italic" }
-hi['TSURI'] =                                { fg = "#ffcb6b", style = "underline" }
+hi['TSURI'] =                                { fg = "#ffcb6b", sp = "#ffcb6b", style = "underline" }
 hi['TSVariable'] =                           { fg = "#ffcb6b" }
 hi['TSVariableBuiltin'] =                    { fg = "#89ddff", style = "bold" }
 hi['TSNamespace'] =                          { fg = "#c792ea", style = "italic" }
 hi['TSKeyword'] =                            { fg = "#89ddff", style = "italic" }
 
--- " Tabs
+-- Quickfix
+hi['qfLineNr'] =                             { fg = '#3c435e' }
+
+-- Tabs
 hi['TabLine'] =                              { fg = "#eeffff", bg = "#111111" }
 hi['TabLineSel'] =                           { fg = "#ffcb6b", bg = "#111111", style = "italic" }
 hi['TabLineIndex'] =                         { fg = "#eeffff", bg = "#111111" }
@@ -111,7 +117,7 @@ hi['TabLineMod'] =                           { fg = "#ff5370", bg = "#111111" }
 hi['TabLineSelMod'] =                        { fg = "#ff5370", bg = "#111111" }
 hi['TabLineFill'] =                          { fg = "#eeffff", bg = "#111111" }
 
--- " Nvim Tree
+-- Nvim Tree
 hi['NvimTreeFolderName'] =                   { fg = "#c792ea" }
 hi['NvimTreeFolderIcon'] =                   { fg = "#c792ea" }
 hi['NvimTreeEmptyFolderName'] =              { fg = "#c792ea" }
@@ -123,7 +129,7 @@ hi['NvimTreeSpecialFile'] =                  { fg = "#ff5370", style = "italic" 
 hi['NvimTreeExecFile'] =                     { fg = "#c3e88d" }
 hi['NvimTreeImageFile'] =                    { fg = "#89ddff" }
 
--- " Neogit
+-- Neogit
 hi['NeogitDiffContextHighlight'] =           {}
 hi['NeogitDiffAdd'] =                        { fg = "#9cb970", bg = "#232629" }
 hi['NeogitDiffAddHighlight'] =               { fg = "#c3e88d", bg = "#353c34" }
@@ -134,12 +140,48 @@ hi['NeogitHunkHeaderHighlight'] =            { fg = "#12111e", bg = "#bb80b3" }
 hi['NeogitstagedChanges'] =                  { fg = "#c3e88d", style = "italic" }
 hi['NeogitUnstagedChanges'] =                { fg = "#ff5370", style = "italic" }
 
--- " Indent
+-- Indent
 hi['IndentBlanklineChar'] =                  { fg = "#292d3e" }
 hi['IndentBlanklineSpaceChar'] =             { fg = "#292d3e" }
 hi['IndentBlanklineSpaceCharBlankline'] =    { fg = "#292d3e" }
 
--- " Lsp
+-- Trouble
+hi['TroubleCount'] =                         { fg = "#c792ea" }
+hi['TroubleFoldIcon'] =                      { fg = "#ff5370" }
+hi['TroubleIndent'] =                        { fg = "#ff5370" }
+hi['TroubleLocation'] =                      { fg = "#3c435e" }
+
+-- Compe
+hi['CompeDocumentation'] =                   { fg = "#eeffff" }
+hi['CompeDocumentationBorder'] =             { fg = "#c792ea" }
+
+-- Lspsaga
+hi['LspSagaAutoPreview'] =                   { fg = "#ff5370" }
+hi['LspSagaRenameBorder'] =                  { fg = "#ff5370" }
+hi['LspSagaRenamePromptPrefix'] =            { fg = "#72a4ff" }
+hi['LspSagaFinderBorder'] =                  { fg = "#ff5370" }
+hi['LspSagaLspFinderBorder'] =               { fg = "#ff5370" }
+hi['LspSagaFinderSelection'] =               { fg = "#ff5370" }
+hi['LspSagaHoverBorder'] =                   { fg = "#ff5370" }
+hi['LspSagaCodeActionBorder'] =              { fg = "#ff5370" }
+hi['LspSagaCodeActionBorder'] =              { fg = "#ff5370" }
+hi['LspSagaCodeActionTruncateLine'] =        { fg = "#72a4ff" }
+hi['LspSagaCodeActionTitle'] =               { fg = "#72a4ff" }
+hi['LspSagaCodeActionContent'] =             { fg = "#c792ea" }
+hi['LspSagaDocTruncateLine'] =               { fg = "#72a4ff" }
+hi['LspSagaDiagnosticBorder'] =              { fg = "#ff5370" }
+hi['LspSagaDiagnosticHeader'] =              { fg = "#72a4ff" }
+hi['LspSagaDiagnosticTruncateLine'] =        { fg = "#72a4ff" }
+hi['LspSagaDefPreviewBorder'] =              { fg = "#ff5370" }
+hi['LspSagaShTruncateLine'] =                { fg = "#72a4ff" }
+hi['LspSagaBorderTitle'] =                   { fg = "#72a4ff" }
+hi['LspSagaSignatureHelpBorder'] =           { fg = "#ff5370" }
+
+-- Lsp
+hi['LspFloatWinBorder'] =                    { fg = "#ff5370" }
+hi['LspFloatWinNormal'] =                    { fg = "#eeffff" }
+hi['LspSignatureHint'] =                     { fg = "#ff5370" }
+hi['LspSignatureParameter'] =                { fg = "#ff5370", style = "italic" }
 hi['LspDiagnosticsDefaultError'] =           { fg = "#ff5370" }
 hi['LspDiagnosticsDefaultWarning'] =         { fg = "#f78c6c" }
 hi['LspDiagnosticsDefaultHint'] =            { fg = "#72a4ff" }
@@ -152,10 +194,10 @@ hi['LspDiagnosticsSignError'] =              { fg = "#ff5370" }
 hi['LspDiagnosticsSignWarning'] =            { fg = "#f78c6c" }
 hi['LspDiagnosticsSignHint'] =               { fg = "#72a4ff" }
 hi['LspDiagnosticsSignInformation'] =        { fg = "#c3e88d" }
-hi['LspDiagnosticsUnderlineError'] =         { fg = "#ff5370", style = "undercurl" }
-hi['LspDiagnosticsUnderlineWarning'] =       { fg = "#f78c6c", style = "undercurl" }
-hi['LspDiagnosticsUnderlineHint'] =          { fg = "#72a4ff", style = "undercurl" }
-hi['LspDiagnosticsUnderlineInformation'] =   { fg = "#c3e88d", style = "undercurl" }
+hi['LspDiagnosticsUnderlineError'] =         { fg = "#ff5370", sp = "#ff5370", style = "undercurl" }
+hi['LspDiagnosticsUnderlineWarning'] =       { fg = "#f78c6c", sp = "#f78c6c", style = "undercurl" }
+hi['LspDiagnosticsUnderlineHint'] =          { fg = "#72a4ff", sp = "#72a4ff", style = "undercurl" }
+hi['LspDiagnosticsUnderlineInformation'] =   { fg = "#c3e88d", sp = "#c3e88d", style = "undercurl" }
 hi['LspDiagnosticsVirtualTextError'] =       { fg = "#ff5370" }
 hi['LspDiagnosticsVirtualTextWarning'] =     { fg = "#f78c6c" }
 hi['LspDiagnosticsVirtualTextHint'] =        { fg = "#72a4ff" }
@@ -164,9 +206,9 @@ hi['LspDiagnosticsVirtualTextInformation'] = { fg = "#c3e88d" }
 for group, colors in pairs(hi) do
 	local fg = colors.fg or 'none'
 	local bg = colors.bg or 'none'
-	local guisp = colors.guisp or 'none'
+	local sp = colors.sp or 'none'
 	local style = colors.style or 'none'
 
     vim.cmd(string.format('hi %s guifg=%s guibg=%s guisp=%s gui=%s',
-        group, fg, bg, guisp, style))
+        group, fg, bg, sp, style))
 end

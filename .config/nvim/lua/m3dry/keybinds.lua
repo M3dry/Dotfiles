@@ -22,8 +22,32 @@ local cnoresmap = cnoremap.silent
     nmap[';s']                     = 'ysiw'
 
 -- Quickfix
-    nnoremap['[q']                 = '<Cmd>cnext<CR>zz'
-    nnoremap[']q']                 = '<Cmd>cprev<CR>zz'
+    function M.loclist ()
+        local bind = nnoresmap.buffer
+
+        vim.cmd[[LLToggle]]
+
+        bind['j']                  = 'j<CR><C-w>p'
+        bind['k']                  = 'k<CR><C-w>p'
+        bind['q']                  = '<Cmd>LLToggle<CR>'
+    end
+
+    function M.quickfix ()
+        local bind = nnoresmap.buffer
+
+        vim.cmd[[QFToggle]]
+
+        bind['j']                  = 'j<CR><C-w>p'
+        bind['k']                  = 'k<CR><C-w>p'
+        bind['q']                  = '<Cmd>QFToggle<CR>'
+    end
+
+    nnoremap[']q']                 = '<Cmd>QNext<CR>zz'
+    nnoremap['[q']                 = '<Cmd>QPrev<CR>zz'
+    nnoremap['<Leader>mq']         = '<Cmd>lua require(\'m3dry.keybinds\').quickfix()<CR>'
+    nnoremap[']l']                 = '<Cmd>LLNext<CR>zz'
+    nnoremap['[l']                 = '<Cmd>LLPrev<CR>zz'
+    nnoremap['<Leader>ml']         = '<Cmd>lua require(\'m3dry.keybinds\').loclist()<CR>'
 
 -- Buffers
     nnoresmap['<Leader>bk']        = '<Cmd>lua require(\'bufdelete\').bufdelete(0, true)<CR>'
@@ -91,28 +115,35 @@ local cnoresmap = cnoremap.silent
 -- Telescope
     nnoresmap['<C-s>']             = '<Cmd>Telescope current_buffer_fuzzy_find<CR>'
     nnoresmap['<Leader>.']         = '<Cmd>Telescope file_browser<CR>'
-    nnoresmap['<Leader>lf']        = '<Cmd>Telescope fd<CR>'
-    nnoresmap['<Leader>ll']        = '<Cmd>Telescope live_grep<CR>'
-    nnoresmap['<Leader>lg']        = '<Cmd>Telescope grep_string<CR>'
-    nnoresmap['<Leader>lm']        = '<Cmd>Telescope marks<CR>'
-    nnoresmap['<Leader>lk']        = '<Cmd>Telescope keymaps<CR>'
-    nnoresmap['<Leader>lu']        = '<Cmd>Telescope spell_suggest<CR>'
-    nnoresmap['<Leader>lb']        = '<Cmd>Telescope buffers<CR>'
-    nnoresmap['<Leader>lz']        = '<Cmd>Telescope symbols<CR>'
-    -- Git
+    nnoresmap['<Leader>tk']        = '<Cmd>Telescope keymaps<CR>'
+    nnoresmap['<Leader>tm']        = '<Cmd>Telescope marks<CR>'
+    nnoresmap['<Leader>tu']        = '<Cmd>Telescope spell_suggest<CR>'
+    nnoresmap['<Leader>tf']        = '<Cmd>Telescope fd<CR>'
+    nnoresmap['<Leader>tb']        = '<Cmd>Telescope buffers<CR>'
+    nnoresmap['<Leader>tz']        = '<Cmd>Telescope symbols<CR>'
+    nnoresmap['<Leader>tq']        = '<Cmd>Telescope quickfix<CR>'
+    nnoresmap['<Leader>tl']        = '<Cmd>Telescope loclist<CR>'
+    nnoresmap['<Leader>th']        = '<Cmd>Telescope highlights<CR>'
+    -- Project
     nnoresmap['<Leader>pf']        = '<Cmd>Telescope git_files<CR>'
     nnoresmap['<Leader>ps']        = '<Cmd>Telescope git_status<CR>'
     nnoresmap['<Leader>pb']        = '<Cmd>lua require(\'m3dry.telescope\').git_branches()<CR>'
     nnoresmap['<Leader>pc']        = '<Cmd>Telescope git_bcommits<CR>'
     nnoresmap['<Leader>pv']        = '<Cmd>Telescope git_commits<CR>'
+    nnoresmap['<Leader>pl']        = '<Cmd>Telescope live_grep<CR>'
+    nnoresmap['<Leader>pgg']       = '<Cmd>lua require(\'telescope.builtin\').grep_string { search = vim.fn.input("Search: ") }<CR>'
+    nnoresmap['<Leader>pgw']       = '<Cmd>lua require(\'telescope.builtin\').grep_string { search = vim.fn.expand("<cword>") }<CR>'
+    nnoresmap['<Leader>pgl']       = '<Cmd>lua require(\'telescope.builtin\').grep_string { search = vim.api.nvim_get_current_line() }<CR>'
     -- Lsp
     nnoresmap['<Leader>lr']        = '<Cmd>Telescope lsp_references<CR>'
     nnoresmap['<Leader>ld']        = '<Cmd>Telescope lsp_definitions<CR>'
     nnoresmap['<Leader>lt']        = '<Cmd>Telescope treesitter<CR>'
-    nnoresmap['<Leader>ls']        = '<Cmd>Telescope lsp_document_symbols<CR>'
-    nnoresmap['<Leader>lS']        = '<Cmd>Telescope lsp_dynamic_workspace_symbols<CR>'
-    nnoresmap['<Leader>le']        = '<Cmd>Telescope lsp_document_diagnostics<CR>'
-    nnoresmap['<Leader>lE']        = '<Cmd>Telescope lsp_workspace_diagnostics<CR>'
+    nnoresmap['<Leader>lCc']       = '<Cmd>Telescope lsp_code_actions<CR>'
+    nnoresmap['<Leader>lCr']       = '<Cmd>Telescope lsp_range_code_actions<CR>'
+    nnoresmap['<Leader>lsd']       = '<Cmd>Telescope lsp_document_symbols<CR>'
+    nnoresmap['<Leader>lsw']       = '<Cmd>Telescope lsp_dynamic_workspace_symbols<CR>'
+    nnoresmap['<Leader>led']       = '<Cmd>Telescope lsp_document_diagnostics<CR>'
+    nnoresmap['<Leader>lew']       = '<Cmd>Telescope lsp_workspace_diagnostics<CR>'
     -- Dap
     nnoresmap['<Leader>dtc']       = '<Cmd>lua require(\'telescope\').extensions.dap.commands{}<CR>'
     nnoresmap['<Leader>dto']       = '<Cmd>lua require(\'telescope\').extensions.dap.configurations{}<CR>'
@@ -120,14 +151,15 @@ local cnoresmap = cnoremap.silent
     nnoresmap['<Leader>dtv']       = '<Cmd>lua require(\'telescope\').extensions.dap.variables{}<CR>'
     nnoresmap['<Leader>dtf']       = '<Cmd>lua require(\'telescope\').extensions.dap.frames{}<CR>'
 
-nnoresmap['<Leader>la']            = '<Cmd>TSHighlightCapturesUnderCursor<CR>'
+-- Treesitter
+    nnoresmap['<Leader>la']            = '<Cmd>TSHighlightCapturesUnderCursor<CR>'
 
 -- Neuron
     nnoresmap['<Leader>nn']        = '<Cmd>lua require(\'neuron.cmd\').new_edit(require(\'neuron\').config.neuron_dir)<CR>'
     nnoresmap['<Leader>nf']        = '<Cmd>lua require(\'neuron.telescope\').find_zettels()<CR>'
     nnoresmap['<Leader>ni']        = '<Cmd>lua require(\'neuron.telescope\').find_zettels{insert = true}<CR>'
     nnoresmap['<Leader>ns']        = '<Cmd>lua require(\'neuron\').rib{address = "127.0.0.1:8200", verbose = true}<CR>'
-    
+
     function M.neuronbinds()
         local bind = nnoresmap.buffer
 
@@ -198,7 +230,7 @@ wincmd p]])
     nnoresmap['<Leader>lp']        = '<Cmd>Lspsaga preview_definition<CR>'
     nnoresmap['<Leader>lh']        = '<Cmd>Lspsaga hover_doc<CR>'
     nnoresmap['<Leader>lc']        = '<Cmd>Lspsaga code_action<CR>'
-    nnoresmap['<Leader>lC']        = '<Cmd>Lspsaga range_code_action<CR>'
+    vnoresmap['<Leader>lc']        = '<Cmd>Lspsaga range_code_action<CR>'
     nnoresmap['[e']                = '<Cmd>Lspsaga diagnostic_jump_next<CR>'
     nnoresmap[']e']                = '<Cmd>Lspsaga diagnostic_jump_prev<CR>'
     nnoresmap['<Leader>lv']        = '<Cmd>Lspsaga show_cursor_diagnostics<CR>'
@@ -221,6 +253,7 @@ wincmd p]])
 
 -- Trouble
     nnoresmap['gle']               = '<Cmd>:TroubleToggle lsp_document_diagnostics<CR>'
+    nnoresmap['glE']               = '<Cmd>:TroubleToggle lsp_workspace_diagnostics<CR>'
     nnoresmap['glw']               = '<Cmd>:TroubleToggle lsp_workspace_diagnostics<CR>'
     nnoresmap['glr']               = '<Cmd>:TroubleToggle lsp_references<CR>'
     nnoresmap['glc']               = '<Cmd>:TroubleClose<CR>'

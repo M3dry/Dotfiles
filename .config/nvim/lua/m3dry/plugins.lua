@@ -1,5 +1,17 @@
+local install_path = vim.fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
+
+if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
+  fn.system({'git', 'clone', 'https://github.com/wbthomason/packer.nvim', install_path})
+  vim.api.nvim_command('packadd packer.nvim')
+end
+
 return require('packer').startup(function()
-    use 'wbthomason/packer.nvim'
+    use {
+        'wbthomason/packer.nvim',
+        config = function()
+            vim.cmd([[autocmd BufWritePost plugins.lua source <afile> | PackerCompile]])
+        end
+    }
     use {
         'glepnir/galaxyline.nvim',
         branch = 'main',
@@ -273,342 +285,26 @@ let g:choosewin_color_other = { 'gui': ['#12111e', '#12111e'] }]]
     use 'johann2357/nvim-smartbufs'
     use {
         'neovim/nvim-lspconfig', 
-        config = function()
-            require'lspconfig'.clangd.setup {}
-            require('nlua.lsp.nvim').setup(require('lspconfig'), {
-                on_attach = function(...) end
-            })
-        end,
+        config = function() require('m3dry.lsp') end,
         requires = {
-            {
-                'hrsh7th/nvim-compe',
-                config = function()
-                    require'compe'.setup {
-                        enabled = true,
-                        autocomplete = true,
-                        debug = false,
-                        min_length = 1,
-                        preselect = 'always',
-                        throttle_time = 80,
-                        source_timeout = 200,
-                        resolve_timeout = 800,
-                        incomplete_delay = 400,
-                        max_abbr_width = 100,
-                        max_kind_width = 100,
-                        max_menu_width = 100,
-                        documentation = true,
-                        source = {
-                            nvim_lsp =
-                            {
-                                true,
-                                priority = 1000
-                            },
-                            vsnip = {
-                                true,
-                                kind = '﬌ Snippet',
-                                priority = 950
-                            },
-                            nvim_lua =
-                            {
-                                true,
-                                priority = 900
-                            },
-                            path =
-                            {
-                                true,
-                                kind = ' Path',
-                                priority = 700
-                            },
-                            buffer = {
-                                true,
-                                kind = '﬘ Buffer',
-                                priority = 600
-                            },
-                            calc =
-                            {
-                                true,
-                                kind = ' Math',
-                                priority = 500
-                            },
-                            spell =
-                            {
-                                true,
-                                kind = ' Spell',
-                                priority = 100
-                            }
-                        }
-                    }
-                end
-            },
-            {
-                'folke/trouble.nvim',
-                config = function()
-                    require("trouble").setup {
-                        position = "bottom",
-                        height = 10,
-                        width = 50,
-                        icons = true,
-                        mode = "lsp_document_diagnostics",
-                        fold_open = "",
-                        fold_closed = "",
-                        action_keys = {
-                            close = "q",
-                            cancel = "<esc>",
-                            refresh = "r",
-                            jump = {"<cr>", "<tab>"},
-                            open_split = { "<c-x>" },
-                            open_vsplit = { "<c-v>" },
-                            open_tab = { "<c-t>" },
-                            jump_close = {"o"},
-                            toggle_mode = "m",
-                            toggle_preview = "P",
-                            hover = "K",
-                            preview = "p",
-                            close_folds = {"zM", "zm"},
-                            open_folds = {"zR", "zr"},
-                            toggle_fold = {"zA", "za"},
-                            previous = "k",
-                            next = "j"
-                        },
-                        indent_lines = true,
-                        auto_open = false,
-                        auto_close = false,
-                        auto_preview = true,
-                        auto_fold = false,
-                        signs = {
-                            error = "",
-                            warning = "",
-                            hint = "",
-                            information = "",
-                            other = "﫠"
-                        },
-                        use_lsp_diagnostic_signs = false
-                    }
-                end
-            },
-            'tjdevries/nlua.nvim',
-            {
-                'ray-x/lsp_signature.nvim',
-                config = function()
-                    require'lsp_signature'.on_attach {
-                        bind = true,
-                        doc_lines = 10,
-                        floating_window = true,
-                        fix_pos = true,
-                        hint_enable = true,
-                        hint_prefix = "",
-                        hint_scheme = "Search",
-                        use_lspsaga = false,
-                        hi_parameter = "Search",
-                        max_height = 12,
-                        max_width = 120,
-                        handler_opts = {
-                          border = "single"
-                        },
-                        extra_trigger_chars = {"(", ","}
-                    }
-                end
-            },
-            {
-                'onsails/lspkind-nvim',
-                config = function()
-                    require('lspkind').init({
-                        with_text = true,
-                        symbol_map = {
-                            Text = '',
-                            Method = 'ƒ',
-                            Function = '',
-                            Constructor = '',
-                            Variable = '',
-                            Class = '',
-                            Interface = 'ﰮ',
-                            Module = '',
-                            Property = '',
-                            Unit = '',
-                            Value = '',
-                            Enum = '了',
-                            Keyword = '',
-                            Snippet = '﬌',
-                            Color = '',
-                            File = '',
-                            Folder = '',
-                            EnumMember = '',
-                            Constant = '',
-                            Struct = ''
-                        }
-                    })
-                end
-            },
+            'hrsh7th/nvim-compe',
+            'folke/trouble.nvim',
+            'ray-x/lsp_signature.nvim',
+            'onsails/lspkind-nvim',
             'nvim-lua/lsp-status.nvim',
-            {
-                'ahmedkhalf/lsp-rooter.nvim',
-                config = function()
-                    require("lsp-rooter").setup()
-                end
-            },
-            {
-                'glepnir/lspsaga.nvim',
-                config = function()
-                    require('lspsaga').init_lsp_saga {
-                        use_saga_diagnostic_sign = true,
-                        error_sign = '',
-                        warn_sign = '',
-                        hint_sign = '',
-                        infor_sign = '',
-                        dianostic_header_icon = ' ',
-                        code_action_icon = '',
-                        code_action_prompt = {
-                            enable = true,
-                            sign = true,
-                            sign_priority = 20,
-                            virtual_text = true,
-                        },
-                        finder_definition_icon = ' ',
-                        finder_reference_icon = ' ',
-                        max_preview_lines = 30,
-                        finder_action_keys = {
-                            open = '<CR>', vsplit = 's', split = 'i',
-                            quit = '<C-c>', scroll_down = '<C-f>', scroll_up = '<C-b>',
-                        },
-                        code_action_keys = {
-                            quit = 'q',exec = '<CR>'
-                        },
-                        rename_action_keys = {
-                            quit = '<C-c>', exec = '<CR>'
-                        },
-                        definition_preview_icon = ' ',
-                        border_style = "single",
-                        rename_prompt_prefix = '',
-                    }
-                end
-            },
-            {
-                'simrat39/symbols-outline.nvim',
-                config = function()
-                    vim.g.symbols_outline = {
-                        highlight_hovered_item = true,
-                        show_guides = true,
-                        auto_preview = false,
-                        position = 'right',
-                        show_numbers = false,
-                        show_relative_numbers = false,
-                        show_symbol_details = true,
-                        keymaps = {
-                            close = "<Esc>",
-                            close = "q",
-                            goto_location = "<Cr>",
-                            focus_location = "o",
-                            hover_symbol = "<C-space>",
-                            rename_symbol = "r",
-                            code_actions = "a",
-                        },
-                        lsp_blacklist = {},
-                    }
-                end
-            },
+            'ahmedkhalf/lsp-rooter.nvim',
+            'glepnir/lspsaga.nvim',
+            'simrat39/symbols-outline.nvim',
             {
                 'mfussenegger/nvim-dap',
-                config = function()
-                    require('dap').adapters.c = {
-                        type = 'executable',
-                        attach = {
-                            pidProperty = "pid",
-                            pidSelect = "ask"
-                        },
-                        command = '/usr/bin/lldb-vscode',
-                        env = {
-                            LLDB_LAUNCH_FLAG_LAUNCH_IN_TTY = "YES"
-                        },
-                        name = "lldb"
-                    }
-                    
-                    require('dap').configurations.c = {
-                        {
-                            type = "c",
-                            name = "Debug",
-                            request = "launch",
-                            program = function()
-                                return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
-                            end,
-                        },
-                    }
-                    
-                    env = function()
-                        local variables = {}
-                        for k, v in pairs(vim.fn.environ()) do
-                            table.insert(variables, string.format("%s=%s", k, v))
-                        end
-                        return variables
-                    end,
-                    
-                    require("dapui").setup{
-                        icons = {
-                            expanded = "⯆",
-                            collapsed = "⯈"
-                        },
-                        mappings = {
-                            -- Use a table to apply multiple mappings
-                            expand = {"<CR>", "<2-LeftMouse>"},
-                            open = "o",
-                            remove = "d",
-                            edit = "e",
-                        },
-                        sidebar = {
-                            open_on_start = true,
-                            elements = {
-                                -- You can change the order of elements in the sidebar
-                                "scopes",
-                                "breakpoints",
-                                "stacks",
-                                "watches"
-                            },
-                            width = 40,
-                            position = "left" -- Can be "left" or "right"
-                        },
-                        tray = {
-                            open_on_start = true,
-                            elements = {
-                              "repl"
-                            },
-                            height = 10,
-                            position = "bottom" -- Can be "bottom" or "top"
-                        },
-                        floating = {
-                            max_height = nil, -- These can be integers or a float between 0 and 1.
-                            max_width = nil   -- Floats will be treated as percentage of your screen.
-                        }
-                    }
-                end,
                 requires = 'rcarriga/nvim-dap-ui'
             },
             {
                 'hrsh7th/vim-vsnip',
-                requires = {
-                    'hrsh7th/vim-vsnip-integ'
-                },
-                config = function()
-                    vim.g.vsnip_snippet_dir = "$HOME/.config/nvim/snippets/"
-                end
+                requires = 'hrsh7th/vim-vsnip-integ'
             },
             {
                 'michaelb/sniprun',
-                config = function()
-                    require'sniprun'.setup({
-                        display = {
-                            "Classic",
-                            "VirtualTextOk",
-                            -- "VirtualTextErr",
-                            -- "TempFloatingWindow",
-                            -- "LongTempFloatingWindow",
-                            -- "Terminal"
-                            },
-                        snipruncolors = {
-                            SniprunVirtualTextOk = { fg="#72a4ff" },
-                        },
-                        inline_messages = 0,
-                        borders = 'double'
-                    })
-                end,
                 run = 'bash install.sh'
             },
         }
@@ -829,7 +525,7 @@ let g:choosewin_color_other = { 'gui': ['#12111e', '#12111e'] }]]
                 signs = true,
                 sign_priority = 8,
                 keywords = {
-                    FIX  = { icon = " ", color = "#ff5370", alt = { "FIXME", "BUG", "FIXIT", "ISSUE" } },
+                    FIX  = { icon = " ", color = "error", alt = { "FIXME", "BUG", "FIXIT", "ISSUE" } },
                     TODO = { icon = " ", color = "info" },
                     HACK = { icon = " ", color = "warning" },
                     WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX" } },
@@ -866,6 +562,31 @@ let g:choosewin_color_other = { 'gui': ['#12111e', '#12111e'] }]]
         end
     }
     use 'famiu/bufdelete.nvim'
+    use {
+        'stevearc/qf_helper.nvim',
+        config = function()
+            require'qf_helper'.setup({
+              prefer_loclist = true,       -- Used for QNext/QPrev (see Commands below)
+              sort_lsp_diagnostics = true, -- Sort LSP diagnostic results
+              quickfix = {
+                autoclose = true,          -- Autoclose qf if it's the only open window
+                default_bindings = true,   -- Set up recommended bindings in qf window
+                default_options = true,    -- Set recommended buffer and window options
+                max_height = 10,           -- Max qf height when using open() or toggle()
+                min_height = 1,            -- Min qf height when using open() or toggle()
+                track_location = true,     -- Keep qf updated with your current location
+              },
+              loclist = {
+                autoclose = true,
+                default_bindings = true,
+                default_options = true,
+                max_height = 10,
+                min_height = 1,
+                track_location = true,
+              },
+            })
+        end
+    }
     use {
         'TimUntersberger/neogit',
         config = function()

@@ -2,7 +2,7 @@
 
 picom &
 numlockx on &
-xwallpaper --stretch ~/my-stuff/Pictures/wallpapers/ffxiv.jpg &
+xwallpaper --stretch ~/my-stuff/Pictures/wallpapers/vscode.jpg &
 redshift &
 playerctld &
 setxkbmap us,cz  ,qwerty -option 'ctrl:nocaps' 'grp:ctrls_toggle' &

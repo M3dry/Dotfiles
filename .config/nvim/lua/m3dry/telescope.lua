@@ -11,7 +11,8 @@ require('telescope').setup {
                 ["<C-j>"] = actions.move_selection_next,
                 ["<C-k>"] = actions.move_selection_previous,
                 ["<C-o>"] = trouble.open_with_trouble,
-                ["<C-q>"] = actions.send_to_qflist
+                ["<C-q>"] = actions.send_to_qflist,
+                ["<C-l>"] = actions.send_to_loclist
             },
             n = {
                 ["<C-o>"] = trouble.open_with_trouble
