@@ -273,6 +273,15 @@ wincmd p]])
     nnoresmap['<Leader>gg']        = '<Cmd>Neogit<CR>'
     nnoresmap['<Leader>gb']        = '<Cmd>ToggleBlameLine<CR>'
     nnoremap['<Leader>gd']         = ':DiffviewOpen '
+    nnoresmap['<Leader>gs']        = '<Cmd>lua require"gitsigns".stage_hunk()<CR>'
+    vnoresmap['<Leader>gs']        = '<Cmd>lua require"gitsigns".stage_hunk({ vim.fn.line("."), vim.fn.line("v") })<CR>'
+    nnoresmap['<Leader>gu']        = '<Cmd>lua require"gitsigns".undo_stage_hunk()<CR>'
+    nnoresmap['<Leader>gr']        = '<Cmd>lua require"gitsigns".reset_hunk()<CR>'
+    vnoresmap['<Leader>gr']        = '<Cmd>lua require"gitsigns".reset_hunk({ vim.fn.line("."), vim.fn.line("v") })<CR>'
+    nnoresmap['<Leader>gR']        = '<Cmd>lua require"gitsigns".reset_buffer()<CR>'
+    nnoresmap['<Leader>gp']        = '<Cmd>lua require"gitsigns".preview_hunk()<CR>'
+    nnoresmap.expr[']g']           = '&diff ? \']g\' : \'<cmd>lua require("gitsigns.actions").next_hunk()<CR>\''
+    nnoresmap.expr['[g']           = '&diff ? \'[g\' : \'<cmd>lua require("gitsigns.actions").prev_hunk()<CR>\''
 
 -- Parrot
     nnoresmap['<Leader>ti']        = '<Cmd>lua require(\'m3dry.parrot\').replace()<CR>'

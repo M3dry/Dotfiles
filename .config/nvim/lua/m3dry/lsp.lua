@@ -6,29 +6,16 @@ require('lspconfig').clangd.setup {
     }
 }
 
-require('lspconfig').sumneko_lua.setup {
-    cmd = { "lua-language-server" },
-    settings = {
-        Lua = {
-            runtime = {
-                version = 'LuaJIT',
-                path = vim.split(package.path, ';'),
-            },
-            diagnostics = {
-                globals = { 'vim' },
-            },
-            workspace = {
-                library = {
-                    [vim.fn.expand("$VIMRUNTIME/lua")] = true,
-                    [vim.fn.expand("$VIMRUNTIME/lua/vim/lsp")] = true
-                }
-            },
-            telemetry = {
-                enable = false,
-            }
-        }
-    }
-}
+require('lspconfig').sumneko_lua.setup(require('lua-dev').setup {
+    library = {
+        vimruntime = true,
+        types = true,
+        plugins = true,
+    },
+    lspconfig = {
+        cmd = { 'lua-language-server' },
+    },
+})
 
 require('compe').setup {
     enabled = true,

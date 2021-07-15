@@ -1,7 +1,7 @@
 local install_path = vim.fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
 
 if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
-  fn.system({'git', 'clone', 'https://github.com/wbthomason/packer.nvim', install_path})
+  vim.fn.system({'git', 'clone', 'https://github.com/wbthomason/packer.nvim', install_path})
   vim.api.nvim_command('packadd packer.nvim')
 end
 
@@ -155,12 +155,32 @@ let g:choosewin_color_other = { 'gui': ['#12111e', '#12111e'] }]]
             vim.b.lion_squeeze_spaces = 1
         end
     }
+    -- use {
+        -- 'rrethy/vim-hexokinase',
+        -- run = 'make hexokinase',
+        -- config = function()
+            -- vim.g.Hexokinase_highlighters = { "backgroundfull"}
+            -- vim.g.Hexokinase_optInPatterns = "full_hex,triple_hex,rgb,rgba,hsl,hsla,colour_names"
+        -- end
+    -- }
     use {
-        'rrethy/vim-hexokinase',
-        run = 'make hexokinase',
+        'norcalli/nvim-colorizer.lua',
         config = function()
-            vim.g.Hexokinase_highlighters = { "backgroundfull"}
-            vim.g.Hexokinase_optInPatterns = "full_hex,triple_hex,rgb,rgba,hsl,hsla,colour_names"
+            require('colorizer').setup(
+            {
+                '*'
+            },
+            {
+                mode = 'background',
+                RGB = true,
+                RRGGBB = true,
+                names = true,
+                RRGGBBAA = true,
+                rgb_fn = true,
+                hsl_fn = true,
+                css = true,
+                css_fn = true,
+            })
         end
     }
     use {
@@ -291,6 +311,7 @@ let g:choosewin_color_other = { 'gui': ['#12111e', '#12111e'] }]]
             'folke/trouble.nvim',
             'ray-x/lsp_signature.nvim',
             'onsails/lspkind-nvim',
+            'folke/lua-dev.nvim',
             'nvim-lua/lsp-status.nvim',
             'ahmedkhalf/lsp-rooter.nvim',
             'glepnir/lspsaga.nvim',
@@ -501,9 +522,18 @@ let g:choosewin_color_other = { 'gui': ['#12111e', '#12111e'] }]]
                 },
                 autopairs = {
                     enable = true
+                },
+                refactor = {
+                    navigation = {
+                        enable = true,
+                        keymaps = {
+                            goto_next_usage = "]u",
+                            goto_previous_usage = "[u",
+                        },
+                    }
                 }
             }
-            
+
             require('spellsitter').setup {
                 hl = 'SpellBad',
                 captures = {'comment'},
@@ -515,6 +545,7 @@ let g:choosewin_color_other = { 'gui': ['#12111e', '#12111e'] }]]
                 'p00f/nvim-ts-rainbow',
                 'mfussenegger/nvim-ts-hint-textobject',
                 'lewis6991/spellsitter.nvim',
+                'nvim-treesitter/nvim-treesitter-refactor',
             }
         }
     }
@@ -589,71 +620,11 @@ let g:choosewin_color_other = { 'gui': ['#12111e', '#12111e'] }]]
     }
     use {
         'TimUntersberger/neogit',
-        config = function()
-            local cb = require'diffview.config'.diffview_callback
-
-            require'diffview'.setup {
-                diff_binaries = false,
-                file_panel = {
-                    width = 35,
-                    use_icons = true
-                },
-                key_bindings = {
-                    disable_defaults = false,
-                    view = {
-                        ["<tab>"]     = cb("select_next_entry"),
-                        ["<s-tab>"]   = cb("select_prev_entry"),
-                        ["<leader>e"] = cb("focus_files"),
-                        ["<leader>b"] = cb("toggle_files"),
-                    },
-                    file_panel = {
-                        ["j"]             = cb("next_entry"),
-                        ["<down>"]        = cb("next_entry"),
-                        ["k"]             = cb("prev_entry"),
-                        ["<up>"]          = cb("prev_entry"),
-                        ["<cr>"]          = cb("select_entry"),
-                        ["o"]             = cb("select_entry"),
-                        ["<2-LeftMouse>"] = cb("select_entry"),
-                        ["-"]             = cb("toggle_stage_entry"),
-                        ["S"]             = cb("stage_all"),
-                        ["U"]             = cb("unstage_all"),
-                        ["R"]             = cb("refresh_files"),
-                        ["<tab>"]         = cb("select_next_entry"),
-                        ["<s-tab>"]       = cb("select_prev_entry"),
-                        ["<leader>e"]     = cb("focus_files"),
-                        ["<leader>b"]     = cb("toggle_files"),
-                    }
-                }
-            }
-            
-            require('neogit').setup {
-                disable_signs = false,
-                disable_context_highlighting = false,
-                disable_commit_confirmation = false,
-                signs = {
-                    -- { CLOSED, OPENED }
-                    section = { "⬎", "ﬔ" },
-                    item = { "⬎", "ﬔ" },
-                    hunk = { "", "" },
-                },
-                integrations = {
-                    diffview = true  
-                },
-                mappings = {
-                    status = {
-                        ["p"] = "PushPopup",
-                        ["P"] = "PullPopup",
-                    }
-                }
-            }
-
-            vim.g.blameLineUseVirtualText = 1
-            vim.g.blameLineVirtualTextHighlight = 'Comment'
-            vim.g.blameLineGitFormat = '%an:%as - %s %h'
-        end,
+        config = function() require('m3dry.git') end,
         requires = {
             'sindrets/diffview.nvim',
-            'tveskag/nvim-blame-line'
+            'lewis6991/gitsigns.nvim',
+            'tveskag/nvim-blame-line',
         }
     }
 end)

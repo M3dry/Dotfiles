@@ -17,6 +17,7 @@ hi['DiffDelete'] =                           { fg = "#ff5370", bg = "#634661" }
 hi['StatusLine'] =                           { fg = "#eeffff", bg = "#292d3e" }
 hi['StatusLineNC'] =                         { fg = "#eeffff", bg = "#292d3e" }
 hi['NonText'] =                              { fg = "#3c435e" }
+hi['Yank'] =                                 { fg = "#000000", bg = "#c3e88d" }
 hi['Error'] =                                { fg = "#ff5370" }
 hi['ErrorMsg'] =                             { fg = "#ff5370" }
 hi['WarningMsg'] =                           { fg = "#f78c6c" }
@@ -35,8 +36,8 @@ hi['Character'] =                            { fg = "#f78c6c", style = "bold" }
 hi['Number'] =                               { fg = "#f78c6c", style = "bold" }
 hi['Boolean'] =                              { fg = "#89ddff", style = "bold,italic" }
 hi['Float'] =                                { fg = "#ffcb6b", style = "italic" }
-hi['NormalFloat'] =                          { fg = "#eeffff" }
-hi['FloatBorder'] =                          { fg = "#ff5370" }
+hi['NormalFloat'] =                          { fg = "#eeffff", bg = "#111111" }
+hi['FloatBorder'] =                          { fg = "#ff5370", bg = "#111111" }
 hi['Identifier'] =                           { fg = "#ffcb6b" }
 hi['Function'] =                             { fg = "#82aaff", style = "italic" }
 hi['Statement'] =                            { fg = "#89ddff", style = "italic" }
@@ -99,6 +100,9 @@ hi['TSVariable'] =                           { fg = "#ffcb6b" }
 hi['TSVariableBuiltin'] =                    { fg = "#89ddff", style = "bold" }
 hi['TSNamespace'] =                          { fg = "#c792ea", style = "italic" }
 hi['TSKeyword'] =                            { fg = "#89ddff", style = "italic" }
+hi['TSCurrentScope'] =                       { bg = "#0f111b" }
+hi['TSDefinitionUsage'] =                    { fg = "#000000", bg = "#72a4ff" }
+hi['TSDefinition'] =                         { fg = "#000000", bg = "#ff5370" }
 
 -- Quickfix
 hi['qfLineNr'] =                             { fg = '#3c435e' }
@@ -139,6 +143,17 @@ hi['NeogitHunkHeader'] =                     { fg = "#12111e", bg = "#44324a" }
 hi['NeogitHunkHeaderHighlight'] =            { fg = "#12111e", bg = "#bb80b3" }
 hi['NeogitstagedChanges'] =                  { fg = "#c3e88d", style = "italic" }
 hi['NeogitUnstagedChanges'] =                { fg = "#ff5370", style = "italic" }
+
+-- GitSigns
+hi['GitSignsAdd'] =                          { fg = "#c3e88d" }
+hi['GitSignsAddNr'] =                        { fg = "#c3e88d", bg = "#111111" }
+hi['GitSignsAddLn'] =                        { bg = "#353c34" }
+hi['GitSignsChange'] =                       { fg = "#f78c6c" }
+hi['GitSignsChangeNr'] =                     { fg = "#f78c6c", bg = "#111111" }
+hi['GitSignsChangeLn'] =                     { bg = "#292d3e" }
+hi['GitSignsDelete'] =                       { fg = "#ff5370" }
+hi['GitSignsDeleteNr'] =                     { fg = "#ff5370", bg = "#111111" }
+hi['GitSignsDeleteLn'] =                     { bg = "#634661" }
 
 -- Indent
 hi['IndentBlanklineChar'] =                  { fg = "#292d3e" }

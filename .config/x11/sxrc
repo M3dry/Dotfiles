@@ -2,4 +2,6 @@
 
 . ~/.config/x11/xprofile
 
+xcape -e "Control_L=Escape" &
+
 exec dwm > ~/.local/share/dwm.log
