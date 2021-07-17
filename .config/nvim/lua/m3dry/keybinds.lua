@@ -4,13 +4,13 @@ local nmap      = map.n
 local vmap      = map.v
 local imap      = map.i
 local cmap      = map.c
-local nnoremap  = map.n.nore
+local nnoremap  = nmap.nore
 local nnoresmap = nnoremap.silent
-local vnoremap  = map.v.nore
+local vnoremap  = vmap.nore
 local vnoresmap = vnoremap.silent
-local inoremap  = map.i.nore
+local inoremap  = imap.nore
 local inoresmap = inoremap.silent
-local cnoremap  = map.c.nore
+local cnoremap  = cmap.nore
 local cnoresmap = cnoremap.silent
 
 -- Save & exit
@@ -22,32 +22,34 @@ local cnoresmap = cnoremap.silent
     nmap[';s']                     = 'ysiw'
 
 -- Quickfix
-    function M.loclist ()
-        local bind = nnoresmap.buffer
-
-        vim.cmd[[LLToggle]]
-
-        bind['j']                  = 'j<CR><C-w>p'
-        bind['k']                  = 'k<CR><C-w>p'
-        bind['q']                  = '<Cmd>LLToggle<CR>'
-    end
-
     function M.quickfix ()
         local bind = nnoresmap.buffer
 
         vim.cmd[[QFToggle]]
+        vim.o.number = false
 
         bind['j']                  = 'j<CR><C-w>p'
         bind['k']                  = 'k<CR><C-w>p'
         bind['q']                  = '<Cmd>QFToggle<CR>'
     end
 
-    nnoremap[']q']                 = '<Cmd>QNext<CR>zz'
-    nnoremap['[q']                 = '<Cmd>QPrev<CR>zz'
-    nnoremap['<Leader>mq']         = '<Cmd>lua require(\'m3dry.keybinds\').quickfix()<CR>'
-    nnoremap[']l']                 = '<Cmd>LLNext<CR>zz'
-    nnoremap['[l']                 = '<Cmd>LLPrev<CR>zz'
-    nnoremap['<Leader>ml']         = '<Cmd>lua require(\'m3dry.keybinds\').loclist()<CR>'
+    function M.loclist ()
+        local bind = nnoresmap.buffer
+
+        vim.cmd[[LLToggle]]
+        vim.o.number = false
+
+        bind['j']                  = 'j<CR><C-w>p'
+        bind['k']                  = 'k<CR><C-w>p'
+        bind['q']                  = '<Cmd>LLToggle<CR>'
+    end
+
+    nnoresmap[']q']                 = '<Cmd>QNext<CR>zz'
+    nnoresmap['[q']                 = '<Cmd>QPrev<CR>zz'
+    nnoresmap['<Leader>mq']         = '<Cmd>lua require(\'m3dry.keybinds\').quickfix()<CR>'
+    nnoresmap[']l']                 = '<Cmd>LLNext<CR>zz'
+    nnoresmap['[l']                 = '<Cmd>LLPrev<CR>zz'
+    nnoresmap['<Leader>ml']         = '<Cmd>lua require(\'m3dry.keybinds\').loclist()<CR>'
 
 -- Buffers
     nnoresmap['<Leader>bk']        = '<Cmd>lua require(\'bufdelete\').bufdelete(0, true)<CR>'
@@ -125,18 +127,17 @@ local cnoresmap = cnoremap.silent
     nnoresmap['<Leader>tl']        = '<Cmd>Telescope loclist<CR>'
     nnoresmap['<Leader>th']        = '<Cmd>Telescope highlights<CR>'
     -- Project
-    nnoresmap['<Leader>pf']        = '<Cmd>Telescope git_files<CR>'
-    nnoresmap['<Leader>ps']        = '<Cmd>Telescope git_status<CR>'
-    nnoresmap['<Leader>pb']        = '<Cmd>lua require(\'m3dry.telescope\').git_branches()<CR>'
-    nnoresmap['<Leader>pc']        = '<Cmd>Telescope git_bcommits<CR>'
-    nnoresmap['<Leader>pv']        = '<Cmd>Telescope git_commits<CR>'
-    nnoresmap['<Leader>pl']        = '<Cmd>Telescope live_grep<CR>'
-    nnoresmap['<Leader>pgg']       = '<Cmd>lua require(\'telescope.builtin\').grep_string { search = vim.fn.input("Search: ") }<CR>'
-    nnoresmap['<Leader>pgw']       = '<Cmd>lua require(\'telescope.builtin\').grep_string { search = vim.fn.expand("<cword>") }<CR>'
-    nnoresmap['<Leader>pgl']       = '<Cmd>lua require(\'telescope.builtin\').grep_string { search = vim.api.nvim_get_current_line() }<CR>'
+    nnoresmap['<Leader>mf']        = '<Cmd>Telescope git_files<CR>'
+    nnoresmap['<Leader>ms']        = '<Cmd>Telescope git_status<CR>'
+    nnoresmap['<Leader>mb']        = '<Cmd>lua require(\'m3dry.telescope\').git_branches()<CR>'
+    nnoresmap['<Leader>mc']        = '<Cmd>Telescope git_bcommits<CR>'
+    nnoresmap['<Leader>mv']        = '<Cmd>Telescope git_commits<CR>'
+    nnoresmap['<Leader>mG']        = '<Cmd>Telescope live_grep<CR>'
+    nnoresmap['<Leader>mgg']       = '<Cmd>lua require(\'telescope.builtin\').grep_string { search = vim.fn.input("Search: ") }<CR>'
+    nnoresmap['<Leader>mgw']       = '<Cmd>lua require(\'telescope.builtin\').grep_string { search = vim.fn.expand("<cword>") }<CR>'
+    nnoresmap['<Leader>mgl']       = '<Cmd>lua require(\'telescope.builtin\').grep_string { search = vim.api.nvim_get_current_line() }<CR>'
     -- Lsp
     nnoresmap['<Leader>lr']        = '<Cmd>Telescope lsp_references<CR>'
-    nnoresmap['<Leader>ld']        = '<Cmd>Telescope lsp_definitions<CR>'
     nnoresmap['<Leader>lt']        = '<Cmd>Telescope treesitter<CR>'
     nnoresmap['<Leader>lCc']       = '<Cmd>Telescope lsp_code_actions<CR>'
     nnoresmap['<Leader>lCr']       = '<Cmd>Telescope lsp_range_code_actions<CR>'
@@ -225,7 +226,11 @@ wincmd p]])
     nnoresmap['<Leader>fc']        = '<Cmd>NvimTreeClose<CR>'
     nnoresmap['<Leader>ff']        = '<Cmd>NvimTreeFindFile<CR>'
 
--- LspSaga
+-- Lsp
+    nnoresmap['<Leader>ld']        = '<Cmd>lua vim.lsp.buf.definition()<CR>'
+    nnoresmap['<Leader>lD']        = '<Cmd>lua vim.lsp.buf.declaration()<CR>'
+    nnoresmap['<Leader>ll']        = '<Cmd>lua vim.lsp.diagnostic.set_loclist({open_loclist = false})<CR>'
+    -- LspSaga
     nnoresmap['<Leader>ln']        = '<Cmd>Lspsaga rename<CR>'
     nnoresmap['<Leader>lp']        = '<Cmd>Lspsaga preview_definition<CR>'
     nnoresmap['<Leader>lh']        = '<Cmd>Lspsaga hover_doc<CR>'
@@ -271,8 +276,9 @@ wincmd p]])
 
 -- Git
     nnoresmap['<Leader>gg']        = '<Cmd>Neogit<CR>'
-    nnoresmap['<Leader>gb']        = '<Cmd>ToggleBlameLine<CR>'
+    nnoresmap['<Leader>gt']        = '<Cmd>ToggleBlameLine<CR>'
     nnoremap['<Leader>gd']         = ':DiffviewOpen '
+    -- GitSigns
     nnoresmap['<Leader>gs']        = '<Cmd>lua require"gitsigns".stage_hunk()<CR>'
     vnoresmap['<Leader>gs']        = '<Cmd>lua require"gitsigns".stage_hunk({ vim.fn.line("."), vim.fn.line("v") })<CR>'
     nnoresmap['<Leader>gu']        = '<Cmd>lua require"gitsigns".undo_stage_hunk()<CR>'
@@ -280,6 +286,8 @@ wincmd p]])
     vnoresmap['<Leader>gr']        = '<Cmd>lua require"gitsigns".reset_hunk({ vim.fn.line("."), vim.fn.line("v") })<CR>'
     nnoresmap['<Leader>gR']        = '<Cmd>lua require"gitsigns".reset_buffer()<CR>'
     nnoresmap['<Leader>gp']        = '<Cmd>lua require"gitsigns".preview_hunk()<CR>'
+    nnoresmap['<Leader>gl']        = '<Cmd>lua require"gitsigns".toggle_linehl()<CR>'
+    nnoresmap['<Leader>gb']        = '<Cmd>lua require"gitsigns".blame_line()<CR>'
     nnoresmap.expr[']g']           = '&diff ? \']g\' : \'<cmd>lua require("gitsigns.actions").next_hunk()<CR>\''
     nnoresmap.expr['[g']           = '&diff ? \'[g\' : \'<cmd>lua require("gitsigns.actions").prev_hunk()<CR>\''
 

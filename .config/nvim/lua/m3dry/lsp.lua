@@ -1,8 +1,45 @@
+local on_attach = function ()
+    vim.lsp.handlers["textDocument/publishDiagnostics"] =
+        function(_, _, params, client_id, _)
+            local config = {
+                underline = true,
+                virtual_text = {
+                    prefix = "",
+                    spacing = 2,
+                },
+                signs = true,
+                update_in_insert = true,
+            }
+            local uri = params.uri
+            local bufnr = vim.uri_to_bufnr(uri)
+
+            if not bufnr then
+                return
+            end
+
+            local diagnostics = params.diagnostics
+
+            for i, v in ipairs(diagnostics) do
+                diagnostics[i].message = string.format("%s: %s", v.source, v.message)
+            end
+
+            vim.lsp.diagnostic.save(diagnostics, bufnr, client_id)
+
+            if not vim.api.nvim_buf_is_loaded(bufnr) then
+                return
+            end
+
+            vim.lsp.diagnostic.display(diagnostics, bufnr, client_id, config)
+        end
+end
+
 require('lspconfig').clangd.setup {
+    on_attach = on_attach,
     cmd = {
-        'clangd', '--background-index',
-        '--clang-tidy', '--completion-style=bundled', '--header-insertion=iwyu',
-        '--suggest-missing-includes', '--cross-file-rename'
+        'clangd', '-j=4', '--background-index', '--clang-tidy',
+        '--completion-style=detailed', '--header-insertion=iwyu',
+        '--header-insertion-decorators=0', '--suggest-missing-includes',
+        '--cross-file-rename'
     }
 }
 
@@ -14,6 +51,7 @@ require('lspconfig').sumneko_lua.setup(require('lua-dev').setup {
     },
     lspconfig = {
         cmd = { 'lua-language-server' },
+        on_attach = on_attach,
     },
 })
 
@@ -165,31 +203,38 @@ require'lsp_signature'.on_attach {
     extra_trigger_chars = {"(", ","}
 }
 
-require('lspkind').init({
-    with_text = true,
-    symbol_map = {
-        Text = '',
-        Method = 'ƒ',
-        Function = '',
-        Constructor = '',
-        Variable = '',
-        Class = '',
-        Interface = 'ﰮ',
-        Module = '',
-        Property = '',
-        Unit = '',
-        Value = '',
-        Enum = '了',
-        Keyword = '',
-        Snippet = '﬌',
-        Color = '',
-        File = '',
-        Folder = '',
-        EnumMember = '',
-        Constant = '',
-        Struct = ''
-    }
-})
+local kinds = vim.lsp.protocol.CompletionItemKind
+local icons = {
+  Text = " ",
+  Method = "ƒ ",
+  Function = " ",
+  Constructor = " ",
+  Field = " ",
+  Variable = " ",
+  Class = " ",
+  Interface = "ﰮ ",
+  Module = " ",
+  Property = " ",
+  Unit = " ",
+  Value = " ",
+  Enum = "了 ",
+  Keyword = " ",
+  Snippet = "﬌ ",
+  Color = " ",
+  File = " ",
+  Reference = " ",
+  Folder = " ",
+  EnumMember = " ",
+  Constant = " ",
+  Struct = " ",
+  Event = " ",
+  Operator = "駱",
+  TypeParameter = " ",
+}
+
+for i, kind in ipairs(kinds) do
+    kinds[i] = icons[kind] .. kind
+end
 
 require("lsp-rooter").setup()
 

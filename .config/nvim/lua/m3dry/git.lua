@@ -86,4 +86,4 @@ require('gitsigns').setup {
 
 vim.g.blameLineUseVirtualText = 1
 vim.g.blameLineVirtualTextHighlight = 'Comment'
-vim.g.blameLineGitFormat = ' %an:%as - %s %h'
+vim.g.blameLineGitFormat = '   %an • %as • %s %h'

@@ -5,13 +5,8 @@ if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
   vim.api.nvim_command('packadd packer.nvim')
 end
 
-return require('packer').startup(function()
-    use {
-        'wbthomason/packer.nvim',
-        config = function()
-            vim.cmd([[autocmd BufWritePost plugins.lua source <afile> | PackerCompile]])
-        end
-    }
+return require('packer').startup({function()
+    use 'wbthomason/packer.nvim'
     use {
         'glepnir/galaxyline.nvim',
         branch = 'main',
@@ -117,15 +112,8 @@ return require('packer').startup(function()
             vim.g.qs_highlight_on_keys = { 'f', 'F', 't', 'T' }
         end
     }
-    use {
-        'famiu/nvim-reload',
-    }
-    use {
-        'tpope/vim-surround',
-    }
-    use {
-        'easymotion/vim-easymotion',
-    }
+    use 'tpope/vim-surround'
+    use 'easymotion/vim-easymotion'
     use {
         'mizlan/iswap.nvim',
         config = function()
@@ -265,7 +253,7 @@ let g:choosewin_color_other = { 'gui': ['#12111e', '#12111e'] }]]
                     else
                         indicator = ''
                     end
-            
+
                     local lnum, col = unpack(plist[idx])
                     if nearest then
                         local cnt = #plist
@@ -289,14 +277,31 @@ let g:choosewin_color_other = { 'gui': ['#12111e', '#12111e'] }]]
     use {
         'lukas-reineke/indent-blankline.nvim',
         config = function()
-            vim.g.indent_blankline_indent_level = 7
+            vim.g.indent_blankline_indent_level = 40
             vim.g.indent_blankline_char = '│'
             vim.g.indent_blankline_space_char = '·'
-            vim.g.indent_blankline_space_char_blankline = '·'
+            vim.g.indent_blankline_space_char_blankline = ' '
             vim.g.indent_blankline_show_trailing_blankline_indent = false
             vim.g.indent_blankline_use_treesitter = true
             vim.g.indent_blankline_show_current_context = true
-            vim.g.indent_blankline_context_patterns = { '^if', '^for', '^do while', '^while' }
+            vim.g.indent_blankline_context_patterns = {
+                "class",
+                "function",
+                "method",
+                "^if",
+                "while",
+                "for",
+                "with",
+                "func_literal",
+                "block",
+                "try",
+                "except",
+                "argument_list",
+                "object",
+                "dictionary",
+                "variable",
+                "field"
+            }
             vim.g.indent_blankline_context_highlight_list = { 'IndentContext' }
             vim.g.indent_blankline_bufname_exclude = { 'README..*', '.*.md' }
         end
@@ -304,13 +309,12 @@ let g:choosewin_color_other = { 'gui': ['#12111e', '#12111e'] }]]
     use 'matbme/JABS.nvim'
     use 'johann2357/nvim-smartbufs'
     use {
-        'neovim/nvim-lspconfig', 
+        'neovim/nvim-lspconfig',
         config = function() require('m3dry.lsp') end,
         requires = {
             'hrsh7th/nvim-compe',
             'folke/trouble.nvim',
             'ray-x/lsp_signature.nvim',
-            'onsails/lspkind-nvim',
             'folke/lua-dev.nvim',
             'nvim-lua/lsp-status.nvim',
             'ahmedkhalf/lsp-rooter.nvim',
@@ -396,7 +400,7 @@ let g:choosewin_color_other = { 'gui': ['#12111e', '#12111e'] }]]
                 }
             }
             local tree_cb = require'nvim-tree.config'.nvim_tree_callback
-            
+
             vim.g.nvim_tree_bindings = {
                 { key = {"<CR>", "o", "<2-LeftMouse>"},   cb = tree_cb("edit") },
                 { key = {"<2-RightMouse>", "<C-}>", "l"}, cb = tree_cb("cd") },
@@ -434,8 +438,8 @@ let g:choosewin_color_other = { 'gui': ['#12111e', '#12111e'] }]]
     }
     use {
         'akinsho/nvim-toggleterm.lua',
-        config = function()
-            require("toggleterm").setup{
+        config = function ()
+            require("toggleterm").setup {
                 size = function(term)
                     if term.direction == "horizontal" then
                         return 15
@@ -451,20 +455,22 @@ let g:choosewin_color_other = { 'gui': ['#12111e', '#12111e'] }]]
                 start_in_insert = true,
                 insert_mappings = true,
                 persist_size = true,
-                direction = 'horizontal',
+                direction = 'float',
                 close_on_exit = true,
                 shell = vim.o.shell,
                 float_opts = {
-                    border = 'single',
+                    border = 'curved',
+                    winblend = 0,
+                    width = 150,
+                    height = 45,
                     highlights = {
-                        border = "Normal",
-                        background = "Normal",
+                        border = "FloatBorder",
+                        background = "NormalFloat",
                     }
                 }
             }
         end
     }
-
     use {
         'kkoomen/vim-doge',
         run = ':call doge#install()',
@@ -509,11 +515,11 @@ let g:choosewin_color_other = { 'gui': ['#12111e', '#12111e'] }]]
                 rainbow = {
                     enable = true,
                     extended_mode = false,
-                    max_file_lines = 10000,
+                    max_file_lines = 20000,
                     colors = {
                         "#c792ea",
-                        "#89ddff",
                         "#72a4ff",
+                        "#89ddff",
                         "#c3e88d",
                         "#ffcb6b",
                         "#f78c6c",
@@ -531,12 +537,92 @@ let g:choosewin_color_other = { 'gui': ['#12111e', '#12111e'] }]]
                             goto_previous_usage = "[u",
                         },
                     }
+                },
+                context_commentstring = {
+                    enable = true,
+                    config = {
+                      c = '/*%s*/',
+                      cpp = '/*%s*/',
+                      lua = '--%s'
+                    }
+                },
+                textsubjects = {
+                    enable = true,
+                    keymaps = {
+                        ['.'] = 'textsubjects-smart',
+                        [';'] = 'textsubjects-container-outer',
+                    }
+                },
+                textobjects = {
+                    select = {
+                        enable = true,
+                        lookahead = true,
+                        keymaps = {
+                            ["af"] = "@function.outer",
+                            ["if"] = "@function.inner",
+                            ["ip"] = "@parameter.inner",
+                            ["ap"] = "@parameter.outer",
+                            ["ic"] = "@call.inner",
+                            ["ac"] = "@call.outer",
+                            ["it"] = "@conditional.inner",
+                            ["at"] = "@conditional.outer",
+                            ["il"] = "@loop.inner",
+                            ["al"] = "@loop.outer",
+                            ["oc"] = "@comment.outer",
+                            ["as"] = "@statement.outer",
+                            ["is"] = "@statement.outer",
+                        }
+                    },
+                    swap = {
+                        enable = true,
+                        swap_next = {
+                            ["]m"] = "@parameter.inner",
+                        },
+                        swap_previous = {
+                            ["[m"] = "@parameter.inner",
+                        },
+                    },
+                    move = {
+                        enable = true,
+                        set_jumps = true,
+                        goto_next_start = {
+                            ["]f"] = "@function.outer",
+                            ["]p"] = "@parameter.inner",
+                            ["]c"] = "@call.outer",
+                            ["]o"] = "@conditional.outer",
+                            ["]l"] = "@loop.outer",
+                            ["]s"] = "@comment.outer",
+                            ["<C-j>"] = "@statement.outer",
+                        },
+                        goto_next_end = {
+                            ["]F"] = "@function.outer",
+                            ["]P"] = "@parameter.inner",
+                            ["]C"] = "@call.outer",
+                            ["]O"] = "@conditional.outer",
+                            ["]L"] = "@loop.outer",
+                            ["]S"] = "@comment.outer",
+                            ["<C-l>"] = "@statement.outer",
+                        },
+                        goto_previous_start = {
+                            ["[f"] = "@function.outer",
+                            ["[p"] = "@parameter.inner",
+                            ["[c"] = "@call.outer",
+                            ["[o"] = "@conditional.outer",
+                            ["[l"] = "@loop.outer",
+                            ["[s"] = "@comment.outer",
+                            ["<C-k>"] = "@statement.outer",
+                        },
+                        goto_previous_end = {
+                            ["[F"] = "@function.outer",
+                            ["[P"] = "@parameter.inner",
+                            ["[C"] = "@call.outer",
+                            ["[O"] = "@conditional.outer",
+                            ["[L"] = "@loop.outer",
+                            ["[S"] = "@comment.outer",
+                            ["<C-h>"] = "@statement.outer",
+                        },
+                    }
                 }
-            }
-
-            require('spellsitter').setup {
-                hl = 'SpellBad',
-                captures = {'comment'},
             }
         end,
         requires = {
@@ -544,8 +630,10 @@ let g:choosewin_color_other = { 'gui': ['#12111e', '#12111e'] }]]
                 'nvim-treesitter/playground',
                 'p00f/nvim-ts-rainbow',
                 'mfussenegger/nvim-ts-hint-textobject',
-                'lewis6991/spellsitter.nvim',
                 'nvim-treesitter/nvim-treesitter-refactor',
+                'JoosepAlviste/nvim-ts-context-commentstring',
+                'nvim-treesitter/nvim-treesitter-textobjects',
+                'RRethy/nvim-treesitter-textsubjects',
             }
         }
     }
@@ -627,4 +715,15 @@ let g:choosewin_color_other = { 'gui': ['#12111e', '#12111e'] }]]
             'tveskag/nvim-blame-line',
         }
     }
-end)
+end,
+config = {
+    display = {
+        open_fn = function ()
+            return require('packer.util').float({ border = 'single' })
+        end
+    },
+    profile = {
+        enable = true,
+        threshold = 0.00001
+    }
+}})

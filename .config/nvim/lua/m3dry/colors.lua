@@ -36,8 +36,8 @@ hi['Character'] =                            { fg = "#f78c6c", style = "bold" }
 hi['Number'] =                               { fg = "#f78c6c", style = "bold" }
 hi['Boolean'] =                              { fg = "#89ddff", style = "bold,italic" }
 hi['Float'] =                                { fg = "#ffcb6b", style = "italic" }
-hi['NormalFloat'] =                          { fg = "#eeffff", bg = "#111111" }
-hi['FloatBorder'] =                          { fg = "#ff5370", bg = "#111111" }
+hi['NormalFloat'] =                          { fg = "#eeffff" }
+hi['FloatBorder'] =                          { fg = "#ff5370" }
 hi['Identifier'] =                           { fg = "#ffcb6b" }
 hi['Function'] =                             { fg = "#82aaff", style = "italic" }
 hi['Statement'] =                            { fg = "#89ddff", style = "italic" }
