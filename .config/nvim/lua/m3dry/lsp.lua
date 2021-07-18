@@ -43,6 +43,8 @@ require('lspconfig').clangd.setup {
     }
 }
 
+require('lspconfig').ccls.setup {}
+
 require('lspconfig').sumneko_lua.setup(require('lua-dev').setup {
     library = {
         vimruntime = true,

@@ -138,7 +138,7 @@ local cnoresmap = cnoremap.silent
     nnoresmap['<Leader>mgl']       = '<Cmd>lua require(\'telescope.builtin\').grep_string { search = vim.api.nvim_get_current_line() }<CR>'
     -- Lsp
     nnoresmap['<Leader>lr']        = '<Cmd>Telescope lsp_references<CR>'
-    nnoresmap['<Leader>lt']        = '<Cmd>Telescope treesitter<CR>'
+    nnoresmap['<Leader>lT']        = '<Cmd>Telescope treesitter<CR>'
     nnoresmap['<Leader>lCc']       = '<Cmd>Telescope lsp_code_actions<CR>'
     nnoresmap['<Leader>lCr']       = '<Cmd>Telescope lsp_range_code_actions<CR>'
     nnoresmap['<Leader>lsd']       = '<Cmd>Telescope lsp_document_symbols<CR>'
@@ -230,6 +230,7 @@ wincmd p]])
     nnoresmap['<Leader>ld']        = '<Cmd>lua vim.lsp.buf.definition()<CR>'
     nnoresmap['<Leader>lD']        = '<Cmd>lua vim.lsp.buf.declaration()<CR>'
     nnoresmap['<Leader>ll']        = '<Cmd>lua vim.lsp.diagnostic.set_loclist({open_loclist = false})<CR>'
+    nnoresmap['<Leader>lt']        = '<Cmd>lua vim.lsp.buf.type_definition()<CR>'
     -- LspSaga
     nnoresmap['<Leader>ln']        = '<Cmd>Lspsaga rename<CR>'
     nnoresmap['<Leader>lp']        = '<Cmd>Lspsaga preview_definition<CR>'

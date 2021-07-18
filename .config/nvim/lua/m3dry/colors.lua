@@ -77,15 +77,17 @@ hi['TSComment'] =                            { fg = "#3c435e", style = "italic" 
 hi['TSConditional'] =                        { fg = "#89ddff", style = "italic" }
 hi['TSConstant'] =                           { fg = "#89ddff", style = "bold" }
 hi['TSConstBuiltin'] =                       { fg = "#89ddff", style = "bold,italic" }
-hi['TSConstMacro'] =                         { fg = "#72a4ff", style = "bold,italic" }
+hi['TSConstMacro'] =                         { fg = "#72a4ff", style = "italic" }
 hi['TSConstructor'] =                        { fg = "#89ddff", style = "bold,italic" }
-hi['TSFunction'] =                           { fg = "#82aaff" }
+hi['TSFunction'] =                           { fg = "#72a4ff", style = "italic" }
+hi['TSFunctionCall'] =                       { fg = "#c792ea" }
 hi['TSFuncMacro'] =                          { fg = "#ffcb6b", style = "bold" }
-hi['TSInclude'] =                            { fg = "#72a4ff", style = "bold,italic" }
+hi['TSInclude'] =                            { fg = "#72a4ff", style = "italic" }
 hi['TSNumber'] =                             { fg = "#f78c6c", style = "bold" }
 hi['TSOperator'] =                           { fg = "#72a4ff" }
 hi['TSParameter'] =                          { fg = "#ffcb6b", style = "italic" }
 hi['TSProperty'] =                           { fg = "#ff5370", style = "italic" }
+hi['TSPropertyDefinition'] =                 { fg = "#ffcb6b" }
 hi['TSPunctBracket'] =                       { fg = "#72a4ff" }
 hi['TSPunctDelimeter'] =                     { fg = "#72a4ff" }
 hi['TSPunctDelimiter'] =                     { fg = "#72a4ff" }
@@ -97,9 +99,13 @@ hi['TSType'] =                               { fg = "#c792ea" }
 hi['TSTypeBuiltin'] =                        { fg = "#c792ea", style = "italic" }
 hi['TSURI'] =                                { fg = "#ffcb6b", sp = "#ffcb6b", style = "underline" }
 hi['TSVariable'] =                           { fg = "#ffcb6b" }
+hi['TSVariableArray'] =                      { fg = "#ffcb6b", style = "italic" }
+hi['TSVariablePointer'] =                    { fg = "#ffcb6b", style = "italic" }
 hi['TSVariableBuiltin'] =                    { fg = "#89ddff", style = "bold" }
 hi['TSNamespace'] =                          { fg = "#c792ea", style = "italic" }
 hi['TSKeyword'] =                            { fg = "#89ddff", style = "italic" }
+hi['TSKeywordConstant'] =                    { fg = "#72a4ff", style = "bold,italic" }
+hi['TSKeywordReturn'] =                      { fg = "#ff5370", style = "italic" }
 hi['TSCurrentScope'] =                       { bg = "#0f111b" }
 hi['TSDefinitionUsage'] =                    { fg = "#000000", bg = "#72a4ff" }
 hi['TSDefinition'] =                         { fg = "#000000", bg = "#ff5370" }
