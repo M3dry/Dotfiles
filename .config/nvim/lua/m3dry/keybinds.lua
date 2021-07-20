@@ -2,12 +2,15 @@ local M = {}
 local map       = require('cartographer')
 local nmap      = map.n
 local vmap      = map.v
+local xmap      = map.x
 local imap      = map.i
 local cmap      = map.c
 local nnoremap  = nmap.nore
 local nnoresmap = nnoremap.silent
 local vnoremap  = vmap.nore
 local vnoresmap = vnoremap.silent
+local xnoremap  = xmap.nore
+local xnoresmap = xnoremap.silent
 local inoremap  = imap.nore
 local inoresmap = inoremap.silent
 local cnoremap  = cmap.nore
@@ -20,6 +23,10 @@ local cnoresmap = cnoremap.silent
 
 -- Surround
     nmap[';s']                     = 'ysiw'
+
+-- Easy align
+    xmap['<Leader>a']              = '<Plug>(EasyAlign)'
+    nmap['<Leader>a']              = '<Plug>(EasyAlign)'
 
 -- Quickfix
     function M.quickfix ()
@@ -52,8 +59,8 @@ local cnoresmap = cnoremap.silent
     nnoresmap['<Leader>ml']         = '<Cmd>lua require(\'m3dry.keybinds\').loclist()<CR>'
 
 -- Buffers
-    nnoresmap['<Leader>bk']        = '<Cmd>lua require(\'bufdelete\').bufdelete(0, true)<CR>'
-    nnoresmap['<Leader>bd']        = '<Cmd>bd<CR>'
+    nnoresmap['<Leader>bk']        = '<Cmd>Sayonara!<CR>'
+    nnoresmap['<Leader>bd']        = '<Cmd>Sayonara<CR>'
     nnoresmap['<Leader>,']         = '<Cmd>JABSOpen<CR>'
 
 -- Tabs
@@ -75,6 +82,13 @@ local cnoresmap = cnoremap.silent
     nnoresmap['<Leader>wj']        = '<C-w>j'
     nnoresmap['<Leader>wk']        = '<C-w>k'
     nnoresmap['<Leader>wl']        = '<C-w>l'
+    nnoresmap['<Leader>ww']        = '<Cmd>call WindowSwap#EasyWindowSwap()<CR>'
+    nnoresmap['<Leader>wy']        = '<Cmd>call WindowSwap#MarkWindowSwap()<CR>'
+    nnoresmap['<Leader>wp']        = '<Cmd>call WindowSwap#DoWindowSwap()<CR>'
+    nnoresmap['<C-l>']             = '<Cmd>vertical resize +2<CR>'
+    nnoresmap['<C-h>']             = '<Cmd>vertical resize -2<CR>'
+    nnoresmap['<C-k>']             = '<Cmd>resize +2<CR>'
+    nnoresmap['<C-j>']             = '<Cmd>resize -2<CR>'
     nnoresmap['<Leader>wH']        = '<C-w>H'
     nnoresmap['<Leader>wJ']        = '<C-w>J'
     nnoresmap['<Leader>wK']        = '<C-w>K'
@@ -88,23 +102,6 @@ local cnoresmap = cnoremap.silent
     nnoresmap['<Leader>wq']        = '<Cmd>q!<CR>'
     nnoresmap['<Leader>wi']        = '<Cmd>so %<CR>'
     nnoresmap['<Leader>wm']        = '<Cmd>MaximizerToggle<CR>'
-    nnoresmap['<Leader>ww']        = '<Cmd>ChooseWin<CR>'
-    nnoresmap[']w']                = '<Cmd>vertical resize +5<CR>'
-    nnoresmap['[w']                = '<Cmd>vertical resize -5<CR>'
-    nnoresmap[']W']                = '<Cmd>resize +5<CR>'
-    nnoresmap['[W']                = '<Cmd>resize -5<CR>'
-
--- Easymotion
-    map['<Leader><Leader>r']       = '<Plug>(easymotion-jumptoanywhere)'
-    map['<Leader><Leader>h']       = '<Plug>(easymotion-linebackward)'
-    map['<Leader><Leader>l']       = '<Plug>(easymotion-lineforward)'
-    map['<Leader><Leader>a']       = '<Plug>(easymotion-lineanywhere)'
-    map['<Leader><Leader>A']       = '<Plug>(easymotion-bd-jk)'
-    map['<Leader><Leader>f']       = '<Plug>(easymotion-bd-f)'
-    map['<Leader><Leader>w']       = '<Plug>(easymotion-bd-w)'
-    nmap['<Leader><Leader>w']      = '<Plug>(easymotion-overwin-w)'
-    nmap['<Leader><Leader>L']      = '<Plug>(easymotion-overwin-f)'
-    nmap['s']                      = '<Plug>(easymotion-overwin-f2)'
 
 -- ISwap
     nnoresmap['<Leader>ly']        = '<Cmd>ISwap<CR>'
@@ -116,7 +113,6 @@ local cnoresmap = cnoremap.silent
 
 -- Telescope
     nnoresmap['<C-s>']             = '<Cmd>Telescope current_buffer_fuzzy_find<CR>'
-    nnoresmap['<Leader>.']         = '<Cmd>Telescope file_browser<CR>'
     nnoresmap['<Leader>tk']        = '<Cmd>Telescope keymaps<CR>'
     nnoresmap['<Leader>tm']        = '<Cmd>Telescope marks<CR>'
     nnoresmap['<Leader>tu']        = '<Cmd>Telescope spell_suggest<CR>'
@@ -152,25 +148,23 @@ local cnoresmap = cnoremap.silent
     nnoresmap['<Leader>dtv']       = '<Cmd>lua require(\'telescope\').extensions.dap.variables{}<CR>'
     nnoresmap['<Leader>dtf']       = '<Cmd>lua require(\'telescope\').extensions.dap.frames{}<CR>'
 
+-- Harpoon
+    nnoresmap['<Leader>ha']        = '<Cmd>lua require(\'harpoon.mark\').add_file()<CR>'
+    nnoresmap['<Leader>hc']        = '<Cmd>lua require(\'harpoon.mark\').clear_all()<CR>'
+    nnoresmap['<Leader>hq']        = '<Cmd>lua require(\'harpoon.mark\').to_quickfix_list()<CR>'
+    nnoresmap['<Leader>hd']        = '<Cmd>lua require(\'harpoon.mark\').rm_file(require(\'harpoon.mark\').get_current_index())<CR>'
+    nnoresmap['<Leader>ht']        = '<Cmd>lua require(\'harpoon.ui\').toggle_quick_menu()<CR>'
+    nnoresmap[']h']                = '<Cmd>lua require(\'harpoon.ui\').nav_next()<CR>'
+    nnoresmap['[h']                = '<Cmd>lua require(\'harpoon.ui\').nav_prev()<CR>'
+    nnoresmap['<Leader>hw']        = '<Cmd>lua require(\'harpoon.ui\').nav_file(3)<CR>'
+    nnoresmap['<Leader>he']        = '<Cmd>lua require(\'harpoon.ui\').nav_file(2)<CR>'
+    nnoresmap['<Leader>hr']        = '<Cmd>lua require(\'harpoon.ui\').nav_file(1)<CR>'
+    nnoresmap['<Leader>hu']        = '<Cmd>lua require(\'harpoon.ui\').nav_file(4)<CR>'
+    nnoresmap['<Leader>hi']        = '<Cmd>lua require(\'harpoon.ui\').nav_file(5)<CR>'
+    nnoresmap['<Leader>ho']        = '<Cmd>lua require(\'harpoon.ui\').nav_file(6)<CR>'
+
 -- Treesitter
     nnoresmap['<Leader>la']            = '<Cmd>TSHighlightCapturesUnderCursor<CR>'
-
--- Neuron
-    nnoresmap['<Leader>nn']        = '<Cmd>lua require(\'neuron.cmd\').new_edit(require(\'neuron\').config.neuron_dir)<CR>'
-    nnoresmap['<Leader>nf']        = '<Cmd>lua require(\'neuron.telescope\').find_zettels()<CR>'
-    nnoresmap['<Leader>ni']        = '<Cmd>lua require(\'neuron.telescope\').find_zettels{insert = true}<CR>'
-    nnoresmap['<Leader>ns']        = '<Cmd>lua require(\'neuron\').rib{address = "127.0.0.1:8200", verbose = true}<CR>'
-
-    function M.neuronbinds()
-        local bind = nnoresmap.buffer
-
-        bind['<CR>']               = '<Cmd>lua require(\'neuron\').enter_link()<CR>'
-        bind['<Leader>nb']         = '<Cmd>lua require(\'neuron.telescope\').find_backlinks()<CR>'
-        bind['<Leader>nB']         = '<Cmd>lua require(\'neuron.telescope\').find_backlinks{insert = true}<CR>'
-        bind['<Leader>nt']         = '<Cmd>lua require(\'neuron.telescope\').find_tags()<CR>'
-        bind['gn]']                = '<Cmd>lua require(\'neuron\').goto_next_extmark()<CR>'
-        bind['gn[']                = '<Cmd>lua require(\'neuron\').goto_prev_extmark()<CR>'
-    end
 
 -- Symbol Outline
     nnoresmap['<Leader>to']        = '<Cmd>SymbolsOutline<CR>'
@@ -191,8 +185,8 @@ local cnoresmap = cnoremap.silent
 
 -- Cosco
     function M.cosco()
-        nmap['<Leader>;']          = '<Plug>(cosco-commaOrSemiColon)'
-        imap['<C-l>']              = '<C-o><Plug>(cosco-commaOrSemiColon)'
+        nmap['<Leader>;']          = '<Cmd>CommaOrSemiColon<CR>'
+        imap['<C-l>']              = '<C-o><Cmd>CommaOrSemiColon<CR>'
     end
 
 -- Smart buffers
@@ -225,14 +219,15 @@ wincmd p]])
     nnoresmap['<Leader>fo']        = '<Cmd>lua require(\'m3dry.keybinds\').TreeOpen()<CR>'
     nnoresmap['<Leader>fc']        = '<Cmd>NvimTreeClose<CR>'
     nnoresmap['<Leader>ff']        = '<Cmd>NvimTreeFindFile<CR>'
+    nnoremap['<Leader>.']          = ':e '
 
 -- Lsp
     nnoresmap['<Leader>ld']        = '<Cmd>lua vim.lsp.buf.definition()<CR>'
     nnoresmap['<Leader>lD']        = '<Cmd>lua vim.lsp.buf.declaration()<CR>'
     nnoresmap['<Leader>ll']        = '<Cmd>lua vim.lsp.diagnostic.set_loclist({open_loclist = false})<CR>'
     nnoresmap['<Leader>lt']        = '<Cmd>lua vim.lsp.buf.type_definition()<CR>'
+    nnoresmap['<Leader>ln']        = '<Cmd>lua vim.lsp.buf.rename()<CR>'
     -- LspSaga
-    nnoresmap['<Leader>ln']        = '<Cmd>Lspsaga rename<CR>'
     nnoresmap['<Leader>lp']        = '<Cmd>Lspsaga preview_definition<CR>'
     nnoresmap['<Leader>lh']        = '<Cmd>Lspsaga hover_doc<CR>'
     nnoresmap['<Leader>lc']        = '<Cmd>Lspsaga code_action<CR>'
@@ -243,8 +238,6 @@ wincmd p]])
     nnoresmap['<Leader>lV']        = '<Cmd>Lspsaga show_line_diagnostics<CR>'
     nnoresmap['<Leader>li']        = '<Cmd>Lspsaga lsp_finder<CR>'
     nnoresmap['<Leader>lj']        = '<Cmd>Lspsaga signature_help<CR>'
-    nnoresmap['<C-k>']             = '<Cmd>lua require(\'lspsaga.action\').smart_scroll_with_saga(1)<CR>'
-    nnoresmap['<C-j>']             = '<Cmd>lua require(\'lspsaga.action\').smart_scroll_with_saga(-1)<CR>'
 
 -- Completion
     inoremap.c.expr['<C-j>']       = 'pumvisible() ? "\\<C-n>" : "\\<C-j>"'
@@ -294,5 +287,13 @@ wincmd p]])
 
 -- Parrot
     nnoresmap['<Leader>ti']        = '<Cmd>lua require(\'m3dry.parrot\').replace()<CR>'
+
+-- Dial
+    nmap['<C-a>']                  = '<Plug>(dial-increment)'
+    nmap['<C-x>']                  = '<Plug>(dial-decrement)'
+    vmap['<C-a>']                  = '<Plug>(dial-increment)'
+    vmap['<C-x>']                  = '<Plug>(dial-decrement)'
+    vmap['g<C-a>']                 = '<Plug>(dial-increment-additional)'
+    vmap['g<C-x>']                 = '<Plug>(dial-decrement-additional)'
 
 return M

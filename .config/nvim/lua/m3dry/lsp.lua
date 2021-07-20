@@ -262,19 +262,3 @@ vim.g.symbols_outline = {
 require('m3dry.dap')
 
 vim.g.vsnip_snippet_dir = "$HOME/.config/nvim/snippets/"
-
-require'sniprun'.setup({
-    display = {
-        "Classic",
-        "VirtualTextOk",
-        -- "VirtualTextErr",
-        -- "TempFloatingWindow",
-        -- "LongTempFloatingWindow",
-        -- "Terminal"
-        },
-    snipruncolors = {
-        SniprunVirtualTextOk = { fg="#72a4ff" },
-    },
-    inline_messages = 0,
-    borders = 'double'
-})

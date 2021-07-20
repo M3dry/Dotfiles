@@ -24,6 +24,8 @@ gls.left[3] = {
         provider = function()
             local fullpath = vim.fn.expand('%:p')
             local icon = ''
+            local harpoon = require('harpoon.mark').get_current_index()
+
 
             if vim.fn.empty(vim.fn.expand('%:t')) == 1 then
                 return '-x---x-'
@@ -48,7 +50,14 @@ gls.left[3] = {
             if vim.bo.filetype == 'help' then
                 return 'Help '
             end
-            return icon .. fullpath .. ' '
+
+            if harpoon == nil then
+                harpoon = 'ﯡ '
+            else
+                harpoon = 'ﯠ' .. harpoon .. ' '
+            end
+
+            return icon .. fullpath .. ' ' .. harpoon
         end,
         separator = ' ',
         separator_highlight = {'none', "#72a4ff"},
@@ -59,7 +68,7 @@ gls.left[3] = {
 gls.left[4] = {
     LineInfo = {
         provider = function()
-            return string.format("%d:%d %d ", vim.fn.line('.'), vim.fn.col('.'), vim.fn.line('$'))
+            return string.format("%d:%d %d", vim.fn.line('.'), vim.fn.col('.'), vim.fn.line('$'))
         end,
         highlight = {"#000000", "#72a4ff"},
     }
@@ -92,7 +101,7 @@ gls.right[4] = {
     DiffModified = {
         provider = 'DiffModified',
         condition = condition.check_git_workspace,
-        icon = ' 柳',
+        icon = '  ',
         highlight = {'#000000', '#72a4ff'},
     }
 }

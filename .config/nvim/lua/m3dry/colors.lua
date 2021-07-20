@@ -61,10 +61,6 @@ hi['SpecialChar'] =                          { fg = "#c3e88d", style = "italic" 
 hi['Delimeter'] =                            { fg = "#72a4ff" }
 hi['IndentContext'] =                        { fg = "#c792ea" }
 
--- Quick scope
-hi['QuickScopePrimary'] =                    { fg = "#ff79c6", style = "bold,italic" }
-hi['QuickScopeSecondary'] =                  { fg = "#ffffff", style = "bold,italic" }
-
 -- Hlslens
 hi['HlSearchFloat'] =                        { fg = "#72a4ff" }
 hi['HlSearchNear'] =                         { bg = "#4e5579" }
@@ -86,18 +82,21 @@ hi['TSInclude'] =                            { fg = "#72a4ff", style = "italic" 
 hi['TSNumber'] =                             { fg = "#f78c6c", style = "bold" }
 hi['TSOperator'] =                           { fg = "#72a4ff" }
 hi['TSParameter'] =                          { fg = "#ffcb6b", style = "italic" }
+hi['TSParameterType'] =                      { fg = "#ff5370" }
 hi['TSProperty'] =                           { fg = "#ff5370", style = "italic" }
-hi['TSPropertyDefinition'] =                 { fg = "#ffcb6b" }
+hi['TSPropertyDeclaration'] =                { fg = "#ffcb6b" }
 hi['TSPunctBracket'] =                       { fg = "#72a4ff" }
 hi['TSPunctDelimeter'] =                     { fg = "#72a4ff" }
 hi['TSPunctDelimiter'] =                     { fg = "#72a4ff" }
 hi['TSPunctSpecial'] =                       { fg = "#72a4ff" }
 hi['TSString'] =                             { fg = "#c3e88d" }
+hi['TSStringLib'] =                          { fg = "#ffcb6b" }
 hi['TSStringEscape'] =                       { fg = "#72a4ff", style = "italic" }
 hi['TSStringRegex'] =                        { fg = "#ff5370", style = "italic" }
 hi['TSType'] =                               { fg = "#c792ea" }
 hi['TSTypeBuiltin'] =                        { fg = "#c792ea", style = "italic" }
 hi['TSURI'] =                                { fg = "#ffcb6b", sp = "#ffcb6b", style = "underline" }
+hi['TSEnum'] =                               { fg = "#ff5370" }
 hi['TSVariable'] =                           { fg = "#ffcb6b" }
 hi['TSVariableArray'] =                      { fg = "#ffcb6b", style = "italic" }
 hi['TSVariablePointer'] =                    { fg = "#ffcb6b", style = "italic" }
@@ -157,9 +156,15 @@ hi['GitSignsAddLn'] =                        { bg = "#353c34" }
 hi['GitSignsChange'] =                       { fg = "#f78c6c" }
 hi['GitSignsChangeNr'] =                     { fg = "#f78c6c", bg = "#111111" }
 hi['GitSignsChangeLn'] =                     { bg = "#292d3e" }
+hi['GitSignsChangeDelete'] =                 { fg = "#ff5370" }
+hi['GitSignsChangeDeleteNr'] =               { fg = "#ff5370", bg = "#111111" }
+hi['GitSignsChangeDeleteLn'] =               { bg = "#292d3e" }
 hi['GitSignsDelete'] =                       { fg = "#ff5370" }
 hi['GitSignsDeleteNr'] =                     { fg = "#ff5370", bg = "#111111" }
 hi['GitSignsDeleteLn'] =                     { bg = "#634661" }
+hi['GitSignsTopDelete'] =                    { fg = "#f78c6c" }
+hi['GitSignsTopDeleteNr'] =                  { fg = "#f78c6c", bg = "#111111" }
+hi['GitSignsTopDeleteLn'] =                  { bg = "#634661" }
 
 -- Indent
 hi['IndentBlanklineChar'] =                  { fg = "#292d3e" }

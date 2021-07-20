@@ -1,15 +1,14 @@
 local install_path = vim.fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
 
 if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
-  vim.fn.system({'git', 'clone', 'https://github.com/wbthomason/packer.nvim', install_path})
-  vim.api.nvim_command('packadd packer.nvim')
+    vim.fn.system({'git', 'clone', 'https://github.com/wbthomason/packer.nvim', install_path})
+    vim.api.nvim_command('packadd packer.nvim')
 end
 
-return require('packer').startup({function()
+return require('packer').startup({function(use)
     use 'wbthomason/packer.nvim'
     use {
         'glepnir/galaxyline.nvim',
-        branch = 'main',
         config = function() require('m3dry.statusline') end,
         requires = {
             'kyazdani42/nvim-web-devicons',
@@ -33,6 +32,7 @@ return require('packer').startup({function()
     }
     use {
         'Pocco81/AutoSave.nvim',
+        event = 'InsertLeave',
         config = function()
             require("autosave").setup {
                 enabled = true,
@@ -64,6 +64,7 @@ return require('packer').startup({function()
     }
     use {
         'mbbill/undotree',
+        cmd = { 'UndotreeFocus', 'UndotreeHide', 'UndotreeShow', 'UndotreeToggle' }
     }
     use {
         'winston0410/range-highlight.nvim',
@@ -106,16 +107,28 @@ return require('packer').startup({function()
             }
         end
     }
+    use 'tpope/vim-surround'
     use {
-        'unblevable/quick-scope',
-        config = function()
-            vim.g.qs_highlight_on_keys = { 'f', 'F', 't', 'T' }
+        'ggandor/lightspeed.nvim',
+        config = function ()
+            require('lightspeed').setup {
+                jump_to_first_match = true,
+                jump_on_partial_input_safety_timeout = 400,
+                highlight_unique_chars = false,
+                grey_out_search_area = true,
+                match_only_the_start_of_same_char_seqs = true,
+                limit_ft_matches = 5,
+                full_inclusive_prefix_key = '<c-x>',
+                labels = nil,
+                cycle_group_fwd_key = nil,
+                cycle_group_bwd_key = nil,
+            }
         end
     }
-    use 'tpope/vim-surround'
-    use 'easymotion/vim-easymotion'
+    use 'chaoren/vim-wordmotion'
     use {
         'mizlan/iswap.nvim',
+        cmd = { 'ISwap' },
         config = function()
             require('iswap').setup{
                 keys = 'sdfghjkl',
@@ -125,32 +138,7 @@ return require('packer').startup({function()
             }
         end
     }
-    use {
-        't9md/vim-choosewin',
-        config = function()
-            vim.cmd[[let g:choosewin_overlay_enable = 1
-let g:choosewin_statusline_replace = 0
-let g:choosewin_color_label = { 'gui': ['#12111e', '#72a4ff'] }
-let g:choosewin_color_label_current = { 'gui': ['#12111e', '#ff5370'] }
-let g:choosewin_color_overlay = { 'gui': ['#72a4ff', '#72a4ff'] }
-let g:choosewin_color_overlay_current = { 'gui': ['#ff5370', '#ff5370'] }
-let g:choosewin_color_other = { 'gui': ['#12111e', '#12111e'] }]]
-        end
-    }
-    use {
-        'tommcdo/vim-lion',
-        config = function()
-            vim.b.lion_squeeze_spaces = 1
-        end
-    }
-    -- use {
-        -- 'rrethy/vim-hexokinase',
-        -- run = 'make hexokinase',
-        -- config = function()
-            -- vim.g.Hexokinase_highlighters = { "backgroundfull"}
-            -- vim.g.Hexokinase_optInPatterns = "full_hex,triple_hex,rgb,rgba,hsl,hsla,colour_names"
-        -- end
-    -- }
+    use 'junegunn/vim-easy-align'
     use {
         'norcalli/nvim-colorizer.lua',
         config = function()
@@ -184,10 +172,14 @@ let g:choosewin_color_other = { 'gui': ['#12111e', '#12111e'] }]]
     }
     use {
         'iamcco/markdown-preview.nvim',
+        ft = { 'md' },
         run = 'cd app && yarn install'
     }
     use 'tpope/vim-eunuch'
-    use 'ThePrimeagen/vim-be-good'
+    use {
+        'ThePrimeagen/vim-be-good',
+        cmd = { 'VimBeGood' }
+    }
     use {
         'nvim-telescope/telescope.nvim',
         config = function() require('m3dry.telescope') end,
@@ -199,20 +191,18 @@ let g:choosewin_color_other = { 'gui': ['#12111e', '#12111e'] }]]
         }
     }
     use {
-        'oberblastmeister/neuron.nvim',
-        config = function()
-            require'neuron'.setup {
-                virtual_titles = true,
-                mappings = false,
-                run = nil,
-                neuron_dir = "~/my-stuff/Neuron",
-                leader = "<Leader>n"
+        'ThePrimeagen/harpoon',
+        config = function ()
+            require("harpoon").setup {
+                global_settings = {
+                    save_on_toggle = false,
+                    save_on_change = true,
+                }
             }
-            vim.cmd(string.format("au BufRead %s/*.md lua require('m3dry.keybinds').neuronbinds()", require('neuron').config.neuron_dir))
         end
     }
     use 'tpope/vim-repeat'
-    use 'tpope/vim-speeddating'
+    use 'monaqa/dial.nvim'
     use {
         'glts/vim-radical',
         requires = {
@@ -272,8 +262,14 @@ let g:choosewin_color_other = { 'gui': ['#12111e', '#12111e'] }]]
             })
         end
     }
-    use 'lfilho/cosco.vim'
-    use 'szw/vim-maximizer'
+    use {
+        'lfilho/cosco.vim',
+        cmd = { 'CommaOrSemiColon' }
+    }
+    use {
+        'szw/vim-maximizer',
+        cmd = { 'MaximizerToggle' }
+    }
     use {
         'lukas-reineke/indent-blankline.nvim',
         config = function()
@@ -306,7 +302,10 @@ let g:choosewin_color_other = { 'gui': ['#12111e', '#12111e'] }]]
             vim.g.indent_blankline_bufname_exclude = { 'README..*', '.*.md' }
         end
     }
-    use 'matbme/JABS.nvim'
+    use {
+        'matbme/JABS.nvim',
+        cmd = { 'JABSOpen' }
+    }
     use 'johann2357/nvim-smartbufs'
     use {
         'neovim/nvim-lspconfig',
@@ -319,23 +318,66 @@ let g:choosewin_color_other = { 'gui': ['#12111e', '#12111e'] }]]
             'nvim-lua/lsp-status.nvim',
             'ahmedkhalf/lsp-rooter.nvim',
             'glepnir/lspsaga.nvim',
-            'simrat39/symbols-outline.nvim',
+            {
+                'simrat39/symbols-outline.nvim',
+                cmd = { 'SymbolsOutlineOpen', 'SymbolsOutlineClose', 'SymbolsOutline' }
+            },
             {
                 'mfussenegger/nvim-dap',
                 requires = 'rcarriga/nvim-dap-ui'
             },
             {
                 'hrsh7th/vim-vsnip',
-                requires = 'hrsh7th/vim-vsnip-integ'
-            },
-            {
-                'michaelb/sniprun',
-                run = 'bash install.sh'
+                requires = 'hrsh7th/vim-vsnip-integ',
             },
         }
     }
     use {
+        'michaelb/sniprun',
+        cmd = {
+            'SnipRun', 'SnipClose', 'SnipReset',
+            'SnipTerminate', 'SnipInfo',
+            'SnipReplMemoryClean'
+        },
+        run = 'bash install.sh',
+        config = function()
+            require'sniprun'.setup {
+                display = {
+                    "Classic",
+                    "VirtualTextOk",
+                    -- "VirtualTextErr",
+                    -- "TempFloatingWindow",
+                    -- "LongTempFloatingWindow",
+                    -- "Terminal"
+                    },
+                snipruncolors = {
+                    SniprunVirtualTextOk = { fg="#72a4ff" },
+                },
+                inline_messages = 0,
+                borders = 'double'
+            }
+        end
+    }
+    use {
+        'gennaro-tedesco/nvim-jqx',
+        config = function ()
+            require('nvim-jqx.config').query_key = ';'
+            require('nvim-jqx.config').sort = false
+        end,
+        cmd = { 'JqxList', 'JqxQuery' }
+    }
+    use {
+        'wesQ3/vim-windowswap',
+        config = function ()
+            vim.g.windowswap_map_keys = 0
+        end
+    }
+    use {
         'kyazdani42/nvim-tree.lua',
+        cmd = {
+            'NvimTreeToggle', 'NvimTreeClose', 'NvimTreeOpen',
+            'NvimTreeFindFile', 'NvimTreeRefresh', 'NvimTreeResize',
+            'NvimTreeClipboard' },
         config = function()
             vim.g.nvim_tree_side = 'left'
             vim.g.nvim_tree_width = 25
@@ -438,6 +480,8 @@ let g:choosewin_color_other = { 'gui': ['#12111e', '#12111e'] }]]
     }
     use {
         'akinsho/nvim-toggleterm.lua',
+        cmd = { 'TermExec' },
+        keys = { { 'n', '<C-n>' }, { 'i', '<C-n>' } },
         config = function ()
             require("toggleterm").setup {
                 size = function(term)
@@ -474,6 +518,7 @@ let g:choosewin_color_other = { 'gui': ['#12111e', '#12111e'] }]]
     use {
         'kkoomen/vim-doge',
         run = ':call doge#install()',
+        cmd = { 'DogeGenerate', 'DogeCreateDocStandard' },
         config = function()
             vim.g.doge_doc_standard_c = 'kernel_doc'
         end
@@ -537,39 +582,162 @@ let g:choosewin_color_other = { 'gui': ['#12111e', '#12111e'] }]]
             }
         end
     }
-    use 'famiu/bufdelete.nvim'
+    use {
+        'mhinz/vim-sayonara',
+        cmd = { 'Sayonara' }
+    }
+    use {
+        'tversteeg/registers.nvim',
+        keys = { { 'n', '"' }, { 'i', '<c-r>' } },
+        cmd = { 'Registers' }
+    }
+    use 'romainl/vim-cool'
+    use 'AndrewRadev/splitjoin.vim'
     use {
         'stevearc/qf_helper.nvim',
+        cmd = {
+            'QFToggle', 'QFOpen', 'QFNext', 'QFPrev',
+            'LLToggle', 'LLOpen', 'LLNext', 'LLPrev'
+        },
         config = function()
-            require'qf_helper'.setup({
-              prefer_loclist = true,       -- Used for QNext/QPrev (see Commands below)
-              sort_lsp_diagnostics = true, -- Sort LSP diagnostic results
-              quickfix = {
-                autoclose = true,          -- Autoclose qf if it's the only open window
-                default_bindings = true,   -- Set up recommended bindings in qf window
-                default_options = true,    -- Set recommended buffer and window options
-                max_height = 10,           -- Max qf height when using open() or toggle()
-                min_height = 1,            -- Min qf height when using open() or toggle()
-                track_location = true,     -- Keep qf updated with your current location
-              },
-              loclist = {
-                autoclose = true,
-                default_bindings = true,
-                default_options = true,
-                max_height = 10,
-                min_height = 1,
-                track_location = true,
-              },
-            })
+            require('qf_helper').setup {
+                prefer_loclist = true,
+                sort_lsp_diagnostics = true,
+                quickfix = {
+                    autoclose = true,
+                    default_bindings = true,
+                    default_options = true,
+                    max_height = 10,
+                    min_height = 1,
+                    track_location = true,
+                },
+                loclist = {
+                    autoclose = true,
+                    default_bindings = true,
+                    default_options = true,
+                    max_height = 10,
+                    min_height = 1,
+                    track_location = true,
+                }
+            }
         end
     }
     use {
         'TimUntersberger/neogit',
-        config = function() require('m3dry.git') end,
+        cmd = { 'Neogit' },
+        config = function()
+            require('neogit').setup {
+                disable_signs = false,
+                disable_context_highlighting = false,
+                disable_commit_confirmation = false,
+                signs = {
+                    -- { CLOSED, OPENED }
+                    section = { "⬎", "ﬔ" },
+                    item = { "⬎", "ﬔ" },
+                    hunk = { "", "" },
+                },
+                integrations = {
+                    diffview = true
+                },
+                mappings = {
+                    status = {
+                        ["p"] = "PushPopup",
+                        ["P"] = "PullPopup",
+                    }
+                }
+            }
+        end
+    }
+    use {
+        'tveskag/nvim-blame-line',
+        cmd = { 'ToggleBlameLine', 'EnableBlameLine', 'DisableBlameLine', 'SingleBlameLine' },
+        config = function ()
+            vim.g.blameLineUseVirtualText = 1
+            vim.g.blameLineVirtualTextHighlight = 'Comment'
+            vim.g.blameLineGitFormat = '   %an • %as • %s %h'
+        end
+    }
+    use {
+        'sindrets/diffview.nvim',
+        cmd = {
+            'DiffviewOpen', 'DiffviewClose',
+            'DiffviewRefresh', 'DiffviewFocusFiles',
+            'DiffviewToggleFiles'
+        },
+        config = function()
+            local cb = require'diffview.config'.diffview_callback
+
+            require('diffview').setup {
+                diff_binaries = false,
+                file_panel = {
+                    width = 35,
+                    use_icons = true
+                },
+                key_bindings = {
+                    disable_defaults = false,
+                    view = {
+                        ["<tab>"]     = cb("select_next_entry"),
+                        ["<s-tab>"]   = cb("select_prev_entry"),
+                        ["<Leader>e"] = cb("focus_files"),
+                        ["<Leader>b"] = cb("toggle_files"),
+                    },
+                    file_panel = {
+                        ["j"]             = cb("next_entry"),
+                        ["<down>"]        = cb("next_entry"),
+                        ["k"]             = cb("prev_entry"),
+                        ["<up>"]          = cb("prev_entry"),
+                        ["<cr>"]          = cb("select_entry"),
+                        ["o"]             = cb("select_entry"),
+                        ["<2-LeftMouse>"] = cb("select_entry"),
+                        ["-"]             = cb("toggle_stage_entry"),
+                        ["S"]             = cb("stage_all"),
+                        ["U"]             = cb("unstage_all"),
+                        ["R"]             = cb("refresh_files"),
+                        ["<tab>"]         = cb("select_next_entry"),
+                        ["<s-tab>"]       = cb("select_prev_entry"),
+                        ["<Leader>e"]     = cb("focus_files"),
+                        ["<Leader>b"]     = cb("toggle_files"),
+                    }
+                }
+            }
+        end
+    }
+    use {
+        'lewis6991/gitsigns.nvim',
+        config = function()
+            require('gitsigns').setup {
+                signs = {
+                    add          = { hl = 'GitSignsAdd'   ,       text = '', numhl = 'GitSignsAddNr'   ,       linehl = 'GitSignsAddLn' },
+                    change       = { hl = 'GitSignsChange',       text = '', numhl = 'GitSignsChangeNr',       linehl = 'GitSignsChangeLn' },
+                    changedelete = { hl = 'GitSignsChangeDelete', text = '', numhl = 'GitSignsChangeDeleteNr', linehl = 'GitSignsChangeDeleteLn' },
+                    delete       = { hl = 'GitSignsDelete',       text = '', numhl = 'GitSignsDeleteNr',       linehl = 'GitSignsDeleteLn' },
+                    topdelete    = { hl = 'GitSignsTopDelete',    text = '', numhl = 'GitSignsTopDeleteNr',    linehl = 'GitSignsTopDeleteLn' },
+                },
+                numhl = true,
+                linehl = false,
+                keymaps = {
+                },
+                watch_index = {
+                    interval = 1000,
+                    follow_files = true
+                },
+                current_line_blame = false,
+                current_line_blame_delay = 1000,
+                current_line_blame_position = 'eol',
+                sign_priority = 6,
+                update_debounce = 100,
+                status_formatter = nil,
+                word_diff = false,
+                use_decoration_api = true,
+                use_internal_diff = true,
+            }
+        end
+    }
+    use {
+        'RishabhRD/nvim-cheat.sh',
+        cmd = { 'Cheat', 'CheatWithoutComments', 'CheatList', 'CheatListWithoutComments' },
         requires = {
-            'sindrets/diffview.nvim',
-            'lewis6991/gitsigns.nvim',
-            'tveskag/nvim-blame-line',
+            'RishabhRD/popfix'
         }
     }
 end,

@@ -6,10 +6,23 @@ require('nvim-treesitter.configs').setup {
             ["variable.pointer"] = "TSVariablePointer",
             ["function.call"] = "TSFunctionCall",
             ["keyword.constant"] = "TSKeywordConstant",
-        },
+            ["parameter.type"] = "TSParameterType",
+            ["string.lib"] = "TSStringLib",
+            ["property.declaration"] = "TSPropertyDeclaration",
+            ["enum"] = "TSEnum",
+        }
+    },
+    incremental_selection = {
+        enable = true,
+        keymaps = {
+            init_selection = "gnn",
+            node_incremental = "gri",
+            scope_incremental = "grc",
+            node_decremental = "grd"
+        }
     },
     indent = {
-        enable = false
+        enable = true
     },
     playground = {
         enable = true,
@@ -27,12 +40,12 @@ require('nvim-treesitter.configs').setup {
             update = 'R',
             goto_node = '<cr>',
             show_help = '?',
-        },
+        }
     },
     query_linter = {
         enable = true,
         use_virtual_text = true,
-        lint_events = {"BufWrite", "CursorHold"},
+        lint_events = {"BufWrite", "CursorHold"}
     },
     rainbow = {
         enable = true,
@@ -114,7 +127,6 @@ require('nvim-treesitter.configs').setup {
                 ["]o"] = "@conditional.outer",
                 ["]l"] = "@loop.outer",
                 ["]s"] = "@comment.outer",
-                ["<C-j>"] = "@statement.outer",
             },
             goto_next_end = {
                 ["]F"] = "@function.outer",
@@ -123,7 +135,6 @@ require('nvim-treesitter.configs').setup {
                 ["]O"] = "@conditional.outer",
                 ["]L"] = "@loop.outer",
                 ["]S"] = "@comment.outer",
-                ["<C-l>"] = "@statement.outer",
             },
             goto_previous_start = {
                 ["[f"] = "@function.outer",
@@ -132,7 +143,6 @@ require('nvim-treesitter.configs').setup {
                 ["[o"] = "@conditional.outer",
                 ["[l"] = "@loop.outer",
                 ["[s"] = "@comment.outer",
-                ["<C-k>"] = "@statement.outer",
             },
             goto_previous_end = {
                 ["[F"] = "@function.outer",
@@ -141,182 +151,12 @@ require('nvim-treesitter.configs').setup {
                 ["[O"] = "@conditional.outer",
                 ["[L"] = "@loop.outer",
                 ["[S"] = "@comment.outer",
-                ["<C-h>"] = "@statement.outer",
             },
         }
+    },
+    matchup = {
+        enable = true,
     }
 }
 
-if require("nvim-treesitter.parsers").has_parser("c") then
-    local highlight_query =[[
-    [
-      "const"
-      "default"
-      "enum"
-      "extern"
-      "inline"
-      "sizeof"
-      "static"
-      "struct"
-      "typedef"
-      "union"
-      "volatile"
-      "goto"
-      "register"
-    ] @keyword
-    
-    "return" @keyword.return
-    
-    [
-      "while"
-      "for"
-      "do"
-      "continue"
-      "break"
-    ] @repeat
-    
-    [
-     "if"
-     "else"
-     "case"
-     "switch"
-    ] @conditional
-    
-    "#define" @constant.macro
-
-    [
-      "#if"
-      "#ifdef"
-      "#ifndef"
-      "#else"
-      "#elif"
-      "#endif"
-      (preproc_directive)
-    ] @keyword.constant
-    
-    "#include" @include
-    
-    [
-      "=" "-" "*" "/"
-      "+" "%" "~" "|"
-      "&" "^" "<<" ">>"
-      "->" "<" "<=" ">="
-      ">" "==" "!=" "!"
-      "&&" "||" "-=" "+="
-      "*=" "/=" "%=" "|="
-      "&=" "^=" ">>=" "<<="
-      "--" "++"
-    ] @operator
-    
-    [
-     (true)
-     (false)
-    ] @boolean
-    
-    [ "." ";" ":" "," ] @punctuation.delimiter
-    
-    "..." @punctuation.special
-    
-    (conditional_expression [ "?" ":" ] @conditional)
-    
-    
-    [ "(" ")" "[" "]" "{" "}"] @punctuation.bracket
-    
-    (string_literal) @string
-    (system_lib_string) @string
-    (escape_sequence) @string.escape
-    
-    (null) @constant.builtin
-    (number_literal) @number
-    (char_literal) @character
-
-    (identifier) @variable
-
-    (array_declarator
-      declarator: (identifier) @variable.array)
-
-    (array_declarator
-      declarator: (pointer_declarator) @variable.array)
-
-    (pointer_declarator
-      declarator: (identifier) @variable.pointer)
-
-    (pointer_declarator
-      declarator: (pointer_declarator) @variable.pointer)
-
-    (call_expression
-     function: (identifier) @function.call)
-
-    (function_declarator
-     declarator: [(identifier) @function
-                  (parenthesized_declarator
-                   (pointer_declarator (field_identifier) @function))])
-
-    (preproc_function_def
-      name: (identifier) @function.macro)
-
-
-    [
-     (preproc_arg)
-     (preproc_defined)
-    ]  @function.macro
-    
-    ; (call_expression
-    ;   function: (identifier) @function)
-    ; (call_expression
-    ;   function: (field_expression
-    ;     field: (field_identifier) @function))
-    ; (function_declarator
-    ;   declarator: (identifier) @function)
-    (((field_expression
-         (field_identifier) @property)) @_parent
-     (#not-has-parent? @_parent template_method function_declarator call_expression))
-    
-    (((field_identifier) @property)
-     (#has-ancestor? @property field_declaration)
-     (#not-has-ancestor? @property function_declarator))
-    
-    (statement_identifier) @label
-    
-    [
-    (type_identifier)
-    (primitive_type)
-    (sized_type_specifier)
-    (type_descriptor)
-     ] @type
-
-    (declaration (type_qualifier) @type)
-    (cast_expression type: (type_descriptor) @type)
-    (sizeof_expression value: (parenthesized_expression (identifier) @type))
-    
-    [(primitive_type)
-     (sized_type_specifier)] @type.builtin
-
-    ((identifier) @constant
-     (.match? @constant "^[A-Z_][A-Z_\\d]*$"))
-    
-    ;; Preproc def / undef
-    (preproc_def
-      name: (_) @constant)
-    (preproc_call
-      directive: (preproc_directive) @_u
-      argument: (_) @constant
-      (#eq? @_u "#undef"))
-    
-    
-    (comment) @comment
-    
-    ;; Parameters
-    (parameter_declaration
-      declarator: (identifier) @parameter)
-    
-    (parameter_declaration
-      declarator: (pointer_declarator) @parameter)
-    
-    (preproc_params
-      (identifier)) @parameter
-    
-    (ERROR) @error
-    ]]
-    require("vim.treesitter.query").set_query("c", "highlights", highlight_query)
-end
+require('m3dry.treesitter.queries')
