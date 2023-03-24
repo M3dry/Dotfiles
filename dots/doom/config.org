@@ -1,0 +1,835 @@
+#+title: Emacs config
+#+author: M3dry
+
+* Config
+:PROPERTIES:
+:header-args: emacs-lisp: :tangle config.el
+:END:
+** Native comp
+#+begin_src emacs-lisp
+(setq
+ comp-deferred-compilation t
+ comp-async-report-warnings-errors nil
+ comp-always-compile t)
+#+end_src
+** Font
+#+begin_src emacs-lisp
+(setq doom-font (font-spec :family "ComicCodeLigatures Nerd Font" :size 13)
+      doom-big-font (font-spec :family "ComicCodeLigatures Nerd Font" :size 16)
+      doom-serif-font (font-spec :family "ComicCodeLigatures Nerd Font" :size 13)
+      doom-unicode-font (font-spec :family "DejaVu Sans"))
+#+end_src
+** Theming
+*** Theme
+#+begin_src emacs-lisp
+(setq doom-theme 'doom-palenight)
+(after! doom-themes
+  (setq doom-themes-enable-bold t
+        doom-themes-enable-italic t))
+#+end_src
+*** Custom faces
+**** Org bullets
+#+begin_src emacs-lisp
+(custom-set-faces
+  '(org-level-1 ((t (:inherit outline-1 :height 1.5))))
+  '(org-level-2 ((t (:inherit outline-2 :height 1.4))))
+  '(org-level-3 ((t (:inherit outline-3 :height 1.3))))
+  '(org-level-4 ((t (:inherit outline-4 :height 1.2))))
+  '(org-level-5 ((t (:inherit outline-5 :height 1.1))))
+  '(org-level-6 ((t (:inherit outline-6 :height 1.0)))))
+#+end_src
+**** Other
+#+begin_src emacs-lisp
+(custom-set-faces!
+  '(font-lock-comment-face :inherit 'italic)
+  '(font-lock-keyword-face :inherit 'italic)
+  '(font-lock-type-face :inherit 'bold)
+  '(org-document-title :foreground "#ffcb6b" :height 1.7 :inherit 'italic)
+  '(org-document-info-keyword :foreground "#c792ea" :height 1.4)
+  '(org-document-info :height 1.5 :inherit 'italic)
+  '(org-date :foreground "#ffcb6b" :height 1.2 :inherit 'italic)
+  '(org-block-begin-line :foreground "#82aaff" :background "#232635" :height 1.1 :inherit 'italic :extend t)
+  '(org-block-end-line :foreground "#82aaff" :background nil :height 1.1 :inherit 'italic)
+  '(org-tag :foreground "#8d92af" :height 0.7)
+  '(calendar-weekday-header :foreground "#c792ea"))
+#+end_src
+** Completion
+#+begin_src emacs-lisp
+(defun cp/company-number ()
+  (interactive)
+  (let* ((k (this-command-keys))
+         (re (concat "^" company-prefix k)))
+    (if (cl-find-if (lambda (s) (string-match re s))
+                    company-candidates)
+        (self-insert-command 1)
+      (company-complete-number (string-to-number k)))))
+
+(after! company-box
+  (setq company-idle-delay 0.3
+        company-tooltip-limit 25
+        company-tooltip-idle-delay 0.5
+        company-minimum-prefix-length 2)
+
+  (let ((map company-active-map))
+    (mapc
+     (lambda (x)
+       (define-key map (format "%d" x) 'cp/company-number))
+     (number-sequence 0 9))
+  (define-key map " " (lambda ()
+                        (interactive)
+                        (company-abort)
+                        (self-insert-command 1)))
+  (define-key map (kbd "TAB") #'yas-expand)
+  (define-key map (kbd "S-TAB") #'yas-expand)))
+#+end_src
+** Keybinds
+#+begin_src emacs-lisp
+(map! :leader
+      "f p" #'(lambda () (interactive) (doom-project-find-file "~/.config/flake/dots/doom")))
+#+end_src
+** Eval
+#+begin_src emacs-lisp
+(setq eros-eval-result-prefix "==> ")
+
+(map! :leader
+      :desc "evaluate whole buffer"
+      "e b" #'eval-buffer
+      :leader
+      :desc "evaluate a region"
+      "e r" #'eval-region
+      :leader
+      :desc "evaluate defun"
+      "e d" #'eval-defun
+      :leader
+      :desc "evaluate expression before point"
+      "e l" #'eval-last-sexp)
+#+end_src
+** Editing
+*** Line numbers
+#+begin_src emacs-lisp
+(setq display-line-numbers-type 'relative)
+#+end_src
+*** Global substitute
+#+begin_src emacs-lisp
+(after! evil (setq evil-ex-substitute-global t))
+#+end_src
+*** Truncate lines
+#+begin_src emacs-lisp
+(set-default 'truncate-lines t)
+
+(setq
+ truncate-lines t
+ truncate-partial-width-windows t)
+#+end_src
+*** Undo limit
+#+begin_src emacs-lisp
+(setq undo-limit 80000000)
+#+end_src
+*** Escape from parens
+#+begin_src emacs-lisp
+(map! :i "C-p" #'up-list)
+#+end_src
+*** No evil escape
+#+begin_src emacs-lisp
+(after! evil-escape
+  (setq evil-escape-excluded-major-modes nil
+        evil-escape-excluded-states nil
+        evil-escape-inhibit-functions nil
+        evil-escape-key-sequence nil))
+#+end_src
+*** Sentences
+#+begin_src emacs-lisp
+(setq sentence-end-double-space nil)
+#+end_src
+*** Smartparens
+#+begin_src emacs-lisp
+(sp-local-pair
+ '(org-mode)
+ "<<" ">>"
+ :actions '(insert))
+#+end_src
+*** Buffer cloning
+#+begin_src emacs-lisp
+(map! :leader
+      :desc "Clone indirect buffer other window"
+      "b c" #'clone-indirect-buffer-other-window)
+#+end_src
+*** Splits
+#+begin_src emacs-lisp
+(setq
+ evil-vsplit-window-right t
+ evil-split-window-below t
+ window-divider-default-bottom-width 0
+ window-divider-default-right-width 0)
+(set-fringe-mode 0)
+#+end_src
+*** Fringe mode
+#+begin_src emacs-lisp
+(set-fringe-mode 0)
+#+end_src
+*** Formatting
+#+begin_src emacs-lisp
+(set-formatter! 'alejandra "alejandra --quiet" :modes '(nix-mode))
+#+end_src
+*** Smart semicolon
+#+begin_src emacs-lisp
+(use-package! smart-semicolon
+  :defer t
+  :hook (c-mode . smart-semicolon-mode)
+  :config
+  (setq smart-semicolon-block-chars '(32 59)))
+#+end_src
+*** Buffers
+#+begin_src emacs-lisp
+(map! :leader
+      "," #'consult-buffer
+      "<" #'consult-buffer-other-window)
+#+end_src
+*** Affe
+#+begin_src emacs-lisp
+(use-package! affe
+  :after orderless
+  :config
+  (consult-customize
+   affe-grep
+   :prompt "Search in Project  ")
+  (consult-customize
+   affe-find
+   :prompt "Find file in Project  "))
+#+end_src
+** Hydra
+*** Functions
+#+begin_src emacs-lisp
+(defhydra hd-consult (:exit t
+                      :hint nil)
+"
+
+ _i_: consult imenu   _a_: consult org agenda   _b_: consult buffer other window
+ _t_: consult theme   _d_: consult ma           _B_: consult buffer other frame
+                    _f_: consult set font     _m_: consult minor mode menu
+                    _h_: affe grep
+                    _j_: consul org heading
+                    _k_: consul buffer
+                    _l_: consult line
+                    _;_: affe find
+                    _'_: consult find
+--------------------------------------------------------------------------------------
+ _q_: quit
+"
+  ("i" consult-imenu)
+  ("t" consult-theme)
+  ("a" consult-org-agenda)
+  ("d" consult-man)
+  ("f" consult-set-font)
+  ("h" affe-grep)
+  ("j" consult-org-heading)
+  ("k" consult-buffer)
+  ("l" consult-line)
+  (";" affe-find)
+  ("'" consult-find)
+  ("m" consult-minor-mode-menu)
+  ("b" consult-buffer-other-window)
+  ("B" consult-buffer-other-frame)
+  ("q" nil))
+
+(defhydra hd-splits (:timeout 2
+                     :hint nil)
+"
+ ^Windows^
+---------------------
+ _h_: decrease width
+ _k_: decrease height
+ _j_: increase height
+ _l_: increase width
+ _=_: balance windows
+---------------------
+ _q_: quit
+"
+  ("h" evil-window-decrease-width)
+  ("l" evil-window-increase-width)
+  ("k" evil-window-decrease-height)
+  ("j" evil-window-increase-height)
+  ("=" balance-windows)
+  ("q" nil))
+#+end_src
+*** Keybinds
+#+begin_src emacs-lisp
+(map! :leader
+      :desc "Consult functions"
+      "k" #'hd-consult/body
+      :leader
+      :desc "Resize windows"
+      "j" #'hd-splits/body)
+(map! :desc "Ripgrep on projects"
+      "C-;" #'+default/search-project)
+#+end_src
+** Rainbow mode
+#+begin_src emacs-lisp
+(map! :leader
+      :desc "Toggle rainbow mode"
+      "t c" #'rainbow-mode)
+
+(add-hook! 'rainbow-mode-hook
+  (hl-line-mode (if rainbow-mode -1 +1)))
+#+end_src
+** Modeline
+#+begin_src emacs-lisp
+(setq
+ doom-modeline-height 23
+ doom-modeline-bar-width 3
+ doom-modeline-major-mode-icon t
+ doom-modeline-enable-word-count t
+ doom-modeline-buffer-file-name-style 'truncate-except-project
+ all-the-icons-scale-factor 1)
+(defun doom-modeline-conditional-buffer-encoding ()
+  (setq-local doom-modeline-buffer-encoding
+              (unless (or (eq buffer-file-coding-system 'utf-8-unix)
+                          (eq buffer-file-coding-system 'utf-8)))))
+(add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
+#+end_src
+** Calendar
+#+begin_src emacs-lisp
+(setq calendar-date-style "european"
+      calendar-day-abbrev-array '["Mon" "Tue" "Wed" "Thu" "Fri" "Sat" "Sun"])
+#+end_src
+** Popup rules
+*** Vterm
+#+begin_src emacs-lisp
+(set-popup-rule! "^\\*vterm" :size 0.20 :vslot -4 :select t :quit nil :ttl 0)
+#+end_src
+** Org
+*** Agenda
+#+begin_src emacs-lisp
+(setq
+ org-agenda-files '("~/my-stuff/Org/Agenda/")
+ org-agenda-property-position 'next-line
+ org-agenda-skip-scheduled-if-done t
+ org-agenda-skip-deadline-if-done t
+ org-agenda-include-deadlines t
+ org-agenda-start-with-log-mode t
+ org-agenda-align-tags-to-column 48
+ org-agenda-time-leading-zero t
+ org-agenda-skip-timestamp-if-done t
+ org-agenda-custom-commands
+ '(("o" "Overview"
+    ((agenda "" (
+                 (org-agenda-prefix-format " %?-12t% s")
+                 (org-agenda-span 'week)
+                 (org-agenda-start-day "-1d")
+                 (org-agenda-overriding-header "⚡ This week")
+                 (org-agenda-current-time-string "<----------- Now")
+                 (org-agenda-scheduled-leaders '("SCHEDULED: " "Scheduled: "))
+                 (org-agenda-deadline-leaders '("DEADLINE: " "Deadline: "))
+                 (org-agenda-sorting-strategy '(priority-up))))
+     (todo "" (
+               (org-agenda-overriding-header "\n⚡ Today")
+               (org-agenda-skip-timestamp-if-done t)
+               (org-agenda-prefix-format " %?-12t% s")
+               (org-agenda-span 'day)
+               (org-agenda-start-day "+0d")
+               (org-agenda-sorting-strategy '(priority-up))))
+     (tags-todo "+PRIORITY=\"A\"" (
+                                   (org-agenda-overriding-header "\n⚡ High priority")
+                                   (org-agenda-skip-timestamp-if-done t)
+                                   (org-agenda-prefix-format " %?-12t% s")))
+     (tags-todo "+Effort<=20&+Effort>0" ()
+                                        (org-agenda-overriding-header "\n⚡ Low effort")
+                                        (org-agenda-skip-timestamp-if-done t)
+                                        (org-agenda-prefix-format " %?-12t% s")
+                                        (org-agenda-sorting-strategy '(priority-up))
+                                        (org-agenda-max-todos 10))
+     (todo "TODO" (
+                   (org-agenda-overriding-header "\n⚡ To Do")
+                   (org-agenda-skip-timestamp-if-done t)
+                   (org-agenda-prefix-format " %?-12t% s")
+                   (org-agenda-sorting-strategy '(priority-up))))
+     (todo "PROJ" (
+                   (org-agenda-overriding-header "\n⚡ Projects")
+                   (org-agenda-skip-timestamp-if-done t)
+                   (org-agenda-prefix-format " %?-12t% s")
+                   (org-agenda-sorting-strategy '(priority-up))))))))
+#+end_src
+*** Roam
+#+begin_src emacs-lisp
+(setq
+ org-roam-directory "~/my-stuff/Org/Roam/"
+ org-roam-completion-everywhere t
+ +org-roam-open-buffer-on-find-file nil)
+#+end_src
+**** Dailies
+#+begin_src emacs-lisp
+(setq org-roam-dailies-directory "Journal/")
+#+end_src
+**** Capture templates
+#+begin_src emacs-lisp
+(setq org-roam-capture-templates
+      '(("d" "default" plain "%?"
+         :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n")
+         :unnarrowed t))
+      org-roam-dailies-capture-templates
+      '(("d" "default" entry "* %<%H:%M>: %?" :target
+          (file+head "%<%Y-%m-%d>.org" "#+title: Journal-%<%Y-%m-%d>\n#+category: Journal-%<%Y-%m-%d>\n#+filetags: Journal\n\n"))))
+#+end_src
+**** Node insertion
+#+begin_src emacs-lisp
+(defun org-roam-node-insert-immediate (arg &rest args)
+  (interactive "P")
+  (let ((args (cons arg args))
+        (org-roam-capture-templates (list (append (car org-roam-capture-templates)
+                                                  '(:immediate-finish t)))))
+    (apply #'org-roam-node-insert args)))
+
+(map! :i "C-c n i" #'org-roam-node-insert
+      :i "C-c n I" #'org-roam-node-insert-immediate)
+#+end_src
+**** UI
+#+begin_src emacs-lisp
+(use-package! websocket
+  :after org-roam)
+(use-package! org-roam-ui
+  :after org-roam
+  :config
+  (setq org-roam-ui-sync-theme t
+        org-roam-ui-follow t
+        org-roam-ui-update-on-save t
+        org-roam-ui-open-on-start t)
+  (setq org-startup-with-latex-preview t))
+#+end_src
+*** Priority
+#+begin_src emacs-lisp
+(setq
+ org-priority-lowest ?D
+ org-priority-highest ?A
+ org-priority-faces
+ '((?A . error)
+   (?B . warning)
+   (?C . success)
+   (?D . outline-4)))
+#+end_src
+*** Todo keywords
+#+begin_src emacs-lisp
+(after! org
+  (setq
+   org-todo-keywords
+   '((sequence
+      "TODO(t)"
+      "NEXT(n)"
+      "PROJ(p)"
+      "|"
+      "WAIT(w)"
+      "DONE(d)"
+      "CANCELLED(c)"))
+   org-todo-keyword-faces
+   '(("TODO"      . (:foreground "#f78c6c" :inherit 'bold))
+     ("NEXT"      . (:foreground "#ff5370" :inherit 'bold :height 1.15))
+     ("PROJ"      . (:foreground "#5fafff" :inherit 'bold))
+     ("WAIT"      . (:foreground "#eeffff" :inherit 'bold))
+     ("DONE"      . (:foreground "#c3e88d" :inherit 'bold :box "#c3e88d"))
+     ("CANCELLED" . (:foreground "#717cb4" :inherit 'bold :strike-through t)))))
+#+end_src
+*** Capture templates
+#+begin_src emacs-lisp
+(after! org
+  (setq org-capture-templates
+        `(("t" "Todo")
+          ("ti" "Important" entry (file+olp "~/my-stuff/Org/Agenda/Inbox.org" "Important")
+           "* TODO %?\n%U")
+          ("tt" "Today" entry (file+olp "~/my-stuff/Org/Agenda/Inbox.org" "Today")
+           "* TODO %?\n%U")
+          ("tl" "Later" entry (file+olp "~/my-stuff/Org/Agenda/Inbox.org" "Later")
+           "* TODO %?\n%U"))))
+#+end_src
+*** Pretty
+**** Superstar
+#+begin_src emacs-lisp
+(after! org-superstar
+  (setq
+   org-superstar-headline-bullets-list '("⬢" "⬡" "◆" "◈" "◇" "●" "◉" "○" "✹" "✿" "✤" "✜")
+   org-superstar-remove-leading-stars t
+   org-superstar-special-todo-items t
+   org-superstar-todo-bullet-alist
+   '(("TODO"      . ?)
+     ("NEXT"      . ?)
+     ("PROJ"      . ?)
+     ("WAIT"      . ?)
+     ("CANCELLED" . ?)
+     ("DONE"      . ?))
+   org-superstar-item-bullet-alist
+   '((?- . ?•)
+     (?+ . ?➤))))
+#+end_src
+**** Appear
+#+begin_src emacs-lisp
+(use-package! org-appear
+  :hook (org-mode . org-appear-mode)
+  :config
+  (setq org-appear-autolinks t
+        org-appear-autosubmarkers t
+        org-appear-autoemphasis t
+        org-appear-autoentities t)
+  (add-hook! 'org-appear-mode-hook
+    ;; for proper first-time setup, `org-appear--set-elements' needs to
+    ;; be run after other hooks have acted.
+    (org-appear--set-elements)
+    (add-hook! evil-insert-state-entry :local (org-appear-mode 1))
+    (add-hook! evil-insert-state-exit :local (org-appear-mode -1))))
+#+end_src
+**** Inline latex display
+#+begin_src emacs-lisp
+(use-package! org-fragtog
+  :hook
+  (org-mode . org-fragtog-mode))
+#+end_src
+**** Fancy priorities
+#+begin_src emacs-lisp
+(use-package! org-fancy-priorities
+  :hook (org-mode . org-fancy-priorities-mode)
+  :config
+  (setq org-fancy-priorities-list '((?A . "HIGH")
+                                    (?B . "MID")
+                                    (?C . "LOW")
+                                    (?D . "CHILL"))))
+#+end_src
+**** Ellipsis
+#+begin_src emacs-lisp
+(setq
+ org-ellipsis " ⬎ "
+ org-list-allow-alphabetical t
+ org-hide-emphasis-markers t)
+#+end_src
+*** Autolist
+#+begin_src emacs-lisp
+(use-package! org-autolist
+  :defer t
+  :hook (org-mode . org-autolist-mode))
+#+end_src
+*** Startup
+#+begin_src emacs-lisp
+(after! org
+  (setq
+   org-startup-folded 'content
+   org-startup-with-inline-images t))
+#+end_src
+*** Toc
+#+begin_src emacs-lisp
+(toc-org-mode)
+(setq toc-org-max-depth 4)
+#+end_src
+*** Export
+#+begin_src emacs-lisp
+(setq org-export-with-tags nil)
+#+end_src
+*** Refiling
+#+begin_src emacs-lisp
+(after! org
+  (setq org-refile-targets '(("~/my-stuff/Org/Archive.org" :maxlevel . 4))))
+(advice-add 'org-refile :after 'org-save-all-org-buffers)
+#+end_src
+* Init
+:PROPERTIES:
+:header-args: emacs-lisp: :tangle no
+:END:
+** Modules
+*** Input
+#+name: doom-input
+#+begin_src emacs-lisp
+;;chinese
+;;japanese
+;;layout            ; auie,ctsrnm is the superior home row
+#+end_src
+*** Completion
+#+name: doom-completion
+#+begin_src emacs-lisp
+(company
+  +childframe)      ; the ultimate code completion backend
+;;helm              ; the *other* search engine for love and life
+;;ido               ; the other *other* search engine...
+;;ivy               ; a search engine for love and life
+(vertico
+  +childframe
+  +icons)           ; the search engine of the future
+#+end_src
+*** Ui
+#+name: doom-ui
+#+begin_src emacs-lisp
+;;deft              ; notational velocity for Emacs
+doom                ; what makes DOOM look the way it does
+doom-dashboard      ; a nifty splash screen for Emacs
+;;doom-quit         ; DOOM quit-message prompts when you quit Emacs
+(emoji +unicode
+       +github)     ; 🙂
+hl-todo             ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
+hydra
+;;indent-guides     ; highlighted indent columns
+;;(ligatures
+;;  +extra)         ; ligatures and symbols to make your code pretty again
+;;minimap           ; show a map of the code on the side
+modeline            ; snazzy, Atom-inspired modeline, plus API
+nav-flash           ; blink cursor line after big motions
+;;neotree           ; a project drawer, like NERDTree for vim
+ophints             ; highlight the region an operation acts on
+(popup +defaults)   ; tame sudden yet inevitable temporary windows
+;;tabs              ; a tab bar for Emacs
+treemacs            ; a project drawer, like neotree but cooler
+;;unicode             ; extended unicode support for various languages
+(vc-gutter
+  +pretty)          ; vcs diff in the fringe
+;;vi-tilde-fringe   ; fringe tildes to mark beyond EOB
+window-select       ; visually switch windows
+workspaces          ; tab emulation, persistence & separate workspaces
+;;zen               ; distraction-free coding or writing
+#+end_src
+*** Editor
+#+name: doom-editor
+#+begin_src emacs-lisp
+(evil +everywhere)  ; come to the dark side, we have cookies
+file-templates      ; auto-snippets for empty files
+fold                ; (nigh) universal code folding
+format              ; automated prettiness
+;;god               ; run Emacs commands without modifier keys
+;;lispy             ; vim for lisp, for people who don't like vim
+;;multiple-cursors  ; editing in many places at once
+;;objed             ; text object editing for the innocent
+parinfer            ; turn lisp into python, sort of
+;;rotate-text       ; cycle region at point between text candidates
+snippets            ; my elves. They type so I don't have to
+;;word-wrap         ; soft wrapping with language-aware indent
+#+end_src
+*** Emacs
+#+name: doom-emacs
+#+begin_src emacs-lisp
+(dired +icons)      ; making dired pretty [functional]
+electric            ; smarter, keyword-based electric-indent
+(ibuffer +icons)    ; interactive buffer management
+(undo +tree)        ; persistent, smarter undo for your inevitable mistakes
+vc                  ; version-control and Emacs, sitting in a tree
+#+end_src
+*** Term
+#+name: doom-term
+#+begin_src emacs-lisp
+eshell              ; the elisp shell that works everywhere
+;;shell             ; simple shell REPL for Emacs
+;;term              ; basic terminal emulator for Emacs
+vterm               ; the best terminal emulation in Emacs
+#+end_src
+*** Checkers
+#+name: doom-checkers
+#+begin_src emacs-lisp
+(syntax
+  +childframe)      ; tasing you for every semicolon you forget
+(spell
+  +aspell
+  +everywhere)      ; tasing you for misspelling mispelling
+;;grammar           ; tasing grammar mistake every you make
+#+end_src
+*** Tools
+#+name: doom-tools
+#+begin_src emacs-lisp
+;;ansible
+;;biblio
+;;(debugger +lsp)   ; FIXME stepping through code, to help you add bugs
+;;direnv
+docker
+;;editorconfig      ; let someone else argue about tabs vs spaces
+;;ein               ; tame Jupyter notebooks with emacs
+(eval +overlay)     ; run code, run (also, repls)
+;;gist              ; interacting with github gists
+lookup              ; navigate your code and its documentation
+;;lsp
+magit               ; a git porcelain for Emacs
+;;make              ; run make tasks from Emacs
+pass                ; password manager for nerds
+pdf                 ; pdf enhancements
+;;prodigy           ; FIXME managing external services & code builders
+rgb                 ; creating color strings
+;;taskrunner        ; taskrunner for all your projects
+;;terraform         ; infrastructure as code
+;;tmux              ; an API for interacting with tmux
+tree-sitter         ; syntax and parsing, sitting in a tree...
+;;upload            ; map local to remote projects via ssh/ftp
+#+end_src
+*** Os
+#+name: doom-os
+#+begin_src emacs-lisp
+;;macos             ; improve compatibility with macOS
+;;tty               ; improve the terminal Emacs experience
+#+end_src
+*** Lang
+#+name: doom-lang
+#+begin_src emacs-lisp
+;;agda              ; types of types of types of types...
+;;beancount         ; mind the GAAP
+(cc +tree-sitter)   ; C > C++ == 1
+(clojure
+  +tree-sitter)     ; java with a lisp
+;;common-lisp       ; if you've seen one lisp, you've seen them all
+;;coq               ; proofs-as-programs
+;;crystal           ; ruby at the speed of c
+;;csharp            ; unity, .NET, and mono shenanigans
+;;data              ; config/data formats
+;;(dart +flutter)   ; paint ui and not much else
+;;elixir            ; erlang done right
+;;elm               ; care for a cup of TEA?
+emacs-lisp          ; drown in parentheses
+;;erlang            ; an elegant language for a more civilized age
+;;ess               ; emacs speaks statistics
+;;faust             ; dsp, but you get to keep your soul
+;;fsharp            ; ML stands for Microsoft's Language
+;;fstar             ; (dependent) types and (monadic) effects and Z3
+;;gdscript          ; the language you waited for
+(go
+  +tree-sitter)     ; the hipster dialect
+(haskell
+  +tree-sitter)     ; a language that's lazier than I am
+;;hy                ; readability of scheme w/ speed of python
+;;idris             ; a language you can depend on
+;;json              ; At least it ain't XML
+;;(java +meghanada) ; the poster child for carpal tunnel syndrome
+;;javascript        ; all(hope(abandon(ye(who(enter(here))))))
+;;julia             ; a better, faster MATLAB
+;;kotlin            ; a better, slicker Java(Script)
+(latex
+  +cdlatex
+  +fold)            ; writing papers in Emacs has never been so fun
+;;lean
+;;factor
+;;ledger            ; an accounting system in Emacs
+;;lua               ; one-based indices? one-based indices
+markdown            ; writing docs for people to ignore
+;;nim               ; python + lisp at the speed of c
+(nix
+  +tree-sitter)     ; I hereby declare "nix geht mehr!"
+;;ocaml             ; an objective camel
+(org
+  +pretty
+  +gnuplot
+  +roam2)           ; organize your plain life in plain text
+;;php               ; perl's insecure younger brother
+;;plantuml          ; diagrams for confusing people more
+;;purescript        ; javascript, but functional
+;;python            ; beautiful is better than ugly
+;;qt                ; the 'cutest' gui framework ever
+;;racket            ; a DSL for DSLs
+;;raku              ; the artist formerly known as perl6
+;;rest              ; Emacs as a REST client
+;;rst               ; ReST in peace
+;;(ruby +rails)     ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
+(rust
+  +tree-sitter)     ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
+;;scala             ; java, but good
+;;scheme            ; a fully conniving family of lisps
+(sh +tree-sitter)   ; she sells {ba,z,fi}sh shells on the C xor
+;;sml
+;;solidity          ; do you need a blockchain? No.
+;;swift             ; who asked for emoji variables?
+;;terra             ; Earth and Moon in alignment for performance.
+;;web               ; the tubes
+;;yaml              ; JSON, but readable
+;;zig               ; C, but simpler
+#+end_src
+*** Email
+#+name: doom-email
+#+begin_src emacs-lisp
+;;(mu4e +gmail)
+;;notmuch
+;;(wanderlust +gmail)
+#+end_src
+*** App
+#+name: doom-app
+#+begin_src emacs-lisp
+;;calendar
+;;emms
+;;everywhere        ; *leave* Emacs!? You must be joking
+;;irc               ; how neckbeards socialize
+(rss +org)          ; emacs as an RSS reader
+;;twitter           ; twitter client https://twitter.com/vnought
+#+end_src
+*** Config
+#+name: doom-config
+#+begin_src emacs-lisp
+;;literate
+(default +bindings +smartparens)
+#+end_src
+** init.el
+#+begin_src emacs-lisp :tangle "init.el" :noweb no-export
+(doom! :input
+       <<doom-input>>
+
+       :completion
+       <<doom-completion>>
+
+       :ui
+       <<doom-ui>>
+
+       :editor
+       <<doom-editor>>
+
+       :emacs
+       <<doom-emacs>>
+
+       :term
+       <<doom-term>>
+
+       :checkers
+       <<doom-checkers>>
+
+       :tools
+       <<doom-tools>>
+
+       :os
+       <<doom-os>>
+
+       :lang
+       <<doom-lang>>
+
+       :email
+       <<doom-email>>
+
+       :app
+       <<doom-app>>
+
+       :config
+       <<doom-config>>
+       )
+#+end_src
+* Packages
+:PROPERTIES:
+:header-args: emacs-lisp: :tangle packages.el
+:END:
+** Editing
+*** Smart semicolon
+#+begin_src emacs-lisp
+(package! smart-semicolon)
+#+end_src
+*** Visual regexp
+#+begin_src emacs-lisp
+(package! visual-regexp)
+(package! visual-regexp-steroids)
+#+end_src
+*** Affe
+#+begin_src emacs-lisp
+(package! affe)
+#+end_src
+** Org
+*** Autolist
+#+begin_src emacs-lisp
+(package! org-autolist)
+#+end_src
+*** Pretty
+**** Appear
+#+begin_src emacs-lisp
+(package! org-appear)
+#+end_src
+**** Roam UI
+#+begin_src emacs-lisp
+(package! org-roam-ui)
+(package! websocket)
+#+end_src
+**** Inline latex display
+#+begin_src emacs-lisp
+(package! org-fragtog)
+#+end_src
+**** Fancy priorities
+#+begin_src emacs-lisp
+(package! org-fancy-priorities)
+#+end_src

@@ -1,0 +1,11 @@
+#!/bin/sh
+
+systemctl --user start hm-graphical-session.target
+picom &
+numlockx on &
+xwallpaper --stretch ~/my-stuff/Pictures/wallpapers/gentoo-iceberg-dark.png &
+setxkbmap us,cz ,qwerty -option 'ctrl:nocaps' 'grp:ctrls_toggle' &
+xrandr --output DP-0 --primary --output DP-2 --mode 1920x1200 --left-of DP-0
+xrdb .config/x11/xresources &
+xset r rate 400 60 &
+eww open-many goggins goggins-second audio left --restart &

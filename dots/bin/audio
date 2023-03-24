@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+append() {
+    echo "$1" >> "$HOME/.cache/eww-audio"
+}
+
+change() {
+    pamixer --set-volume "$1"
+    append "$1"
+}
+
+prompt() {
+    VOL=$(dmenu < /dev/null -p 'set volume' -h 24)
+    change "$VOL"
+}
+
+metadata() {
+    shift
+    playerctl -a metadata --format "[\"{{ artist }}\", \"{{ title }}\", \"{{ status }}\", \"{{ playerName }}\", \"{{ volume }}\"]" | audio-status "$@"
+}
+
+case $1 in
+    "prompt") prompt;;
+    "set") change "$2";;
+    "metadata") metadata "$@";;
+    "update") append "$(pamixer --get-volume)";;
+esac

@@ -1,0 +1,66 @@
+#!/bin/sh
+
+case $@ in
+    "-h") printf "Usage: %s [ -v update volume ]\n" "$0" && exit;;
+    "-v") kill -34 "$(cat ~/.cache/sdwmPid)" && exit;;
+esac
+
+echo "$$" > ~/.cache/sdwmPid
+
+package() {
+    PKG="$(checkupdates | wc -l)"
+    [ "$PKG" -gt "100" ] && PKG="^c#ff5370^[PKG:$PKG]^d^" || PKG="^c#89ddff^[PKG:$PKG]^d^"
+}
+
+volume() {
+    VOL="$(pulsemixer --get-volume | sed 's/ .*//')"
+    [ "$VOL" -eq "0" ] && VOL="^c#ff5370^[MUTED]^d^" && return 0
+    [ "$VOL" -gt "61" ] && VOL="^c#f78c6c^[VOL:$VOL%]^d^" || VOL="^c#00d7af^[VOL:$VOL%]^d^"
+    [ "$VOL" = "^c#f78c6c^[VOL:%]^d^" ] && sleep 1 && volume
+    [ "$VOL" = "^c#00d7af^[VOL:%]^d^" ] && sleep 1 && volume
+}
+
+upTime() {
+    UPT="^c#afff00^[UPT:$(uptime --pretty | sed "s/up // ; s/ days/d/g ; s/ day/d/g ; s/ hours/h/g ; s/ hour/h/g ; s/ minutes/min/g ; s/,//g")]^d^"
+}
+
+memory() {
+    MEM=$(free -h | awk '/^Mem:/ {print $3 "/" $2}')
+    MEMPERCENTAGE=$(free -h | awk '/^Mem:/ {print $3/$2 * 100}')
+    [ "$(echo "$MEMPERCENTAGE" | sed "s/\..*//")" -gt "30" ] && MEM="^c#f78c6c^[$MEM]^d^" && return 0
+    [ "$(echo "$MEMPERCENTAGE" | sed "s/\..*//")" -gt "50" ] && MEM="^c#ff5f00^[$MEM]^d^" && return 0
+    [ "$(echo "$MEMPERCENTAGE" | sed "s/\..*//")" -gt "75" ] && MEM="^c#ff5370^[$MEM]^d^" || MEM="^c#ffd700^[$MEM]^d^"
+}
+
+clock() {
+    DATE="^c#c782ea^[$(date +'%A, %e. %B %H:%M:%S' | sed "s/,  /, /")]^d^"
+}
+
+pomodoro() {
+    POMODORO="$(cat ~/.cache/rustodoro)"
+    [ "${POMODORO}" != "" ] && POMODORO="^c#ff5370^[ ${POMODORO}s]^d^ "
+}
+
+clock
+package
+volume
+upTime
+memory
+
+trap "volume" "RTMIN"
+trap "pomodoro" "RTMIN+1"
+
+sec=0
+
+while :; do
+    dwm -s "$POMODORO$DATE $PKG $VOL $UPT $MEM "
+
+    clock
+    pomodoro
+    [ $((sec % 10)) = 0 ] && memory
+    [ $((sec % 120)) = 0 ] && upTime
+    [ $((sec % 25000)) = 0 ] && package
+
+    sleep 0.5
+    sec=$((sec + 1))
+done

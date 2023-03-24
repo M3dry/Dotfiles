@@ -1,0 +1,163 @@
+.goggins {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.goggins-second  {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.goggins-button {
+    background-color: #ff5370;
+    border-radius: 4px;
+}
+
+.goggins-quote {
+    background-color: #0f111b;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    margin-top: 3px;
+}
+
+.time {
+    background-color: #ff5370;
+    color: #000000;
+    padding-left: 4px;
+    padding-right: 4px;
+    border-radius: 4px;
+}
+
+.date {
+    background-color: #f78c6c;
+    color: #000000;
+    border-radius: 4px;
+    padding-left: 4px;
+    padding-right: 4px;
+    margin-right: 5px;
+}
+
+.calendar-pop {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.cal-inner-box {
+    background-color: #0f111b;
+    border-radius: 10px;
+    padding: 1rem 1rem .2rem;
+}
+
+calendar {
+    background-color: #0f111b;
+    border-width: 0px;
+}
+
+calendar:selected {
+    color: #c792ea
+}
+
+calendar.header {
+    color: #c792ea;
+}
+
+calendar.button {
+    color: #3c435e;
+}
+
+calendar.highlight {
+    color: #ff5370;
+}
+
+calendar:indeterminate {
+    color: #292d3e;
+}
+
+.volume-percent {
+    background-color: #72a4ff;
+    color: #000000;
+    padding-left: 4px;
+    padding-right: 4px;
+    border-radius: 4px;
+}
+
+.volume-scale {
+    background-color: #c792ea;
+    border-radius: 4px;
+    padding-left: 4px;
+    padding-right: 4px;
+    margin-right: 5px;
+}
+
+scale trough {
+    background-image: image(#292d3e);
+    border-radius: 4px;
+    min-height: 10px;
+    min-width: 70px;
+    margin: 0px 10px 0px 0px;
+}
+
+scale trough highlight {
+    background-image: image(#72a4ff);
+    border-radius: 4px;
+}
+
+slider {
+    background-image: image(rgba(0, 0, 0, 0));
+}
+
+.ram-box {
+    background-color: #89ddff;
+    border-radius: 4px;
+    color: #0f111b;
+    padding-right: 4px;
+    padding-left: 4px;
+}
+
+.ram-progress {
+    background-color: #0f111b;
+    color: #ff5370;
+}
+
+.ram-info {
+    background-color: #c3e88d;
+    color: #000000;
+    border-radius: 4px;
+    padding-left: 4px;
+    padding-right: 4px;
+    margin-right: 5px;
+}
+
+.left {
+    background-color: rgba(0, 0, 0, 0);
+    all: unset;
+}
+
+.left-box {
+    margin-top: 9px;
+    margin-bottom: 4px;
+}
+
+.audio {
+    background-color: rgba(0, 0, 0, 0);
+    all: unset;
+}
+
+.audio-box {
+    background-color: rgba(0, 0, 0, 0);
+    margin-top: 9px;
+    margin-bottom: 4px;
+}
+
+.now-playing {
+    color: #c792ea;
+    border-radius: 4px;
+    margin-right: 5px;
+}
+
+.not-playing {
+    color: #3c435e;
+    border-radius: 4px;
+    margin-right: 5px;
+}
+
+tooltip {
+    color: #eeffff;
+}

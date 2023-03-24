@@ -1,0 +1,6 @@
+#!/bin/sh
+
+SHUTREBOOT=$(printf "shutdown\nreboot" | dmenu)
+
+[ "$SHUTREBOOT" = "shutdown" ] && prompt "Shutdown system?" "systemctl poweroff"
+[ "$SHUTREBOOT" = "reboot" ] && prompt "Reboot system?" "systemctl reboot"

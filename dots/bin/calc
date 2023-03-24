@@ -1,0 +1,6 @@
+#!/bin/sh
+
+while true; do
+    INPUT=$(dmenu < /dev/null -p "${INPUT}" -h 24 | xargs -rI {} qalc "{}")
+    [ -z "$INPUT" ] && exit
+done

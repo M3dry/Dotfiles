@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+POSSIBLE="calendar-pop audio-pop"
+POSSIBLE=$(echo "$POSSIBLE" | sed "s/ /\n/g")
+OPEN=$(echo "$POSSIBLE" | rg "^${1}$")
+CLOSE=$(echo "$POSSIBLE" | rg "^$OPEN$" -v)
+FILE="$HOME/.cache/eww-$1.lock"
+
+if [ -f "$FILE" ];  then
+    eww close "$1"
+    rm "$FILE"
+else
+    echo "$CLOSE" | xargs -I {} eww close "{}"
+    echo "$CLOSE" | xargs -I {} rm "$HOME/.cache/eww-{}.lock"
+    eww open "$1"
+    touch "$FILE"
+fi

@@ -1,0 +1,161 @@
+(defwindow goggins
+  :stacking "bg"
+  :windowtype "normal"
+  :wm-ignore true
+  :geometry (geometry :x "75%" :y "40%" :width "17%" :height "48%")
+  (goggins))
+
+(defwindow goggins-second
+  :monitor 1
+  :stacking "bg"
+  :windowtype "normal"
+  :wm-ignore true
+  :geometry (geometry :x "75%" :y "40%" :width "17%" :height "48%")
+  (goggins))
+
+(defwidget goggins []
+ (button :class "goggins-button" :onclick "xdg-open https://www.youtube.com/watch?v=JV8mIfjwPeM &"
+    (box :space-evenly false :orientation "vertical"
+      (label :class "goggins-quote" :wrap true :text "You're thinking about what you could've been. I am exactly what I should've been!")
+      (image :tooltip "Everyone fails sometimes and life isn't supposed to be fair, much less bend to your every whim."
+        :class "goggins-image"
+        :path "./goggins-cut.png"
+        :image-width 314 :image-height 500))))
+
+(defvar date-reveal false)
+(defpoll time :interval "1s" `date +'{"month":"%-m","day":"%-d","dayname":"%A","hour":"%H","min":"%M","sec":"%S"}'`)
+
+(defwidget datetime []
+  (eventbox
+    :onhover "eww update date-reveal=true"
+    :onhoverlost "eww update date-reveal=false"
+    :onclick "scripts/pop calendar-pop"
+    :tooltip "${time.dayname}"
+    (box
+      :space-evenly false
+      :orientation "h"
+      :spacing 5
+      (label
+        :class "time"
+        :text "${time.hour}:${time.min}:${time.sec}")
+      (revealer
+        :transition "slideleft"
+        :duration "350ms"
+        :reveal date-reveal
+        (label
+          :class "date"
+          :text `${time.day}/${time.month}`)))))
+
+(defwindow calendar-pop
+  :stacking "fg"
+  :windowtype "normal"
+  :wm-ignore true
+  :geometry (geometry :x "83%" :y "73%" :width "16%" :height "20%")
+  (box :class "cal-inner-box"
+    (calendar :class "cal")))
+
+(defvar volume-reveal false)
+(deflisten volume-val :initial "0" `tail -F ~/.cache/eww-audio`)
+
+(defwidget volume []
+  (eventbox
+    :onhover "eww update volume-reveal=true"
+    :onhoverlost "eww update volume-reveal=false"
+    :onclick "$TERMINAL -e pulsemixer &"
+    (box
+      :space-evenly false
+      :orientation "h"
+      :halign "end"
+      :spacing 5
+      (label
+        :class "volume-percent"
+        :text {volume-val == 0 ? "婢" : " ${volume-val}%"})
+      (revealer
+        :transition "slideleft"
+        :duration "350ms"
+        :reveal volume-reveal
+        (scale
+          :class "volume-scale"
+          :value "${volume-val}.0"
+          :orientation "h"
+          :tooltip "${volume-val}%"
+          :max 100
+          :min 0
+          :onchange "audio set {}")))))
+
+(defvar ram-reveal false)
+(defpoll ram-data :interval "3s" `sys-info mem`)
+
+(defwidget ram []
+  (eventbox
+    :onhover "eww update ram-reveal=true"
+    :onhoverlost "eww update ram-reveal=false"
+    :onclick "$TERMINAL -e htop &"
+    (box
+      :space-evenly false
+      :orientation "h"
+      :halign "start"
+      :spacing 5
+      :tooltip "${ram-data.used}/${ram-data.total}"
+      (box
+          :class "ram-box"
+          :space-evenly false
+          :orientation "h"
+          :spacing 5
+          (image
+            :path "./memory.png"
+            :image-width 30
+            :image-height 26)
+          (circular-progress
+            :class "ram-progress"
+            :width 20
+            :clockwise true
+            :thickness 5
+            :value {ram-data.percent}))
+      (revealer
+        :transition "slideleft"
+        :duration "350ms"
+        :reveal ram-reveal
+        (label
+          :class "ram-info"
+          :text "${ram-data.used}/${ram-data.total}")))))
+
+(defwindow left
+  :stacking "fg"
+  :windowtype "dock"
+  :wm-ignore true
+  :geometry (geometry :x "50%" :y "96%" :width "50%" :height "4%")
+  (box
+    :class "left-box"
+    :orientation "h"
+    :space-evenly false
+    :halign "end"
+    (ram)
+    (volume)
+    (datetime)))
+
+(defpoll audio-data :interval "1s" `audio metadata -m 3 gradual 50 30 25`)
+
+(defwindow audio
+  :stacking "fg"
+  :windowtype "dock"
+  :wm-ignore true
+  :geometry (geometry :x "25%" :y "96%" :width "50%" :height "4%")
+  (box
+    :orientation "h"
+    :halign "center"
+    :class "audio-box"
+    :space-evenly false
+    (for player in audio-data
+      (button
+        :class {player.playing ? "now-playing" : "not-playing"}
+        :onclick "playerctl -p ${player.player} play-pause"
+        :onrightclick "scripts/pop audio-pop"
+        "${player.artist == '' ? '' : player.artist + ' -'} ${player.title}"))))
+
+(defwindow audio-pop
+  :stacking "fg"
+  :windowtype "normal"
+  :wm-ignore true
+  :geometry (geometry :x "83%" :y "73%" :width "16%" :height "20%")
+  "HELLO")

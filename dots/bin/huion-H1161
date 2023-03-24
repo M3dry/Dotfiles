@@ -1,0 +1,25 @@
+#!/bin/sh
+
+TABLETPAD="HUION Huion Tablet Pad pad"
+TABLETSTYLUS="HUION Huion Tablet Pen stylus"
+TABLETX=55880
+SCREENX=1920
+SCREENY=1200
+NEWTABLETY=$(( SCREENY * TABLETX / SCREENX ))
+
+xsetwacom --set "$TABLETPAD" MapToOutPut "1920x1200+0+0"
+
+xsetwacom --set "$TABLETSTYLUS" ResetArea
+xsetwacom --set "$TABLETSTYLUS" RawSample 4
+xsetwacom --set "$TABLETSTYLUS" Area 0 0 "$TABLETX" "$NEWTABLETY"
+
+xsetwacom --set "$TABLETPAD" Button 1 "key +shift"
+xsetwacom --set "$TABLETPAD" Button 2 "key +ctrl"
+xsetwacom --set "$TABLETPAD" Button 3 "key +v"
+xsetwacom --set "$TABLETPAD" Button 8 "key m"
+xsetwacom --set "$TABLETPAD" Button 9 "key +ctrl +z"
+xsetwacom --set "$TABLETPAD" Button 10 "key +ctrl +shift +z"
+xsetwacom --set "$TABLETPAD" Button 11 "key +ctrl /"
+xsetwacom --set "$TABLETPAD" Button 12 "key e"
+xsetwacom --set "$TABLETSTYLUS" Button 2 2
+xsetwacom --set "$TABLETSTYLUS" Button 3 3
