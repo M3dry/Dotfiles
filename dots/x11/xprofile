@@ -1,6 +1,5 @@
 #!/bin/sh
 
-picom &
 numlockx on &
 xwallpaper --stretch ~/my-stuff/Pictures/wallpapers/gentoo-iceberg-dark.png &
 setxkbmap us,cz ,qwerty -option 'ctrl:nocaps' 'grp:ctrls_toggle' &
