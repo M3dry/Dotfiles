@@ -11,6 +11,7 @@ import XMonad.Actions.SwapPromote
 import XMonad.Actions.UpdatePointer
 import XMonad.Actions.WithAll
 import XMonad.Actions.WorkspaceNames
+import XMonad.Actions.GridSelect
 
 import XMonad.Hooks.CurrentWorkspaceOnTop
 import XMonad.Hooks.EwmhDesktops
@@ -36,25 +37,75 @@ import XMonad.Util.EZConfig
 import XMonad.Util.SpawnOnce
 import XMonad.Util.NamedScratchpad
 
-myTerminal = "st"
+myTerminal = "st "
+myTerminalPath path = myTerminal ++ "-d " ++ path
 
-myEmacs = "emacsclient -c"
+myEmacs = "emacsclient -c "
 
 myModMask = mod4Mask
 
-myNormalBorderColor = "#4e5579"
-
-myFocusedBorderColor = "#5fafff"
-
 myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
+myFont size = "xft:ComicCodeLigatures Nerd Font:pixelsize=" ++ show size
 
 myPrompt =
     def
-        { bgColor = "#292d3e"
+        { bgColor = "#0f111b"
         , fgColor = "#eeffff"
-        , borderColor = "#ff5370"
-        , position = Top
+        , borderColor = "#c792ea"
+        , promptBorderWidth = 2
+        , font = myFont 16
+        , height = 44
+        , position = Bottom
         }
+
+myGridNav = makeXEventhandler $ shadowWithKeymap navKeyMap navDefaultHandler
+  where
+    navKeyMap =
+      M.fromList
+        [ ((0, xK_Escape), cancel)
+        , ((0,xK_Return) , select)
+        , ((0, xK_slash) , substringSearch myGridNav)
+        , ((0, xK_h)     , move (-1,0)  >> myGridNav)
+        , ((0, xK_l)     , move (1,0)   >> myGridNav)
+        , ((0, xK_j)     , move (0,1)   >> myGridNav)
+        , ((0, xK_k)     , move (0,-1)  >> myGridNav)
+        , ((0, xK_space) , setPos (0,0) >> myGridNav)
+        ]
+    navDefaultHandler = const myGridNav
+
+spawnSelected' :: [(String, String)] -> X ()
+spawnSelected' lst = gridselect conf lst >>= flip whenJust spawn
+    where conf = def
+                   { gs_cellheight   = 40
+                   , gs_cellwidth    = 180
+                   , gs_cellpadding  = 6
+                   , gs_originFractX = 0.5
+                   , gs_originFractY = 0.5
+                   , gs_navigate     = myGridNav
+                   , gs_font         = myFont 12
+                   }
+
+gridSystem =
+  [ ("St", "st")
+  , ("Alacritty", "alacritty")
+  , ("Htop", myTerminal ++ "-e htop")
+  , ("Neovim", myTerminal ++ "-e neovim")
+  , ("Emacs", myEmacs)
+  , ("Firefox", "firefox")
+  , ("Chromium", "chromium")
+  ]
+
+gridConfig launcher =
+  [ ("Doom", launcher "~/.config/flake/dots/doom/")
+  , ("Neovim", launcher "~/.config/flake/dots/nvim/")
+  , ("Xmonad", launcher "~/.config/flake/dots/xmonad/")
+  , ("Taffybar", launcher "~/.config/flake/dots/taffybar/")
+  , ("eww", launcher "~/.config/flake/dots/eww/")
+  , ("scripts", launcher "~/.config/flake/dots/bin/")
+  , ("dots", launcher "~/.config/flake/dots/")
+  , ("nixos", launcher "~/.config/flake/")
+  ]
 
 myTabConfig =
     def
@@ -81,7 +132,7 @@ myScratchpads =
   , NS "qalc" (term "-t qalcpad" "qalc") (findT "qalcpad") centerFloat
   ]
   where
-    term x y = myTerminal ++ " " ++ x ++ " -e " ++ y
+    term x y = myTerminal ++ x ++ " -e " ++ y
     findT x = title =? x
     findC x = className =? x
     centerFloat =
@@ -120,6 +171,10 @@ myKeys c =
         , ("M-i q", spawnHereNamedScratchpadAction myScratchpads "qalc")
         , ("M-i d", dynamicNSPAction "dyn")
         , ("M-i t", withFocused $ toggleDynamicNSP "dyn")
+        -- GRIDSELECT
+        , ("M-g s", spawnSelected' gridSystem)
+        , ("M-g c e", spawnSelected' $ gridConfig (myEmacs ++))
+        , ("M-g c t", spawnSelected' $ gridConfig myTerminalPath)
         -- LAYOUTS
         , ("M-<Space>", sendMessage NextLayout)
         , ("M-S-<Space>", setLayout $ XMonad.layoutHook c)
@@ -187,8 +242,8 @@ main = do
                             def
                                 { terminal = myTerminal
                                 , modMask = myModMask
-                                , normalBorderColor = myNormalBorderColor
-                                , focusedBorderColor = myFocusedBorderColor
+                                , normalBorderColor = "#4e5579"
+                                , focusedBorderColor = "#5fafff"
                                 , workspaces = myWorkspaces
                                 , borderWidth = 2
                                 , layoutHook = avoidStruts myLayout
