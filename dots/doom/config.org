@@ -107,7 +107,16 @@
 ** Editing
 *** Line numbers
 #+begin_src emacs-lisp
-(setq display-line-numbers-type 'relative)
+(setq display-line-numbers-type 'visual)
+#+end_src
+*** Line moving
+#+begin_src emacs-lisp
+(map! :mnv "k"   #'evil-previous-visual-line
+      :mnv "j"   #'evil-next-visual-line
+      :mnv "gk"  #'evil-previous-line
+      :mnv "gj"  #'evil-next-line
+      :mnv "h"   #'evil-backward-char
+      :mnv "l"   #'evil-forward-char)
 #+end_src
 *** Global substitute
 #+begin_src emacs-lisp
@@ -474,21 +483,15 @@
     (add-hook! evil-insert-state-entry :local (org-appear-mode 1))
     (add-hook! evil-insert-state-exit :local (org-appear-mode -1))))
 #+end_src
-**** Inline latex display
-#+begin_src emacs-lisp
-(use-package! org-fragtog
-  :hook
-  (org-mode . org-fragtog-mode))
-#+end_src
 **** Fancy priorities
 #+begin_src emacs-lisp
 (use-package! org-fancy-priorities
   :hook (org-mode . org-fancy-priorities-mode)
   :config
-  (setq org-fancy-priorities-list '((?A . "HIGH")
-                                    (?B . "MID")
-                                    (?C . "LOW")
-                                    (?D . "CHILL"))))
+  (setq org-fancy-priorities-list '((?A . "")
+                                    (?B . "")
+                                    (?C . "")
+                                    (?D . ""))))
 #+end_src
 **** Ellipsis
 #+begin_src emacs-lisp
@@ -496,6 +499,19 @@
  org-ellipsis " ⬎ "
  org-list-allow-alphabetical t
  org-hide-emphasis-markers t)
+#+end_src
+*** Inline
+**** Latex
+#+begin_src emacs-lisp
+(use-package! org-fragtog :hook (org-mode . org-fragtog-mode))
+#+end_src
+**** Pdf
+#+begin_src emacs-lisp
+(add-hook 'org-mode-hook #'org-inline-pdf-mode)
+#+end_src
+**** Animation
+#+begin_src emacs-lisp
+(add-hook 'org-mode-hook #'org-inline-anim-mode)
 #+end_src
 *** Autolist
 #+begin_src emacs-lisp
@@ -796,6 +812,10 @@ markdown            ; writing docs for people to ignore
 :PROPERTIES:
 :header-args: emacs-lisp: :tangle packages.el
 :END:
+** Yuck
+#+begin_src emacs-lisp
+(package! yuck-mode)
+#+end_src
 ** Editing
 *** Smart semicolon
 #+begin_src emacs-lisp
@@ -825,11 +845,20 @@ markdown            ; writing docs for people to ignore
 (package! org-roam-ui)
 (package! websocket)
 #+end_src
-**** Inline latex display
-#+begin_src emacs-lisp
-(package! org-fragtog)
-#+end_src
 **** Fancy priorities
 #+begin_src emacs-lisp
 (package! org-fancy-priorities)
+#+end_src
+*** Inline
+**** Latex
+#+begin_src emacs-lisp
+(package! org-fragtog)
+#+end_src
+**** Pdf
+#+begin_src emacs-lisp
+(package! org-inline-pdf)
+#+end_src
+**** Animation
+#+begin_src emacs-lisp
+(package! org-inline-anim)
 #+end_src

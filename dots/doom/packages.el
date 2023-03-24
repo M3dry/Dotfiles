@@ -1,3 +1,5 @@
+(package! yuck-mode)
+
 (package! smart-semicolon)
 
 (package! visual-regexp)
@@ -12,6 +14,10 @@
 (package! org-roam-ui)
 (package! websocket)
 
+(package! org-fancy-priorities)
+
 (package! org-fragtog)
 
-(package! org-fancy-priorities)
+(package! org-inline-pdf)
+
+(package! org-inline-anim)

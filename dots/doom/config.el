@@ -79,7 +79,14 @@
       :desc "evaluate expression before point"
       "e l" #'eval-last-sexp)
 
-(setq display-line-numbers-type 'relative)
+(setq display-line-numbers-type 'visual)
+
+(map! :mnv "k"   #'evil-previous-visual-line
+      :mnv "j"   #'evil-next-visual-line
+      :mnv "gk"  #'evil-previous-line
+      :mnv "gj"  #'evil-next-line
+      :mnv "h"   #'evil-backward-char
+      :mnv "l"   #'evil-forward-char)
 
 (after! evil (setq evil-ex-substitute-global t))
 
@@ -380,22 +387,24 @@
     (add-hook! evil-insert-state-entry :local (org-appear-mode 1))
     (add-hook! evil-insert-state-exit :local (org-appear-mode -1))))
 
-(use-package! org-fragtog
-  :hook
-  (org-mode . org-fragtog-mode))
-
 (use-package! org-fancy-priorities
   :hook (org-mode . org-fancy-priorities-mode)
   :config
-  (setq org-fancy-priorities-list '((?A . "HIGH")
-                                    (?B . "MID")
-                                    (?C . "LOW")
-                                    (?D . "CHILL"))))
+  (setq org-fancy-priorities-list '((?A . "")
+                                    (?B . "")
+                                    (?C . "")
+                                    (?D . ""))))
 
 (setq
  org-ellipsis " ⬎ "
  org-list-allow-alphabetical t
  org-hide-emphasis-markers t)
+
+(use-package! org-fragtog :hook (org-mode . org-fragtog-mode))
+
+(add-hook 'org-mode-hook #'org-inline-pdf-mode)
+
+(add-hook 'org-mode-hook #'org-inline-anim-mode)
 
 (use-package! org-autolist
   :defer t
