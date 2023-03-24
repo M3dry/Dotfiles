@@ -173,8 +173,8 @@ myKeys c =
         , ("M-i t", withFocused $ toggleDynamicNSP "dyn")
         -- GRIDSELECT
         , ("M-g s", spawnSelected' gridSystem)
-        , ("M-g c e", spawnSelected' $ gridConfig (myEmacs ++))
-        , ("M-g c t", spawnSelected' $ gridConfig myTerminalPath)
+        , ("M-g e", spawnSelected' $ gridConfig (myEmacs ++))
+        , ("M-g t", spawnSelected' $ gridConfig myTerminalPath)
         -- LAYOUTS
         , ("M-<Space>", sendMessage NextLayout)
         , ("M-S-<Space>", setLayout $ XMonad.layoutHook c)
