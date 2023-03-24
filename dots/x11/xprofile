@@ -1,6 +1,5 @@
 #!/bin/sh
 
-systemctl --user start hm-graphical-session.target
 picom &
 numlockx on &
 xwallpaper --stretch ~/my-stuff/Pictures/wallpapers/gentoo-iceberg-dark.png &

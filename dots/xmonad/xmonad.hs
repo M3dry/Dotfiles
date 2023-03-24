@@ -76,20 +76,21 @@ myLayout = tile ||| ltile ||| centeredmaster ||| grid ||| bstack ||| tstack ||| 
     magni = magnifierczOff 1.3
 
 myScratchpads =
-  [ NS "terminal" (term "scratchpad" "") (find "scratchpad") manageTerm
-  , NS "cmus" (term "cmuspad" "cmus") (find "cmuspad") manageTerm
-  , NS "qalc" (term "qalcpad" "qalc") (find "qalcpad") manageTerm
+  [ NS "terminal" (term "-t scratchpad" "") (findT "scratchpad") centerFloat
+  , NS "cmus" (term "-c cmuspad" "cmus") (findC "cmuspad") nonFloating
+  , NS "qalc" (term "-t qalcpad" "qalc") (findT "qalcpad") centerFloat
   ]
   where
-    term x y = myTerminal ++ "-t " ++ x ++ "-e " ++ y
-    find x = title =? x
-    manageTerm =
+    term x y = myTerminal ++ " " ++ x ++ " -e " ++ y
+    findT x = title =? x
+    findC x = className =? x
+    centerFloat =
       customFloating $ W.RationalRect l t w h
         where
-          h = 0.9
-          w = 0.9
-          t = 0.95 - h
-          l = 0.95 - w
+          h = 0.7
+          w = 0.7
+          t = (1 - h) / 2
+          l = (1 - h) / 2
 
 
 myKeys c =
@@ -114,9 +115,11 @@ myKeys c =
         , ("<XF86AudioLowerVolume>", spawn "pamixer -d 1; audio update")
         , ("<XF86AudioRaiseVolume>", spawn "pamixer -i 1; audio update")
         -- SCRATCHPADS
-        , ("M-i <Return>", namedScratchpadAction myScratchpads "terminal")
-        , ("M-i c", namedScratchpadAction myScratchpads "cmus")
-        , ("M-i q", namedScratchpadAction myScratchpads "qalc")
+        , ("M-i <Return>", spawnHereNamedScratchpadAction myScratchpads "terminal")
+        , ("M-i c", spawnHereNamedScratchpadAction myScratchpads "cmus")
+        , ("M-i q", spawnHereNamedScratchpadAction myScratchpads "qalc")
+        , ("M-i d", dynamicNSPAction "dyn")
+        , ("M-i t", withFocused $ toggleDynamicNSP "dyn")
         -- LAYOUTS
         , ("M-<Space>", sendMessage NextLayout)
         , ("M-S-<Space>", setLayout $ XMonad.layoutHook c)
@@ -191,6 +194,6 @@ main = do
                                 , layoutHook = avoidStruts myLayout
                                 , handleEventHook = refocusLastWhen (refocusingIsActive <||> isFloat) <> handleEventHook def
                                 , logHook = myLogHook
-                                , manageHook = placeHook (inBounds (underMouse (0.5, 0.5))) <> floatNextHook <> namedScratchpadManageHook myScratchpads <> myManageHook
+                                , manageHook = namedScratchpadManageHook myScratchpads <> placeHook (inBounds (underMouse (0.5, 0.5))) <> floatNextHook <> myManageHook <> manageHook def
                                 , keys = myKeys
                                 }
