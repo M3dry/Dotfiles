@@ -17,6 +17,7 @@ import XMonad.Actions.UpdateFocus
 import XMonad.Actions.CycleWS
 import qualified XMonad.Actions.FlexibleResize as Flex
 import XMonad.Actions.Minimize
+import XMonad.Actions.TopicSpace
 
 import XMonad.Hooks.CurrentWorkspaceOnTop
 import XMonad.Hooks.EwmhDesktops
@@ -52,10 +53,32 @@ myTerminal = "st "
 myTerminalPath path = myTerminal ++ "-d " ++ path
 
 myEmacs = "emacsclient -c "
+myEmacsDir dir = myEmacs ++ "-e \"(dired \\\"" ++ dir ++ "\\\")\""
 
 myModMask = mod4Mask
 
-myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+myTopicItems =
+    [ TI       "1" "my-stuff/Projects/Rust/list" spawnShell
+    , noAction "2" "."
+    , noAction "3" "."
+    , noAction "4" "."
+    , TI       "5" ".config/flake"               spawnShell
+    , TI       "6" "my-stuff/Org"                (currentTopicDir myTopicConfig >>= \dir -> spawn $ myEmacsDir dir)
+    , inHome   "7"                               (spawn "firefox")
+    , inHome   "8"                               (spawn "chromium")
+    , inHome   "9"                               (spawn "spotify")
+    ]
+
+myTopicConfig = def
+    { topicDirs          = tiDirs myTopicItems
+    , topicActions       = tiActions myTopicItems
+    , defaultTopicAction = const (pure ())
+    , defaultTopic       = "7"
+    }
+
+spawnShell = currentTopicDir myTopicConfig >>= \dir -> spawn $ myTerminalPath dir
+goto = switchTopic myTopicConfig
+toggleTopic = switchNthLastFocusedByScreen myTopicConfig 1
 
 myFont size = "xft:ComicCodeLigatures Nerd Font:pixelsize=" ++ show size
 
@@ -163,7 +186,7 @@ myKeys c =
         , ("M-q", killOthers)
         , ("M1-C-<KP_Down>", spawn "xkill")
         -- APPS
-        , ("M-<Return>", spawn myTerminal)
+        , ("M-<Return>", spawnShell)
         , ("M-e e", spawn myEmacs)
         , ("M-e v", spawn $ myEmacs ++ "-e '(+vterm/here nil)'")
         , ("M-S-<Return>", spawn "dmenu_run_history -F -l 5 -g 10 -p 'Run'")
@@ -172,7 +195,6 @@ myKeys c =
         , ("M-d p", spawn "passmenu2 -F -p 'Passwords:'")
         , ("M-d q", spawn "shut")
         , ("M1-C-s", spawn "spotify")
-        , ("M-p", spawn "pcmanfm")
         , ("M-u", spawn "SNIPPATH=\"${HOME}/my-stuff/Pictures/snips/$(date +'%F-%T').png\"; import \"${SNIPPATH}\" && xclip -selection clipboard -t image/png \"${SNIPPATH}\"")
         , ("<XF86AudioLowerVolume>", spawn "pamixer -d 1; audio update")
         , ("<XF86AudioRaiseVolume>", spawn "pamixer -i 1; audio update")
@@ -184,11 +206,9 @@ myKeys c =
         , ("M-i t", withFocused $ toggleDynamicNSP "dyn")
         -- GRIDSELECT
         , ("M-g s", spawnSelected' gridSystem)
-        , ("M-g e", spawnSelected' $ gridConfig $ \dir -> myEmacs ++ "-e (dired \"" ++ dir ++ "\")")
+        , ("M-g e", spawnSelected' $ gridConfig myEmacsDir)
         , ("M-g t", spawnSelected' $ gridConfig myTerminalPath)
         -- LAYOUTS
-        , ("M-<Space>", sendMessage NextLayout)
-        , ("M-S-<Space>", setLayout $ XMonad.layoutHook c)
         , ("M-t t", sendMessage $ JumpToLayout "tile")
         , ("M-t l", sendMessage $ JumpToLayout "ltile")
         , ("M-t b", sendMessage $ JumpToLayout "bstack")
@@ -242,20 +262,32 @@ myKeys c =
         , ("M-C-,", shiftPrevScreen >> prevScreen)
         , ("M-C-S-.", swapNextScreen)
         , ("M-C-S-,", swapPrevScreen)
+        -- TOPICS
+        , ("M-a", currentTopicAction myTopicConfig)
+        , ("M1-<Tab>", toggleTopic)
         -- LAYOUT MOVING
         , ("M-]", moveTo Next emptyWS)
         , ("M-[", moveTo Prev emptyWS)
         , ("M-S-]", shiftTo Next emptyWS)
         , ("M-S-[", shiftTo Prev emptyWS)
         ]
+        -- ++ [ ("M-" ++ k, toggleOrView i)
+        --    | (i, k) <- zip myWorkspaces (map show [1 ..])
+        --    ]
+        -- ++ [ ("M-S-" ++ k, windows =<< shiftRLWhen refocusingIsActive i)
+        --    | (i, k) <- zip myWorkspaces (map show [1 ..])
+        --    ]
+        -- ++ [ ("M-C-" ++ k, swapWithCurrent i)
+        --    | (i, k) <- zip myWorkspaces (map show [1 ..])
+        --    ]
         ++ [ ("M-" ++ k, toggleOrView i)
-           | (i, k) <- zip myWorkspaces (map show [1 ..])
+           | (i, k) <- zip (topicNames myTopicItems) (map show [1 ..])
            ]
         ++ [ ("M-S-" ++ k, windows =<< shiftRLWhen refocusingIsActive i)
-           | (i, k) <- zip myWorkspaces (map show [1 ..])
+           | (i, k) <- zip (topicNames myTopicItems) (map show [1 ..])
            ]
         ++ [ ("M-C-" ++ k, swapWithCurrent i)
-           | (i, k) <- zip myWorkspaces (map show [1 ..])
+           | (i, k) <- zip (topicNames myTopicItems) (map show [1 ..])
            ]
 
 myMouseBinds (XConfig {XMonad.modMask = modMask}) = M.fromList
@@ -282,7 +314,7 @@ main = do
                                 , modMask = myModMask
                                 , normalBorderColor = "#0f111b"
                                 , focusedBorderColor = "#c792ea"
-                                , workspaces = myWorkspaces
+                                , workspaces = topicNames myTopicItems
                                 , borderWidth = 2
                                 , layoutHook = avoidStruts myLayout
                                 , handleEventHook = myHandleEventHook
