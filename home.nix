@@ -236,6 +236,7 @@ in
     eww
     xwallpaper
     lxappearance
+    picom-jonaburg
     # FONTs
     nerdfonts
     joypixels
@@ -288,9 +289,5 @@ in
       day = 5700;
       night = 2000;
     };
-  };
-  services.picom = {
-      enable = true;
-      package = pkgs.picom-jonaburg;
   };
 }
