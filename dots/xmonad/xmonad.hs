@@ -1,5 +1,6 @@
-import qualified Data.Map.Strict as M
 import System.Exit
+
+import qualified Data.Map.Strict as M
 
 import XMonad
 
@@ -12,6 +13,10 @@ import XMonad.Actions.UpdatePointer
 import XMonad.Actions.WithAll
 import XMonad.Actions.WorkspaceNames
 import XMonad.Actions.GridSelect
+import XMonad.Actions.UpdateFocus
+import XMonad.Actions.CycleWS
+import qualified XMonad.Actions.FlexibleResize as Flex
+import XMonad.Actions.Minimize
 
 import XMonad.Hooks.CurrentWorkspaceOnTop
 import XMonad.Hooks.EwmhDesktops
@@ -20,18 +25,24 @@ import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.Place
 import XMonad.Hooks.RefocusLast
 import XMonad.Hooks.TaffybarPagerHints (pagerHints)
+import XMonad.Hooks.WorkspaceHistory (workspaceHistoryHook)
+import XMonad.Hooks.InsertPosition
+import XMonad.Hooks.Minimize
 
 import XMonad.Layout.CenteredMaster
 import XMonad.Layout.Grid
-import XMonad.Layout.Magnifier
+import qualified XMonad.Layout.Magnifier as Magni
 import XMonad.Layout.NoBorders
 import XMonad.Layout.Reflect
-import XMonad.Layout.Renamed
+import qualified XMonad.Layout.Renamed as Renamed
 import XMonad.Layout.ResizableTile
 import XMonad.Layout.Simplest
 import XMonad.Layout.SubLayouts
 import XMonad.Layout.Tabbed
 import XMonad.Layout.WindowNavigation
+import XMonad.Layout.ToggleLayouts
+import XMonad.Layout.Minimize
+import XMonad.Layout.BoringWindows
 
 import XMonad.Util.EZConfig
 import XMonad.Util.SpawnOnce
@@ -115,16 +126,16 @@ myTabConfig =
         , inactiveBorderWidth = 0
         }
 
-myLayout = tile ||| ltile ||| centeredmaster ||| grid ||| bstack ||| tstack ||| tabs
+myLayout = boringWindows $ toggleLayouts (noBorders Full) (tile ||| ltile ||| centeredmaster ||| grid ||| bstack ||| tstack ||| tabs)
   where
-    centeredmaster = renamed [Replace "cmaster"] $ smartBorders $ centerMaster Grid
-    grid = renamed [Replace "grid"] $ smartBorders $ configurableNavigation noNavigateBorders $ addTabs shrinkText myTabConfig $ subLayout [] Simplest $ magni Grid
-    tabs = renamed [Replace "tabs"] $ smartBorders $ tabbed shrinkText myTabConfig
-    tstack = renamed [Replace "tstack"] $ reflectVert bstack
-    bstack = renamed [Replace "bstack"] $ Mirror tile
-    ltile = renamed [Replace "ltile"] $ reflectHoriz tile
-    tile = renamed [Replace "tile"] $ smartBorders $ magni $ configurableNavigation noNavigateBorders $ addTabs shrinkText myTabConfig $ subLayout [] Simplest $ ResizableTall 1 (3 / 100) (1 / 2) []
-    magni = magnifierczOff 1.3
+    centeredmaster = Renamed.renamed [Renamed.Replace "cmaster"] $ minimize $ smartBorders $ centerMaster Grid
+    grid = Renamed.renamed [Renamed.Replace "grid"] $ minimize $ smartBorders $ configurableNavigation noNavigateBorders $ addTabs shrinkText myTabConfig $ subLayout [] Simplest $ magni Grid
+    tabs = Renamed.renamed [Renamed.Replace "tabs"] $ minimize $ smartBorders $ tabbed shrinkText myTabConfig
+    tstack = Renamed.renamed [Renamed.Replace "tstack"] $ reflectVert bstack
+    bstack = Renamed.renamed [Renamed.Replace "bstack"] $ Mirror tile
+    ltile = Renamed.renamed [Renamed.Replace "ltile"] $ reflectHoriz tile
+    tile = Renamed.renamed [Renamed.Replace "tile"] $ minimize $ smartBorders $ magni $ configurableNavigation noNavigateBorders $ addTabs shrinkText myTabConfig $ subLayout [] Simplest $ ResizableTall 1 (3 / 100) (1 / 2) []
+    magni = Magni.magnifierczOff 1.3
 
 myScratchpads =
   [ NS "terminal" (term "-t scratchpad" "") (findT "scratchpad") centerFloat
@@ -173,48 +184,71 @@ myKeys c =
         , ("M-i t", withFocused $ toggleDynamicNSP "dyn")
         -- GRIDSELECT
         , ("M-g s", spawnSelected' gridSystem)
-        , ("M-g e", spawnSelected' $ gridConfig (myEmacs ++))
+        , ("M-g e", spawnSelected' $ gridConfig $ \dir -> myEmacs ++ "-e (dired \"" ++ dir ++ "\")")
         , ("M-g t", spawnSelected' $ gridConfig myTerminalPath)
         -- LAYOUTS
         , ("M-<Space>", sendMessage NextLayout)
         , ("M-S-<Space>", setLayout $ XMonad.layoutHook c)
-        , ("M-m t", sendMessage $ JumpToLayout "tile")
-        , ("M-m l", sendMessage $ JumpToLayout "ltile")
-        , ("M-m b", sendMessage $ JumpToLayout "bstack")
-        , ("M-m s", sendMessage $ JumpToLayout "tstack")
-        , ("M-m a", sendMessage $ JumpToLayout "tabs")
-        , ("M-m g", sendMessage $ JumpToLayout "grid")
-        , ("M-m c", sendMessage $ JumpToLayout "cmaster")
+        , ("M-t t", sendMessage $ JumpToLayout "tile")
+        , ("M-t l", sendMessage $ JumpToLayout "ltile")
+        , ("M-t b", sendMessage $ JumpToLayout "bstack")
+        , ("M-t s", sendMessage $ JumpToLayout "tstack")
+        , ("M-t a", sendMessage $ JumpToLayout "tabs")
+        , ("M-t g", sendMessage $ JumpToLayout "grid")
+        , ("M-t c", sendMessage $ JumpToLayout "cmaster")
         -- LAYOUT MANIPULATION
         , ("M-h", sendMessage Shrink)
         , ("M-l", sendMessage Expand)
-        , ("M-S-j", sendMessage MirrorShrink)
-        , ("M-S-k", sendMessage MirrorExpand)
+        , ("M-S-h", sendMessage MirrorShrink)
+        , ("M-S-l", sendMessage MirrorExpand)
+        , ("M-S-j", siftDown)
+        , ("M-S-k", siftUp)
         , ("M-;", swapPromote' False)
-        , ("M-z", sendMessage Toggle) -- magnify
+        , ("M-z", sendMessage Magni.Toggle) -- magnify
+        , ("M-f", do
+                    sendMessage ToggleLayout
+                    sendMessage ToggleStruts)
+        , ("M-m", withFocused minimizeWindow)
+        , ("M-S-m", withLastMinimized maximizeWindowAndFocus)
         -- MOVING AROUND WINDOWS
-        , ("M-j", windows W.focusDown)
-        , ("M-k", windows W.focusUp)
+        , ("M-j", focusDown)
+        , ("M-k", focusUp)
+        , ("M-<Space>", focusMaster)
         -- WORKSPACE MANIPULATION
         , ("M-r", renameWorkspace myPrompt)
         , ("M-n", sendMessage ToggleStruts)
-        , ("M-[", sendMessage (IncMasterN 1))
-        , ("M-]", sendMessage (IncMasterN (-1)))
+        , ("M-b [", sendMessage (IncMasterN 1))
+        , ("M-b ]", sendMessage (IncMasterN (-1)))
         -- FLOATS
         , ("M-s", withFocused $ windows . W.sink)
         , ("M-S-s", sinkAll)
-        , ("M-f", toggleFloatNext)
+        , ("M-S-f", toggleFloatNext)
         -- TABS
         , ("M-C-h", sendMessage $ pullGroup L)
         , ("M-C-l", sendMessage $ pullGroup R)
         , ("M-C-k", sendMessage $ pullGroup U)
         , ("M-C-j", sendMessage $ pullGroup D)
         , ("M-C-m", withFocused (sendMessage . MergeAll))
-        , ("M-C-u", withFocused (sendMessage . UnMergeAll))
-        , ("M-C-.", onGroup W.focusUp')
-        , ("M-C-,", onGroup W.focusDown')
+        , ("M-C-u", withFocused (sendMessage . UnMerge))
+        , ("M-S-C-u", withFocused (sendMessage . UnMergeAll))
+        , ("M-C-n", onGroup W.focusUp')
+        , ("M-C-p", onGroup W.focusDown')
+        -- MONITORS
+        , ("M-.", nextScreen)
+        , ("M-,", prevScreen)
+        , ("M-S-.", shiftNextScreen)
+        , ("M-S-,", shiftPrevScreen)
+        , ("M-C-.", shiftNextScreen >> nextScreen)
+        , ("M-C-,", shiftPrevScreen >> prevScreen)
+        , ("M-C-S-.", swapNextScreen)
+        , ("M-C-S-,", swapPrevScreen)
+        -- LAYOUT MOVING
+        , ("M-]", moveTo Next emptyWS)
+        , ("M-[", moveTo Prev emptyWS)
+        , ("M-S-]", shiftTo Next emptyWS)
+        , ("M-S-[", shiftTo Prev emptyWS)
         ]
-        ++ [ ("M-" ++ k, windows $ W.greedyView i)
+        ++ [ ("M-" ++ k, toggleOrView i)
            | (i, k) <- zip myWorkspaces (map show [1 ..])
            ]
         ++ [ ("M-S-" ++ k, windows =<< shiftRLWhen refocusingIsActive i)
@@ -223,14 +257,18 @@ myKeys c =
         ++ [ ("M-C-" ++ k, swapWithCurrent i)
            | (i, k) <- zip myWorkspaces (map show [1 ..])
            ]
-        ++ [ ("M-" ++ m ++ k, screenWorkspace i >>= flip whenJust (windows . f))
-           | (k, i) <- zip [",", "."] [0 ..]
-           , (f, m) <- [(W.view, ""), (W.shift, "S-")]
-           ]
 
-myLogHook = currentWorkspaceOnTop <> refocusLastLogHook <> updatePointer (0.5, 0.5) (0, 0)
+myMouseBinds (XConfig {XMonad.modMask = modMask}) = M.fromList
+    [ ((modMask, button1), \w -> focus w >> mouseMoveWindow w)
+    -- , ((modMask, button2), \w -> windows . W.sink w)
+    , ((modMask, button3), \w -> focus w >> Flex.mouseResizeWindow w)
+    ]
 
-myManageHook = composeAll []
+myLogHook = workspaceHistoryHook <> currentWorkspaceOnTop <> refocusLastLogHook <> updatePointer (0.5, 0.5) (0, 0)
+
+myHandleEventHook = refocusLastWhen (refocusingIsActive <||> isFloat) <> focusOnMouseMove <> minimizeEventHook <> handleEventHook def
+
+myManageHook = namedScratchpadManageHook myScratchpads <> placeHook (inBounds (underMouse (0.5, 0.5))) <> floatNextHook <> insertPosition Below Newer <> composeAll []
 
 main = do
     xmonad $
@@ -242,13 +280,16 @@ main = do
                             def
                                 { terminal = myTerminal
                                 , modMask = myModMask
-                                , normalBorderColor = "#4e5579"
-                                , focusedBorderColor = "#5fafff"
+                                , normalBorderColor = "#0f111b"
+                                , focusedBorderColor = "#c792ea"
                                 , workspaces = myWorkspaces
                                 , borderWidth = 2
                                 , layoutHook = avoidStruts myLayout
-                                , handleEventHook = refocusLastWhen (refocusingIsActive <||> isFloat) <> handleEventHook def
+                                , handleEventHook = myHandleEventHook
+                                , startupHook = adjustEventInput
                                 , logHook = myLogHook
-                                , manageHook = namedScratchpadManageHook myScratchpads <> placeHook (inBounds (underMouse (0.5, 0.5))) <> floatNextHook <> myManageHook <> manageHook def
+                                , manageHook = myManageHook
                                 , keys = myKeys
+                                , mouseBindings = myMouseBinds
+                                , focusFollowsMouse = True
                                 }
