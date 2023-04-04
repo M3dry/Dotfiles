@@ -53,7 +53,7 @@ function M.winbar()
         return "Vim help"
     end
 
-    return " %#WinBarNavic#" .. require("nvim-navic").get_location() .. "%= " .. diagnostic .. icon ..  "%#WinbarPath#" .. fullpath .. " "
+    return diagnostic .. icon ..  "%= %#WinbarPath#" .. fullpath .. " "
 end
 
 return M

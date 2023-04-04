@@ -27,10 +27,6 @@ M.on_attach = function(client, bufnr)
         require("document-color").buf_attach(bufnr)
     end
 
-    if client.server_capabilities.documentSymbolProvider then
-        require("nvim-navic").attach(client, bufnr)
-    end
-
     require("lsp-inlayhints").on_attach(client, bufnr)
 end
 

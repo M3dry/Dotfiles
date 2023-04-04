@@ -212,47 +212,6 @@ require("lazy").setup({
         end,
     },
     {
-        "SmiteshP/nvim-navic",
-        config = function()
-            vim.g.navic_silence = true
-
-            require("nvim-navic").setup {
-                icons = {
-                    File = " ",
-                    Module = " ",
-                    Namespace = " ",
-                    Package = " ",
-                    Class = " ",
-                    Method = " ",
-                    Property = " ",
-                    Field = " ",
-                    Constructor = " ",
-                    Enum = " ",
-                    Interface = " ",
-                    Function = "ƒ ",
-                    Variable = " ",
-                    Constant = " ",
-                    String = " ",
-                    Number = " ",
-                    Boolean = " ",
-                    Array = " ",
-                    Object = " ",
-                    Key = " ",
-                    Null = "ﳠ ",
-                    EnumMember = "  ",
-                    Struct = " ",
-                    Event = "",
-                    Operator = " ",
-                    TypeParameter = "T ",
-                },
-                highlight = false,
-                separator = " -> ",
-                depth_limit = 0,
-                depth_limit_indicator = "...",
-            }
-        end,
-    },
-    {
         "mrshmllow/document-color.nvim",
         config = function()
             require("document-color").setup {
@@ -1027,6 +986,7 @@ require("lazy").setup({
             }
         end,
     },
+    "nvim-treesitter/nvim-treesitter-context",
     {
         "nvim-treesitter/nvim-treesitter-textobjects",
         keys = {
@@ -1335,6 +1295,7 @@ require("lazy").setup({
         missing = true,
         colorscheme = {},
     },
+    lockfile = HOME .. "/.config/flake/dots/nvim/lazy-lock.json",
     performance = {
         rtp = {
             disabled_plugins = {
