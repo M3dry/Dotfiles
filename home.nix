@@ -184,6 +184,7 @@ in
     anki-bin
     nvimpager
     alacritty
+    grapejuice
     prismlauncher
     docker-compose
     docker-machine
