@@ -31,6 +31,11 @@ lspc.hls.setup {
     capabilities = lsp.capabilities,
 }
 
+lspc.zls.setup {
+    on_attach = lsp.on_attach,
+    capabilities = lsp.capabilities,
+}
+
 lspc.clojure_lsp.setup {
     on_attach = lsp.on_attach,
     capabilities = lsp.capabilities,

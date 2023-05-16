@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, zigpkgs, system, ... }:
 let
   my-stuff = "$HOME/my-stuff";
 in
@@ -176,15 +176,14 @@ in
   };
 
   home.packages = with pkgs; [
+    rustdesk
     nsxiv
     git gh
-    cachix
     pcmanfm
     zathura
     anki-bin
     nvimpager
     alacritty
-    grapejuice
     prismlauncher
     docker-compose
     docker-machine
@@ -193,6 +192,7 @@ in
     yt-dlp youtube-dl
     gimp-with-plugins
     ripgrep fd exa fzf bat
+    lutris steam grapejuice
     jq imagemagick trash-cli
     libqalculate qalculate-gtk
     numlockx xdo xdotool xorg.xkill
@@ -244,6 +244,7 @@ in
     emacs-all-the-icons-fonts
     # LANGUAGEs
     go
+    zigpkgs.master
     ghc
     lua5_4
     clojure
@@ -252,11 +253,11 @@ in
     rustup
     cargo-insta
     # LSPs
-    rust-analyzer
     taplo
     gopls
-    haskell-language-server
     clojure-lsp
+    rust-analyzer
+    haskell-language-server
     sumneko-lua-language-server
     python310Packages.python-lsp-server
     nodePackages.bash-language-server

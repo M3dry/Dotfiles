@@ -20,6 +20,7 @@ import XMonad.Actions.CycleWS
 import qualified XMonad.Actions.FlexibleResize as Flex
 import XMonad.Actions.Minimize
 import XMonad.Actions.TopicSpace
+import XMonad.Actions.OnScreen
 
 import XMonad.Hooks.CurrentWorkspaceOnTop
 import XMonad.Hooks.EwmhDesktops
@@ -27,11 +28,12 @@ import XMonad.Hooks.FloatNext
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.Place
 import XMonad.Hooks.RefocusLast
-import XMonad.Hooks.TaffybarPagerHints (pagerHints)
-import XMonad.Hooks.WorkspaceHistory (workspaceHistoryHook)
-import XMonad.Hooks.InsertPosition
+import XMonad.Hooks.TaffybarPagerHints
+import XMonad.Hooks.WorkspaceHistory
+import qualified XMonad.Hooks.InsertPosition as IP
 import XMonad.Hooks.Minimize
 import XMonad.Hooks.DynamicProperty
+import XMonad.Hooks.UrgencyHook
 
 import XMonad.Layout.CenteredMaster
 import XMonad.Layout.Grid
@@ -52,6 +54,8 @@ import XMonad.Util.SpawnOnce
 import XMonad.Util.NamedScratchpad
 import qualified XMonad.Util.ExtensibleState as XS
 
+import M3dry.KillOnWS
+
 -- PROJECT TOGGLE
 newtype ProjectWSToggle = ProjectWSToggle Bool
 instance ExtensionClass ProjectWSToggle where
@@ -66,13 +70,39 @@ toggleProjectWS = do
     ProjectWSToggle toggle <- XS.get :: X ProjectWSToggle
     XS.put $ ProjectWSToggle (not toggle)
 
-projectToggleDo :: Int -> (Bool -> Bool) -> (Topic -> X ()) -> X ()
-projectToggleDo i mod func = do
+projectFromI :: Int -> (Bool -> Bool) -> X (Maybe Topic)
+projectFromI i mod = do
     toggle <- getToggleWS
     if mod toggle && length projectTopics >= i then
-        func (projectTopics !! (i - 1))
-    else unless (mod toggle && length generalTopics >= i) $
-            func (generalTopics !! (i - 1))
+        return $ Just $ projectTopics !! (i - 1)
+    else if mod toggle && length generalTopics >= i then
+        return Nothing
+    else
+        return $ Just $ generalTopics !! (i - 1)
+
+projectToggleDo :: (String, String) -> (Topic -> X ()) -> [(String, X ())]
+projectToggleDo (key, projectKey) func =
+    [ (k ++ show i,
+        do
+            Just topic <- projectFromI i mod
+            func topic)
+    | i <- [1..9]
+    , (k, mod) <- [(key, id), (projectKey, not)]
+    ]
+
+-- MONITOR actions
+monitorAction :: (String, String) -> Maybe (Topic -> X ()) -> Focus -> [(String, X ())]
+monitorAction (generalKey, projectKey) func focus =
+    [ ("M-C-" ++ k ++ key ++ " " ++ show i,
+        do
+            Just t <- projectFromI i mod
+            whenJust func (\f -> f t)
+            sc >>= (windows . onScreen (W.greedyView t) focus)
+            pagerHintsLogHook)
+    | i <- [1..9]
+    , (key, mod) <- [(generalKey, id), (projectKey, not)]
+    , (k, sc) <- zip [", ", ". "] [screenBy (-1), screenBy 1]
+    ]
 
 myTerminal = "st "
 myTerminalDir path = myTerminal ++ "-d " ++ path
@@ -216,12 +246,10 @@ myScratchpads =
           l = (1 - h) / 2
 
 -- UTIL funcs
-nextScreenId = screenBy 1
-prevScreenId = screenBy (-1)
 
 myKeys c =
     mkKeymap c $
-        [ ("M-C-q <Escape>", io exitSuccess)
+        [ ("M-C-q q", io exitSuccess)
         , ("M-C-q r", spawn "if type xmonad; then xmonad --recompile && xmonad --restart; else xmessage xmonad not in \\$PATH: \"$PATH\"; fi")
         , ("M-q", kill)
         , ("M-S-q", killOthers)
@@ -277,8 +305,8 @@ myKeys c =
         -- WORKSPACE MANIPULATION
         , ("M-r", renameWorkspace myDefaultPrompt)
         , ("M-n", sendMessage ToggleStruts)
-        , ("M-b [", sendMessage (IncMasterN 1))
-        , ("M-b ]", sendMessage (IncMasterN (-1)))
+        , ("M-[ n", sendMessage (IncMasterN 1))
+        , ("M-] n", sendMessage (IncMasterN (-1)))
         -- FLOATS
         , ("M-s",   withFocused $ windows . W.sink)
         , ("M-S-s", sinkAll)
@@ -291,45 +319,37 @@ myKeys c =
         , ("M-C-m",   withFocused (sendMessage . MergeAll))
         , ("M-C-u",   withFocused (sendMessage . UnMerge))
         , ("M-S-C-u", withFocused (sendMessage . UnMergeAll))
-        , ("M-C-n",   onGroup W.focusDown')
-        , ("M-C-p",   onGroup W.focusUp')
+        , ("M-[ t",   onGroup W.focusDown')
+        , ("M-] t",   onGroup W.focusUp')
         -- MONITORS
         , ("M-.",     nextScreen)
         , ("M-,",     prevScreen)
         , ("M-S-.",   shiftNextScreen)
         , ("M-S-,",   shiftPrevScreen)
-        , ("M-C-.",   shiftNextScreen >> nextScreen)
-        , ("M-C-,",   shiftPrevScreen >> prevScreen)
         , ("M-C-S-.", swapNextScreen)
         , ("M-C-S-,", swapPrevScreen)
         -- TOPICS
         , ("M-a", currentTopicAction myTopicConfig)
         , ("M-<Tab>", switchNthLastFocusedByScreen myTopicConfig 1)
-        -- LAYOUT MOVING
-        , ("M-]", moveTo Next emptyWS)
-        , ("M-[", moveTo Prev emptyWS)
-        , ("M-S-]", shiftTo Next emptyWS)
-        , ("M-S-[", shiftTo Prev emptyWS)
+        -- WORKSPACE MOVING
+        , ("M-] w", moveTo Next emptyWS)
+        , ("M-[ w", moveTo Prev emptyWS)
+        , ("M-] S-w", shiftTo Next emptyWS)
+        , ("M-[ S-w", shiftTo Prev emptyWS)
         , ("M-p t", toggleProjectWS)
+        , ("M-c", do
+            windows $ W.view $ generalTopics !! 7
+            killAll
+            switchNthLastFocusedByScreen myTopicConfig 1)
         ]
-        ++ [ ("M-p " ++ show i, projectToggleDo i not toggleOrView)
-           | i <- [1..9]
-           ]
-        ++ [ ("M-p S-" ++ show i, projectToggleDo i not (windows <=< shiftRLWhen refocusingIsActive))
-           | i <- [1..9]
-           ]
-        ++ [ ("M-p C-" ++ show i, projectToggleDo i not swapWithCurrent)
-           | i <- [1..9]
-           ]
-        ++ [ ("M-" ++ show i, projectToggleDo i id toggleOrView)
-           | i <- [1..9]
-           ]
-        ++ [ ("M-S-" ++ show i, projectToggleDo i id (windows <=< shiftRLWhen refocusingIsActive))
-           | i <- [1..9]
-           ]
-        ++ [ ("M-C-" ++ show i, projectToggleDo i id swapWithCurrent)
-           | i <- [1..9]
-           ]
+        ++ projectToggleDo ("M-", "M-p ") toggleOrView
+        ++ projectToggleDo ("M-S-", "M-p S-") (windows <=< shiftRLWhen refocusingIsActive)
+        ++ projectToggleDo ("M-C-", "M-p C-") swapWithCurrent
+        ++ projectToggleDo ("M-C-q ", "M-C-q S-") killOnWS
+        ++ monitorAction ("s", "s p ") Nothing FocusCurrent
+        ++ monitorAction ("f", "f p ") Nothing FocusNew
+        ++ monitorAction ("S-s", "S-s p") (Just $ windows . W.shift) FocusCurrent
+        ++ monitorAction ("S-f", "S-f p") (Just $ windows . W.shift) FocusNew
 
 myMouseBinds (XConfig {XMonad.modMask = modMask}) = M.fromList
     [ ((modMask, button1), \w -> focus w >> mouseMoveWindow w)
@@ -349,14 +369,14 @@ myHandleEventHook =
     focusOnMouseMove <>
     minimizeEventHook <>
     dynamicPropertyChange "WM_NAME" (composeAll
-    [ title =? "Spotify" --> doShift "1"
+    [ title =? "Spotify" --> doShift "3"
     ]) <> handleEventHook def
 
 myManageHook =
     namedScratchpadManageHook myScratchpads <>
     placeHook (inBounds (underMouse (0.5, 0.5))) <>
     floatNextHook <>
-    insertPosition Below Newer <>
+    IP.insertPosition IP.Below IP.Newer <>
     composeAll
     [ className =? "firefox"          --> doShift "1"
     , className =? "Chromium-browser" --> doShift "2"
@@ -365,23 +385,21 @@ myManageHook =
 main = do
     xmonad $
         docks $
-            ewmhFullscreen $
-                workspaceNamesEwmh $
-                    ewmh $
-                        pagerHints $
-                            def
-                                { terminal = myTerminal
-                                , modMask = myModMask
-                                , normalBorderColor = "#0f111b"
-                                , focusedBorderColor = "#c792ea"
-                                , workspaces = topicNames myTopicItems
-                                , borderWidth = 2
-                                , layoutHook = avoidStruts myLayout
-                                , handleEventHook = myHandleEventHook
-                                , startupHook = adjustEventInput
-                                , logHook = myLogHook
-                                , manageHook = myManageHook
-                                , keys = myKeys
-                                , mouseBindings = myMouseBinds
-                                , focusFollowsMouse = True
-                                }
+            ewmhFullscreen $ setEwmhActivateHook doAskUrgent $ workspaceNamesEwmh $ ewmh $
+                pagerHints $
+                    def
+                        { terminal = myTerminal
+                        , modMask = myModMask
+                        , normalBorderColor = "#0f111b"
+                        , focusedBorderColor = "#c792ea"
+                        , workspaces = topicNames myTopicItems
+                        , borderWidth = 2
+                        , layoutHook = avoidStruts myLayout
+                        , handleEventHook = myHandleEventHook
+                        , startupHook = adjustEventInput
+                        , logHook = myLogHook
+                        , manageHook = myManageHook
+                        , keys = myKeys
+                        , mouseBindings = myMouseBinds
+                        , focusFollowsMouse = True
+                        }

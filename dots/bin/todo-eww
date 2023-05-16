@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+config=$(todo t config)
+todos=$(todo t raw | jq ".[0].body | map(if .state == null then .state = $(echo "$config" | jq ".todo_state_ops.default") else .state = .state end)")
+
+echo "$todos"

@@ -135,6 +135,7 @@ hi["@variable"] = { fg = "#ffcb6b" }
 hi["@variable.builtin"] = { fg = "#89ddff", bold = true }
 hi["@namespace"] = { fg = "#c792ea", italic = true }
 hi["@keyword"] = { fg = "#89ddff", italic = true }
+hi["@attribute"] = { fg = "#89ddff", italic = true }
 hi["@keyword.operator"] = { fg = "#89ddff", italic = true }
 hi["@keyword.function"] = { fg = "#89ddff", italic = true }
 hi["@keyword.return"] = { fg = "#ff5370", italic = true }

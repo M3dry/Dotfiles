@@ -121,29 +121,29 @@ require("neo-tree").setup {
     nesting_rules = {},
     filesystem = {
         components = {
-            harpoon_index = function(config, node, _)
-                local Marked = require "harpoon.mark"
-                local path = node:get_id()
-                local succuss, index = pcall(Marked.get_index_of, path)
+        --     harpoon_index = function(config, node, _)
+        --         local Marked = require "harpoon.mark"
+        --         local path = node:get_id()
+        --         local succuss, index = pcall(Marked.get_index_of, path)
 
-                if succuss and index and index > 0 then
-                    return {
-                        text = string.format(" ﯠ %d ", index), -- <-- Add your favorite harpoon like arrow here
-                        highlight = config.highlight or "NeoTreeDirectoryIcon",
-                    }
-                else
-                    return {
-                        text = " ﯡ ",
-                        highlight = config.highlight or "NeoTreeDirectoryIcon",
-                    }
-                end
-            end,
+        --         if succuss and index and index > 0 then
+        --             return {
+        --                 text = string.format(" ﯠ %d ", index), -- <-- Add your favorite harpoon like arrow here
+        --                 highlight = config.highlight or "NeoTreeDirectoryIcon",
+        --             }
+        --         else
+        --             return {
+        --                 text = " ﯡ ",
+        --                 highlight = config.highlight or "NeoTreeDirectoryIcon",
+        --             }
+        --         end
+        --     end,
         },
         renderers = {
             file = {
                 { "icon" },
                 { "name", use_git_status_colors = true },
-                { "harpoon_index" },
+                -- { "harpoon_index" },
                 { "diagnostics" },
                 { "git_status", highlight = "NeoTreeDimText" },
             },

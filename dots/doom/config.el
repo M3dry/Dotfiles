@@ -295,8 +295,14 @@
          :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n")
          :unnarrowed t))
       org-roam-dailies-capture-templates
-      '(("d" "default" entry "* %<%H:%M>: %?" :target
-          (file+head "%<%Y-%m-%d>.org" "#+title: Journal-%<%Y-%m-%d>\n#+category: Journal-%<%Y-%m-%d>\n#+filetags: Journal\n\n"))))
+      '(("t" "todo" entry "* TASKS\n- [ ] %?" :empty-lines 1 :target
+          (file+head "%<%Y-%m-%d>.org" "#+title: Journal-%<%Y-%m-%d>\n\n#+filetags: Journal\n\n* Gratitude"))
+        ("d" "date" entry "* %<%H:%M>: %?" :empty-lines 1 :target
+          (file+head "%<%Y-%m-%d>.org" "#+title: Journal-%<%Y-%m-%d>\n#+filetags: Journal\n\n* Gratitude"))
+        ("n" "no date" entry "* %?" :empty-lines 1 :target
+          (file+head "%<%Y-%m-%d>.org" "#+title: Journal-%<%Y-%m-%d>\n\n#+filetags: Journal\n\n* Gratitude"))
+        ("N" "nothing" entry "%?" :empty-lines 1 :target
+          (file+head "%<%Y-%m-%d>.org" "#+title: Journal-%<%Y-%m-%d>\n\n#+filetags: Journal\n\n* Gratitude"))))
 
 (defun org-roam-node-insert-immediate (arg &rest args)
   (interactive "P")

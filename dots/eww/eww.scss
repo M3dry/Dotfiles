@@ -18,6 +18,30 @@
     margin-top: 3px;
 }
 
+.todos {
+    background-color: #292d3e;
+    border-radius: 5px;
+}
+
+.todo-header {
+    background-color: #0f111b;
+    color: #eeffff;
+    border-radius: 5px;
+    margin: 10px;
+    padding: 10px;
+}
+
+.todo-item {
+    background-color: #c0d4ff;
+    color: #0f111b;
+    border-radius: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding-left: 10px;
+}
+
 .time {
     background-color: #ff5370;
     color: #000000;

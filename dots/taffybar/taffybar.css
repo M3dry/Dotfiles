@@ -109,6 +109,10 @@
         background-color: @blue;
 }
  
+.window-icon-container.minimized {
+    opacity: 0.5;
+}
+
 .window-icon-container.urgent {
         box-shadow: inset 0 -3px @red;
 }
