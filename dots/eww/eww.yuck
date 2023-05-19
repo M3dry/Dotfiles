@@ -22,7 +22,7 @@
         :path "./goggins-cut.png"
         :image-width 314 :image-height 500))))
 
-(defpoll todos-data :interval "1s" `todo-eww`)
+(defpoll todos-data :interval "1s" `todo t eww-show`)
 
 (defwindow todos
   :stacking "bg"
@@ -43,10 +43,13 @@
     (for todo in todos-data
       (box
         :class "todo-item"
+        :space-evenly false
         :halign "fill"
         (label
           :halign "start"
-          :text "${todo.state} ${todo.description}")))))
+          :text "${todo.state}")
+        (for text in {todo.description}
+          (literal :content text))))))
 
 (defvar date-reveal false)
 (defpoll time :interval "1s" `date +'{"month":"%-m","day":"%-d","dayname":"%A","hour":"%H","min":"%M","sec":"%S"}'`)

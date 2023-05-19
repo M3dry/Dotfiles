@@ -78,6 +78,10 @@ in
       source = ./dots/cmus;
       recursive = true;
     };
+    zsh = {
+      source = ./dots/zsh;
+      recursive = true;
+    };
     "htop/htoprc".source = ./dots/htoprc;
     "mimeapps.list".source = ./dots/mimeapps.list;
     "proj.conf".source = ./dots/proj.conf;

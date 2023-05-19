@@ -1,0 +1,111 @@
+proj() {
+    newProject() {
+        [ "$2" = "" ] && echo "usage: proj [new] [lang] [name]" && return
+        [ "$3" = "" ] && echo "usage: proj [new] [lang] [name]" && return
+
+        source ~/.config/proj.conf
+
+        # shellcheck disable=1058,1073,1072
+        for key val in "${(@kv)_funcArray}"
+        do
+            if [ ${key:l} = ${2:l} ]
+            then
+                cd "${key}"
+                if [ -d "${3}" ]
+                then
+                    echo "Project with the same name already exists: ${3}"
+                    cd "${3}"
+                    return
+                fi
+                mkdir "${3}"
+                cd "${3}"
+                echo $(${val} ${@})
+            fi
+        done
+    }
+
+    function cdProject() {
+        local FILES=( $(rg --files --hidden | rg -ve "\.o" -e "go.sum" -e "jpg" -e "png" -e "svg" -e "node_modules" -e ".git/" -e "target/" -e "bin/" -e "obj/" -e "build/" -e ".vscode/") ) # get all project files and filter them
+
+        # remove all executables from $FILES
+        for i in ${FILES}
+        do
+            [ -x ${i} ] && FILES=$(echo ${FILES} | sed "s/ /\n/g " | sed "s|^${i}$||g; /^$/d")
+        done
+
+        # add directories
+        local TMP=()
+        for i in ${FILES}
+        do
+            TMP+=$(echo ${i} | sed 's|\(.*/\).*|\1|g ; s/\n//g')
+        done
+        local FILESANDDIRS=$(echo "${FILES}\n$(echo ${TMP})" | sed "s/ /\n/g" | sort | uniq)
+        unset TMP
+        local DIR=$(echo ${FILESANDDIRS} | sort | fzf) # get user input
+
+        [ "${DIR}" = "" ] && cd ${DEFDIR} || cd $(echo ${DIR} | sed 's|\(.*\)/.*|\1|') # check if user input is empty if so fallback to ${DEFDIR}
+
+        # check if user input is a file and if so open it in $EDITOR
+        local FILE=$(echo ${DIR} | sed 's|.*/||')
+        [ -f "${FILE}" ] && ${EDITOR} ${FILE}
+    }
+
+    local DEFDIR=$(pwd)  # get dir to fallback with
+    cd ~/my-stuff/Projects  # cd into projects dir
+
+    if [ "$1" = "new" ]
+    then
+        newProject ${@}
+        return 0
+    fi
+
+    cdProject
+}
+
+nv() {
+    local DEFDIR=$(pwd)  # get dir to fallback with
+    cd ~/.config/nvim/  # cd into nvim dir
+
+    local FILES=( $(rg --files --hidden | rg -ve "undo" -e ".luarc.json" -e "packer_compiled.lua") ) # get all nvim files and filter them
+
+    # add directories
+    local TMP=()
+    for i in ${FILES}
+    do
+        TMP+=$(echo ${i} | sed 's|\(.*/\).*|\1|g ; s/\n//g')
+    done
+
+    local FILESANDDIRS=$(echo "${FILES}\n$(echo ${TMP})" | sed "s/ /\n/g" | sort | uniq)
+    unset TMP
+    local DIR=$(echo ${FILESANDDIRS} | sort | fzf) # get user input
+
+    [ "${DIR}" = "" ] && cd ${DEFDIR} || cd $(echo ${DIR} | sed 's|\(.*\)/.*|\1|') # check if user input is empty if so fallback to ${DEFDIR}
+
+    # check if user input is a file and if so open it in $EDITOR
+    local FILE=$(echo ${DIR} | sed 's|.*/||')
+    [ -f "${FILE}" ] && ${EDITOR} ${FILE}
+}
+
+ex() {
+    if [ -f $1 ] ; then
+        case $1 in
+            *.tar.bz2)   tar xjf $1   ;;
+            *.tar.gz)    tar xf $1    ;;
+            *.bz2)       bunzip2 $1   ;;
+            *.rar)       unrar x $1   ;;
+            *.gz)        gunzip $1    ;;
+            *.tar)       tar xf $1    ;;
+            *.tbz2)      tar xjf $1   ;;
+            *.tgz)       tar xzf $1   ;;
+            *.zip)       unzip $1     ;;
+            *.Z)         uncompress $1;;
+            *.7z)        7z x $1      ;;
+            *.deb)       ar x $1      ;;
+            *.tar.xz)    tar xf $1    ;;
+            *.tar.zst)   unzstd $1    ;;      
+            *)           echo "'$1' cannot be extracted via ex()" ;;
+        esac
+    else
+        echo "'$1' is not a valid file"
+    fi
+}
