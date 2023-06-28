@@ -163,7 +163,7 @@
     (volume)
     (datetime)))
 
-(defpoll audio-data :interval "1s" `audio metadata -m 3 gradual 50 30 25`)
+(defpoll audio-data :interval "1s" `audio metadata -l 3 gradual 50 30 15`)
 
 (defwindow audio
   :stacking "fg"
@@ -177,10 +177,10 @@
     :space-evenly false
     (for player in audio-data
       (button
-        :class {player.playing ? "now-playing" : "not-playing"}
+        :class {player.status ? "now-playing" : "not-playing"}
         :onclick "playerctl -p ${player.player} play-pause"
         :onrightclick "scripts/pop audio-pop"
-        "${player.artist == '' ? '' : player.artist + ' -'} ${player.title}"))))
+        "${player.author == '' ? '' : player.author + ' -'} ${player.title}"))))
 
 (defwindow audio-pop
   :stacking "fg"

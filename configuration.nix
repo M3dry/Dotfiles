@@ -39,6 +39,8 @@
   };
  
   services.geoclue2.enable = true;
+  services.ratbagd.enable = true;
+  services.blueman.enable = true;
 
   services.xserver.enable = true;
   services.xserver.libinput.mouse.accelProfile = "flat";
@@ -51,6 +53,7 @@
  
   sound.enable = true;
   hardware.pulseaudio.enable = false;
+  hardware.bluetooth.enable = true;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -100,6 +103,7 @@
       '';
   };
   environment.systemPackages = with pkgs; [
+    jmtpfs
     unzip killall htop
     gnumake gcc12 git wget
     # ZSH PLUGINs
@@ -122,6 +126,7 @@
   programs.gnupg.agent = {
     enable = true;
     enableSSHSupport = true;
+    pinentryFlavor = "gtk2";
   };
  
   system.stateVersion = "22.11"; # Did you read the comment?

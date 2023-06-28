@@ -187,30 +187,30 @@ require("lazy").setup({
     },
     "jose-elias-alvarez/null-ls.nvim",
     "LostNeophyte/null-ls-embedded",
-    {
-        "lvimuser/lsp-inlayhints.nvim",
-        config = function()
-            require("lsp-inlayhints").setup {
-                inlay_hints = {
-                    parameter_hints = {
-                        show = true,
-                        prefix = " ƒ ",
-                        separator = ", ",
-                        remove_colon_start = false,
-                        remove_colon_end = true,
-                    },
-                    type_hints = {
-                        show = true,
-                        prefix = " T ",
-                        separator = ", ",
-                        remove_colon_start = true,
-                        remove_colon_end = false,
-                    },
-                },
-                debug_mode = false,
-            }
-        end,
-    },
+    -- {
+    --     "lvimuser/lsp-inlayhints.nvim",
+    --     config = function()
+    --         require("lsp-inlayhints").setup {
+    --             inlay_hints = {
+    --                 parameter_hints = {
+    --                     show = true,
+    --                     prefix = " ƒ ",
+    --                     separator = ", ",
+    --                     remove_colon_start = false,
+    --                     remove_colon_end = true,
+    --                 },
+    --                 type_hints = {
+    --                     show = true,
+    --                     prefix = " T ",
+    --                     separator = ", ",
+    --                     remove_colon_start = true,
+    --                     remove_colon_end = false,
+    --                 },
+    --             },
+    --             debug_mode = false,
+    --         }
+    --     end,
+    -- },
     {
         "mrshmllow/document-color.nvim",
         config = function()

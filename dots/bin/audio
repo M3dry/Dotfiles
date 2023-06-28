@@ -1,27 +1,98 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bb
 
-append() {
-    echo "$1" >> "$HOME/.cache/eww-audio"
-}
+(require '[clojure.string :refer [split trimr]])
+(require '[babashka.process :as p])
+(require '[babashka.fs :as fs])
+(require '[babashka.cli :as cli])
 
-change() {
-    pamixer --set-volume "$1"
-    append "$1"
-}
+(defn cmp-str [lhs rhs]
+  (== (compare lhs rhs) 0))
 
-prompt() {
-    VOL=$(dmenu < /dev/null -p 'set volume' -h 24)
-    change "$VOL"
-}
+(defn audio-data []
+  (let [out (:out @(p/process
+                    ["playerctl" "-a" "metadata"
+                     "--format" "{{ artist }}\n{{ title }}\n{{ status }}\n{{ playerName }}\n{{ volume }}\n|^|"]
+                    {:out :string}))]
+    (->> (split out #"\|\^\|\n")
+         (map #(let [[author title status player volume] (split % #"\n")]
+                 {:author author
+                  :title title
+                  :status (when-not (nil? status)
+                                    (cmp-str status "Playing"))
+                  :player player
+                  :volume (try (* (parse-double volume) 100)
+                               (catch Exception _ nil))}))
+         (filter (fn [d] (->> d
+                          (into [])
+                          (map #(nil? (second %)))
+                          (every? true?)
+                          not))))))
 
-metadata() {
-    shift
-    playerctl -a metadata --format "[\"{{ artist }}\", \"{{ title }}\", \"{{ status }}\", \"{{ playerName }}\", \"{{ volume }}\"]" | audio-status "$@"
-}
+(defn playing [playing data]
+  (if playing
+      (filter #(% :status) data)
+      data))
 
-case $1 in
-    "prompt") prompt;;
-    "set") change "$2";;
-    "metadata") metadata "$@";;
-    "update") append "$(pamixer --get-volume)";;
-esac
+(defn cutoff [{:keys [cut under gradual]} data]
+  (cond
+    (some? cut)     (map #(update % :title (fn [t]
+                                             (if (<= (count t) cut)
+                                                 t
+                                                 (str (subs t 0 (- cut 3)) "..."))))
+                         data)
+    (some? under)   (filter #(< (count (% :title)) under) data)
+    (some? gradual) (let [data_len (count data)
+                          max      (if (>= data_len (count gradual))
+                                       (last gradual)
+                                       (nth data (- data_len 1)))]
+                      (map #(update % :title (fn [t]
+                                               (if (< (- (count t) 3) max)
+                                                   (str (subs t 0 (- max 3)) "...")
+                                                   t)))
+                           data))
+    :else           data))
+
+(defn metadata [args]
+  (let [opts     (cli/parse-args args
+                                 {:restrict [:playing :length]
+                                  :alias {:p :playing
+                                          :l :length}
+                                  :coerce {:length :long}
+                                  :exec-args {:playing false
+                                              :length Integer/MAX_VALUE}})
+        extra    (opts :args)
+        get-opts #(% :opts)
+        gradual  (fn [m] {:gradual (map parse-long (m :args))})
+        args     (if (nil? extra)
+                     (opts :opts)
+                     (merge (opts :opts)
+                            {:cutoff (cli/dispatch [{:cmds ["cut"] :fn get-opts :args->opts [:cut]}
+                                                    {:cmds ["under"] :fn get-opts :args->opts [:under]}
+                                                    {:cmds ["gradual"] :fn gradual}]
+                                                 extra)}))]
+    (->> (audio-data)
+         (playing (args :playing))
+         (cutoff (args :cutoff))
+         (take (args :length))
+         (json/generate-string)
+         (println))))
+
+(defn write-volume [volume]
+  (spit (str (fs/expand-home "~/.cache/eww-audio")) volume))
+
+(defn change-volume [volume]
+  (p/shell "pamixer" "--set-volume" (trimr volume))
+  (write-volume volume))
+
+(defn prompt []
+  (change-volume (:out @(p/process {:in "" :out :string} "dmenu" "-p" "set volume"))))
+
+(let [args *command-line-args*]
+  (case (first args)
+    "set"      (if (> (count args) 1)
+                   (change-volume (str (second args) "\n"))
+                   nil)
+    "metadata" (metadata (drop 1 args))
+    "prompt"   (prompt)
+    "update"   (write-volume (:out @(p/process {:out :string} "pamixer" "--get-volume")))
+    :else nil))

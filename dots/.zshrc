@@ -61,3 +61,6 @@ bindkey '^b' autosuggest-clear
 # You should use Plugin
 export YSU_MESSAGE_POSITION="after"
 export YSU_HARDCORE=0 # Hardcode mode
+
+# opam configuration
+[[ ! -r /home/m3/.opam/opam-init/init.zsh ]] || source /home/m3/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null

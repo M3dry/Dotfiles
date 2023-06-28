@@ -125,9 +125,8 @@ myTopicItems =
     , noAction "8"          "."
     , noAction "9"          ".config/flake"
     , noAction "List"       "my-stuff/Projects/Rust/list"
-    , TI       "List-Dbg"   "my-stuff/Projects/Rust/list"   (inDir myTerminalDir)
-    , noAction "Lunite"     "my-stuff/Projects/Rust/lunite"
-    , TI       "Lunite-Dbg" "my-stuff/Projects/Rust/lunite" (inDir myTerminalDir)
+    , noAction "Heffal"     "my-stuff/Projects/Haskell/heffal"
+    , noAction "Nfetch"     "my-stuff/Projects/Rust/nfetch"
     ]
 
 myTopicConfig = def

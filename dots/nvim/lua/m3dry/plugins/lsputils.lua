@@ -27,6 +27,10 @@ M.on_attach = function(client, bufnr)
         require("document-color").buf_attach(bufnr)
     end
 
+    if client.server_capabilities.inlayHintProvider then
+        vim.lsp.buf.inlay_hint(bufnr, true)
+    end
+
     require("lsp-inlayhints").on_attach(client, bufnr)
 end
 

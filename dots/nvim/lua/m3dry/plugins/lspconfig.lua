@@ -26,6 +26,11 @@ vim.fn.sign_define(
     { text = " ", texthl = "DiagnosticSignHint", linehl = "DiagnosticLineHint", numhl = "" }
 )
 
+lspc.ocamllsp.setup {
+    on_attach = lsp.on_attach,
+    capabilities = lsp.capabilities,
+}
+
 lspc.hls.setup {
     on_attach = lsp.on_attach,
     capabilities = lsp.capabilities,
@@ -84,9 +89,16 @@ lspc.svelte.setup {
 lspc.html.setup {
     on_attach = lsp.on_attach,
     capabilities = lsp.capabilities,
+    cmd = { "html-languageserver", "--stdio" }
 }
 
 lspc.cssls.setup {
+    on_attach = lsp.on_attach,
+    capabilities = lsp.capabilities,
+    cmd = { "css-languageserver", "--stdio" }
+}
+
+lspc.tailwindcss.setup {
     on_attach = lsp.on_attach,
     capabilities = lsp.capabilities,
 }

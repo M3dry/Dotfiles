@@ -1,4 +1,4 @@
-{ config, pkgs, zigpkgs, system, ... }:
+{ config, pkgs, zigpkgs, nvim, eww, system, ... }:
 let
   my-stuff = "$HOME/my-stuff";
 in
@@ -17,6 +17,13 @@ in
       MANPAGER = "less";
       COLORTERM = "truecolor";
       XENVIRONMENT = "$HOME/.config/x11/xresources";
+      XINITRC = "$HOME/.config/x11/xinitrc";
+      XCOMPOSECACHE = "${config.xdg.cacheHome}/X11/xcompose";
+      WINEPREFIX = "${config.xdg.dataHome}/wine";
+      RUSTUP_HOME = "${config.xdg.dataHome}/rustup";
+      CARGO_HOME = "${config.xdg.dataHome}/cargo";
+      GTK2_RC_FILES = "$HOME/.config/gtk-2.0/gtkrc";
+      DOCKER_CONFIG = "$HOME/.config/docker";
     };
     sessionPath = [
       "${config.xdg.configHome}/emacs/bin"
@@ -25,12 +32,45 @@ in
     ];
     file = {
       ".bashrc".source = ./dots/.bashrc;
-      ".xinitrc".source = ./dots/.xinitrc;
-      ".themes/paledeep".source = ./dots/paledeep;
-      ".icons/paledeep-icons".source = ./dots/paledeep-icons;
+      "${config.xdg.dataHome}/paledeep".source = ./dots/paledeep;
+      "${config.xdg.dataHome}/paledeep-icons".source = ./dots/paledeep-icons;
       ".local/bin" = {
           source = ./dots/bin;
           recursive = true;
+      };
+      ".config/picom/picom.conf".source = ./dots/picom.conf;
+      ".config/alacritty/alacritty.yml".source = ./dots/alacritty.yml;
+      ".config/htop/htoprc".source = ./dots/htoprc;
+      ".config/mimeapps.list".source = ./dots/mimeapps.list;
+      ".config/proj.conf".source = ./dots/proj.conf;
+      ".config/cmus/custom.theme".source = ./dots/cmus/custom.theme;
+      ".config/xmonad" = {
+        source = ./dots/xmonad;
+        recursive = true;
+      };
+      ".config/taffybar" = {
+        source = ./dots/taffybar;
+        recursive = true;
+      };
+      ".config/eww" = {
+          source = ./dots/eww;
+          recursive = true;
+      };
+      ".config/nvim" = {
+        source = ./dots/nvim;
+        recursive = true;
+      };
+      ".config/doom" = {
+        source = ./dots/doom;
+        recursive = true;
+      };
+      ".config/zsh" = {
+        source = ./dots/zsh;
+        recursive = true;
+      };
+      ".config/x11" = {
+        source = ./dots/x11;
+        recursive = true;
       };
     };
   };
@@ -47,47 +87,23 @@ in
     music = "${my-stuff}/Music";
     videos = "${my-stuff}/Videos";
   };
-  xdg.configFile = {
-    "alacritty/alacritty.yml".source = ./dots/alacritty.yml;
-    eww = {
-        source = ./dots/eww;
-        recursive = true;
-    };
-    "picom/picom.conf".source = ./dots/picom.conf;
-    xmonad = {
-      source = ./dots/xmonad;
-      recursive = true;
-    };
-    taffybar = {
-      source = ./dots/taffybar;
-      recursive = true;
-    };
-    nvim = {
-      source = ./dots/nvim;
-      recursive = true;
-    };
-    doom = {
-      source = ./dots/doom;
-      recursive = true;
-    };
-    x11 = {
-      source = ./dots/x11;
-      recursive = true;
-    };
-    cmus = {
-      source = ./dots/cmus;
-      recursive = true;
-    };
-    zsh = {
-      source = ./dots/zsh;
-      recursive = true;
-    };
-    "htop/htoprc".source = ./dots/htoprc;
-    "mimeapps.list".source = ./dots/mimeapps.list;
-    "proj.conf".source = ./dots/proj.conf;
-  };
 
   xsession.enable = true;
+  xsession.numlock.enable = true;
+  xsession.scriptPath = ".config/x11/xsession";
+  xsession.profilePath = ".config/x11/xprofile";
+  xsession.profileExtra = ''
+  picom &
+  xwallpaper --stretch ~/my-stuff/Pictures/wallpapers/gentoo-iceberg-dark.png &
+  setxkbmap us,cz ,qwerty -option 'ctrl:nocaps' 'grp:ctrls_toggle' &
+  xcape -e 'Control_L=Escape'
+  xrandr --output DP-0 --primary --output DP-2 --mode 1920x1200 --left-of DP-0
+  xrdb .config/x11/xresources &
+  xset r rate 400 60 &
+  eww open-many goggins goggins-second todos audio left --restart &
+  firefox &
+  chromium &
+  '';
   xsession.windowManager.xmonad = {
       enable = true;
       enableContribAndExtras = true;
@@ -104,6 +120,7 @@ in
       };
     };
   };
+  programs.obs-studio.enable = true;
   programs.password-store = {
     enable = true;
     settings.PASSWORD_STORE_DIR = "$HOME/my-stuff/pass/";
@@ -117,6 +134,7 @@ in
     enable = true;
     viAlias = true;
     vimAlias = true;
+    package = nvim;
   };
   programs.emacs = {
     enable = true;
@@ -180,8 +198,8 @@ in
   };
 
   home.packages = with pkgs; [
-    rustdesk
     nsxiv
+    piper
     git gh
     pcmanfm
     zathura
@@ -217,6 +235,10 @@ in
       buildInputs = oldAttrs.buildInputs ++ [ harfbuzz gd ];
       nativeBuildInputs = oldAttrs.nativeBuildInputs ++ [ autoPatchelfHook ];
     }))
+    # TMUX
+    tmux
+    tmuxp
+    tmux-sessionizer
     # EMACS
     sqlite
     pdf2svg
@@ -231,14 +253,13 @@ in
     # AUDIO/VIDEO
     mpv
     cmus
-    spotdl
     ffmpeg
     spotify
     pamixer
     playerctl
     pulsemixer
     # RICING
-    eww
+    eww.default
     xwallpaper
     lxappearance
     picom-jonaburg
@@ -248,11 +269,13 @@ in
     emacs-all-the-icons-fonts
     # LANGUAGEs
     go
-    zigpkgs.master
     ghc
+    opam
     lua5_4
     clojure
     python3
+    babashka
+    zigpkgs.master
     # RUST
     rustup
     cargo-insta
@@ -260,30 +283,32 @@ in
     taplo
     gopls
     clojure-lsp
-    rust-analyzer
     haskell-language-server
     sumneko-lua-language-server
+    nodePackages_latest.bash-language-server
     python310Packages.python-lsp-server
-    nodePackages.bash-language-server
-    nodePackages.svelte-language-server
-    nodePackages.typescript-language-server
-    nodePackages.vscode-json-languageserver-bin
-    nodePackages.vscode-css-languageserver-bin
-    nodePackages.vscode-html-languageserver-bin
+    nodePackages_latest.svelte-language-server
+    nodePackages_latest.typescript-language-server
+    nodePackages_latest.vscode-css-languageserver-bin
+    nodePackages_latest.vscode-json-languageserver-bin
+    nodePackages_latest.vscode-html-languageserver-bin
+    nodePackages_latest."@tailwindcss/language-server"
     # LINTers
+    hlint
     statix
     shellcheck
     # DEBUGers
     vscode-extensions.vadimcn.vscode-lldb
     # FORMATters
+    stylua
     alejandra
     nodePackages.prettier
-    stylua
     haskellPackages.fourmolu
   ];
 
   fonts.fontconfig.enable = true;
 
+  services.mpris-proxy.enable = true;
   services.playerctld.enable = true;
   services.emacs.enable = true;
   services.taffybar.enable = true;

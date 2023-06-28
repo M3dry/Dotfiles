@@ -1,0 +1,76 @@
+#!/usr/bin/env bb
+
+(require '[clojure.string :refer [split trimr join]])
+(require '[babashka.process :as p])
+(require '[babashka.fs :as fs])
+
+(defn project? [dir]
+  (first (filter #(fs/exists? (str dir %)) ["/.git" "/.gitignore" "/.cargo.toml" "/flake.nix" "/flake.lock" "/build.zig" "/dune-project" "/src"])))
+
+(defn getGitDirs
+  ([& dirs]
+   (mapcat
+    (fn [d]
+        (if (project? d)
+            [d]
+            (getGitDirs d)))
+    (->> dirs
+         (map fs/expand-home)
+         (mapcat fs/list-dir)
+         (filter fs/directory?)))))
+
+(defn fzf [s]
+  (:out @(p/process ["fzf"] {:in s
+                             :err :inherit
+                             :out :string})))
+
+(defn tmux-sessions []
+  (let [out (:out @(p/process ["tmux" "list-sessions"]
+                              {:out :string}))]
+    (flatten (map #(take 1 (split % #":"))
+                  (split out #"\n")))))
+
+(defn tmux-attach [name]
+  (p/shell "tmux" "at" "-t" name))
+
+(defn tmux-switch [name]
+  (p/shell "tmux" "switch" "-t" name))
+
+(defn tmux-new [name dir]
+  (p/shell "tmux" "new-session" "-d" "-s" name "-c" dir))
+
+(defn flake? [dir]
+  (fs/exists? (str dir "/flake.nix")))
+
+(defn tmux-new-window
+  ([name session dir]
+   (tmux-new-window name session dir "$0"))
+  ([name session dir command]
+   (p/shell "tmux" "new-window" "-d" "-n" name "-t" session "-c" dir command)))
+
+(let [dirs     (-> "~/.config/tmxs.conf"
+                   fs/expand-home
+                   str
+                   slurp
+                   (split #"\n"))
+      dir      (->> dirs
+                    (apply getGitDirs)
+                    (join "\n")
+                    fzf
+                    trimr)
+      sessions (tmux-sessions)
+      session  (-> dir
+                   (split #"/")
+                   last)
+      exists   (some #(== (compare session %) 0) sessions)
+      in_tmux  (System/getenv "TMUX")]
+  (when-not (empty? session)
+            (do (when-not exists
+                          (do (tmux-new session dir)
+                              (if (flake? dir)
+                                  (tmux-new-window "NIX" session dir "nix develop || nix shell || $0")
+                                  (tmux-new-window "DBG" session dir))))
+                ((if in_tmux
+                     tmux-switch
+                     tmux-attach)
+                 session))))
