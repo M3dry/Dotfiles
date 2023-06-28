@@ -36,7 +36,7 @@
 (defn cutoff [{:keys [cut under gradual]} data]
   (cond
     (some? cut)     (map #(update % :title (fn [t]
-                                             (if (<= (count t) cut)
+                                             (if (<= (- (count t) 3) cut)
                                                  t
                                                  (str (subs t 0 (- cut 3)) "..."))))
                          data)
@@ -44,11 +44,11 @@
     (some? gradual) (let [data_len (count data)
                           max      (if (>= data_len (count gradual))
                                        (last gradual)
-                                       (nth data (- data_len 1)))]
+                                       (nth gradual (- data_len 1)))]
                       (map #(update % :title (fn [t]
                                                (if (< (- (count t) 3) max)
-                                                   (str (subs t 0 (- max 3)) "...")
-                                                   t)))
+                                                   t
+                                                   (str (subs t 0 (- max 3)) "..."))))
                            data))
     :else           data))
 
