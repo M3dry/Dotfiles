@@ -19,11 +19,59 @@ in
       XENVIRONMENT = "$HOME/.config/x11/xresources";
       XINITRC = "$HOME/.config/x11/xinitrc";
       XCOMPOSECACHE = "${config.xdg.cacheHome}/X11/xcompose";
+      XAUTHORITY="$HOME/.config/x11/Xauthority";
       WINEPREFIX = "${config.xdg.dataHome}/wine";
       RUSTUP_HOME = "${config.xdg.dataHome}/rustup";
       CARGO_HOME = "${config.xdg.dataHome}/cargo";
+      OPAMROOT = "${config.xdg.dataHome}/opam";
       GTK2_RC_FILES = "$HOME/.config/gtk-2.0/gtkrc";
       DOCKER_CONFIG = "$HOME/.config/docker";
+    };
+    shellAliases = {
+      ll = "exa -lar --color=always --group-directories-first --icons";
+      lg = "exa -gar --color=always --group-directories-first --icons";
+      rm = "rm -i";
+      ka = "killall";
+      v = "nvim";
+      ".." = "cd .." ;
+      "..." = "cd ../..";
+      mount = "doas mount ";
+      umount = "doas umount ";
+      xload = "xrdb merge ~/.config/x11/xresources && kill -USR1 $(pidof st)";
+      nsxiv = "nsxiv -a";
+      sxiv = "nsxiv -a";
+      yta-aac = "youtube-dl --extract-audio --audio-format aac";
+      yta-best = "youtube-dl --extract-audio --audio-format best";
+      yta-flac = "youtube-dl --extract-audio --audio-format flac";
+      yta-m4a = "youtube-dl --extract-audio --audio-format m4a";
+      yta-mp3 = "youtube-dl --extract-audio --audio-format mp3";
+      yta-opus = "youtube-dl --extract-audio --audio-format opus";
+      yta-vorbis = "youtube-dl --extract-audio --audio-format vorbis";
+      yta-wav = "youtube-dl --extract-audio --audio-format wav";
+      ytv-best = "youtube-dl -f bestvideo+bestaudio";
+      hh = "$HOME";
+      mm = "$HOME/my-stuff";
+      mp = "$HOME/my-stuff/Pictures";
+      mpw = "$HOME/my-stuff/Pictures/wallpapers";
+      mps = "$HOME/my-stuff/Pictures/snips";
+      md = "$HOME/my-stuff/Downloads";
+      mdr = "$HOME/my-stuff/Drives";
+      mdo = "$HOME/my-stuff/Documents";
+      mb = "$HOME/my-stuff/Books";
+      mpr = "$HOME/my-stuff/Projects";
+      mmu = "$HOME/my-stuff/Music";
+      mvi = "$HOME/my-stuff/Videos";
+      cc = "$HOME/.config/flake/dots";
+      cf = "$HOME/.config/flake";
+      cx = "$HOME/.config/flake/dots/xmonad";
+      ct = "$HOME/.config/flake/dots/taffybar";
+      ce = "$HOME/.config/flake/dots/eww";
+      cdo = "$HOME/.config/flake/dots/doom";
+      cdw = "$HOME/.config/dwm";
+      cs = "$HOME/.config/st";
+      cdm = "$HOME/.config/dmenu";
+      lc = "$HOME/.local";
+      lcb = "$HOME/.local/bin";
     };
     sessionPath = [
       "${config.xdg.configHome}/emacs/bin"
@@ -94,15 +142,14 @@ in
   xsession.profilePath = ".config/x11/xprofile";
   xsession.profileExtra = ''
   picom &
-  xwallpaper --stretch ~/my-stuff/Pictures/wallpapers/gentoo-iceberg-dark.png &
+  xwallpaper --stretch ~/my-stuff/Pictures/wallpapers/mementomori2.jpeg &
   setxkbmap us,cz ,qwerty -option 'ctrl:nocaps' 'grp:ctrls_toggle' &
-  xcape -e 'Control_L=Escape'
+  xcape -e 'Control_L=Escape' &
   xrandr --output DP-0 --primary --output DP-2 --mode 1920x1200 --left-of DP-0
   xrdb .config/x11/xresources &
   xset r rate 400 60 &
-  eww open-many goggins goggins-second todos audio left --restart &
-  firefox &
-  chromium &
+  eww open-many todos audio left --restart &
+  obsidian &
   '';
   xsession.windowManager.xmonad = {
       enable = true;
@@ -143,53 +190,6 @@ in
   programs.zsh = {
       enable = true;
       initExtraFirst = builtins.readFile ./dots/.zshrc;
-      shellAliases = {
-        ll = "exa -lar --color=always --group-directories-first --icons";
-        lg = "exa -gar --color=always --group-directories-first --icons";
-        rm = "rm -i";
-        ka = "killall";
-        v = "nvim";
-        ".." = "cd .." ;
-        "..." = "cd ../..";
-        mount = "doas mount ";
-        umount = "doas umount ";
-        config = "/usr/bin/git --git-dir=$HOME/Dotfiles/ --work-tree=$HOME";
-        xload = "xrdb merge ~/.config/x11/xresources && kill -USR1 $(pidof st)";
-        nsxiv = "nsxiv -a";
-        sxiv = "nsxiv -a";
-        yta-aac = "youtube-dl --extract-audio --audio-format aac";
-        yta-best = "youtube-dl --extract-audio --audio-format best";
-        yta-flac = "youtube-dl --extract-audio --audio-format flac";
-        yta-m4a = "youtube-dl --extract-audio --audio-format m4a";
-        yta-mp3 = "youtube-dl --extract-audio --audio-format mp3";
-        yta-opus = "youtube-dl --extract-audio --audio-format opus";
-        yta-vorbis = "youtube-dl --extract-audio --audio-format vorbis";
-        yta-wav = "youtube-dl --extract-audio --audio-format wav";
-        ytv-best = "youtube-dl -f bestvideo+bestaudio";
-        hh = "$HOME";
-        mm = "$HOME/my-stuff";
-        mp = "$HOME/my-stuff/Pictures";
-        mpw = "$HOME/my-stuff/Pictures/wallpapers";
-        mps = "$HOME/my-stuff/Pictures/snips";
-        md = "$HOME/my-stuff/Downloads";
-        mdr = "$HOME/my-stuff/Drives";
-        mdo = "$HOME/my-stuff/Documents";
-        mb = "$HOME/my-stuff/Books";
-        mpr = "$HOME/my-stuff/Projects";
-        mmu = "$HOME/my-stuff/Music";
-        mvi = "$HOME/my-stuff/Videos";
-        cc = "$HOME/.config/flake/dots";
-        cf = "$HOME/.config/flake";
-        cx = "$HOME/.config/flake/dots/xmonad";
-        ct = "$HOME/.config/flake/dots/taffybar";
-        ce = "$HOME/.config/flake/dots/eww";
-        cdo = "$HOME/.config/flake/dots/doom";
-        cdw = "$HOME/.config/dwm";
-        cs = "$HOME/.config/st";
-        cdm = "$HOME/.config/dmenu";
-        lc = "$HOME/.local";
-        lcb = "$HOME/.local/bin";
-      };
       dotDir = ".config/zsh";
       history = {
         path = "${config.xdg.dataHome}/zsh/zsh_history";
@@ -204,13 +204,15 @@ in
     pcmanfm
     zathura
     anki-bin
+    obsidian
+    openjdk8
     nvimpager
     alacritty
     prismlauncher
     docker-compose
     docker-machine
     clang-tools_15
-    firefox chromium
+    chromium
     yt-dlp youtube-dl
     gimp-with-plugins
     ripgrep fd exa fzf bat
@@ -220,6 +222,18 @@ in
     numlockx xdo xdotool xorg.xkill
     xcape xorg.setxkbmap xorg.xrdb
     xorg.xset xclip xsel xorg.xprop
+    (retroarch.override {
+      cores = with libretro; [
+        mgba
+        citra
+        snes9x
+        nestopia
+        gambatte
+        mupen64plus
+        beetle-psx-hw
+        pcsx2
+      ];
+    }) duckstation pcsx2
     (dmenu.overrideAttrs (oldAttrs: rec {
       src = builtins.fetchTarball {
         url = "https://github.com/m3dry/dmenu/archive/master.tar.gz";
@@ -269,13 +283,14 @@ in
     emacs-all-the-icons-fonts
     # LANGUAGEs
     go
-    ghc
+    (haskellPackages.ghcWithPackages (pkgs: with pkgs; [
+      cabal-install
+    ]))
     opam
     lua5_4
-    clojure
     python3
-    babashka
     zigpkgs.master
+    babashka clojure leiningen
     # RUST
     rustup
     cargo-insta

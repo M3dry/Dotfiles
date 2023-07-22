@@ -1,27 +1,3 @@
-(defwindow goggins
-  :stacking "bg"
-  :windowtype "normal"
-  :wm-ignore true
-  :geometry (geometry :x "75%" :y "40%" :width "17%" :height "48%")
-  (goggins))
-
-(defwindow goggins-second
-  :monitor 1
-  :stacking "bg"
-  :windowtype "normal"
-  :wm-ignore true
-  :geometry (geometry :x "75%" :y "40%" :width "17%" :height "48%")
-  (goggins))
-
-(defwidget goggins []
- (button :class "goggins-button" :onclick "xdg-open https://www.youtube.com/watch?v=JV8mIfjwPeM &"
-    (box :space-evenly false :orientation "vertical"
-      (label :class "goggins-quote" :wrap true :text "You're thinking about what you could've been. I am exactly what I should've been!")
-      (image :tooltip "Everyone fails sometimes and life isn't supposed to be fair, much less bend to your every whim."
-        :class "goggins-image"
-        :path "./goggins-cut.png"
-        :image-width 314 :image-height 500))))
-
 (defpoll todos-data :interval "1s" `todo t eww-show`)
 
 (defwindow todos

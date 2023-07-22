@@ -24,7 +24,9 @@
                                (catch Exception _ nil))}))
          (filter (fn [d] (->> d
                           (into [])
-                          (map #(nil? (second %)))
+                          (map #(or (nil? (second %))
+                                    (try (empty? (second %))
+                                         (catch Exception _ false))))
                           (every? true?)
                           not))))))
 
@@ -36,7 +38,7 @@
 (defn cutoff [{:keys [cut under gradual]} data]
   (cond
     (some? cut)     (map #(update % :title (fn [t]
-                                             (if (<= (- (count t) 3) cut)
+                                             (if (<= (count t) cut)
                                                  t
                                                  (str (subs t 0 (- cut 3)) "..."))))
                          data)
@@ -46,7 +48,7 @@
                                        (last gradual)
                                        (nth gradual (- data_len 1)))]
                       (map #(update % :title (fn [t]
-                                               (if (< (- (count t) 3) max)
+                                               (if (<= (count t) max)
                                                    t
                                                    (str (subs t 0 (- max 3)) "..."))))
                            data))
@@ -69,13 +71,16 @@
                             {:cutoff (cli/dispatch [{:cmds ["cut"] :fn get-opts :args->opts [:cut]}
                                                     {:cmds ["under"] :fn get-opts :args->opts [:under]}
                                                     {:cmds ["gradual"] :fn gradual}]
-                                                 extra)}))]
-    (->> (audio-data)
-         (playing (args :playing))
-         (cutoff (args :cutoff))
-         (take (args :length))
-         (json/generate-string)
-         (println))))
+                                                 extra)}))
+        data      (audio-data)]
+    (if (= (count data) 0)
+        (println "[]")
+        (->> data
+             (playing (args :playing))
+             (cutoff (args :cutoff))
+             (take (args :length))
+             (json/generate-string)
+             (println)))))
 
 (defn write-volume [volume]
   (spit (str (fs/expand-home "~/.cache/eww-audio")) volume))

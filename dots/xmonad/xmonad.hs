@@ -118,7 +118,7 @@ myTopicItems =
     [ inHome   "1"                                          (spawn "firefox")
     , inHome   "2"                                          (spawn "chromium")
     , inHome   "3"                                          (spawn "spotify")
-    , TI       "4"          "my-stuff/Org"                  (inDir myEmacsDir)
+    , TI       "4"          "."                             (spawn "obsidian")
     , TI       "5"          "."                             (spawn "anki")
     , noAction "6"          "."
     , noAction "7"          "."
@@ -379,6 +379,7 @@ myManageHook =
     composeAll
     [ className =? "firefox"          --> doShift "1"
     , className =? "Chromium-browser" --> doShift "2"
+    , className =? "obsidian"         --> doShift "4"
     ]
 
 main = do
@@ -395,7 +396,11 @@ main = do
                         , borderWidth = 2
                         , layoutHook = avoidStruts myLayout
                         , handleEventHook = myHandleEventHook
-                        , startupHook = adjustEventInput
+                        , startupHook =
+                            adjustEventInput <>
+                            (do
+                                Just t <- projectFromI 4 id
+                                windows $ W.greedyView t)
                         , logHook = myLogHook
                         , manageHook = myManageHook
                         , keys = myKeys
