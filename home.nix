@@ -120,6 +120,10 @@ in
         source = ./dots/x11;
         recursive = true;
       };
+      ".config/tmux" = {
+        source = ./dots/tmux;
+        recursive = true;
+      };
     };
   };
 
