@@ -2,7 +2,6 @@
 # and may be overwritten by future invocations.  Please make changes
 # to /etc/nixos/configuration.nix instead.
 { config, lib, pkgs, modulesPath, ... }:
-
 {
   imports =
     [ (modulesPath + "/installer/scan/not-detected.nix")
@@ -10,8 +9,13 @@
 
   boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-amd" ];
-  boot.extraModulePackages = [ ];
+  boot.kernelModules = [ "kvm-amd" "v4l2loopback" ];
+  boot.blacklistedKernelModules = [ "hid-thrustmaster" ];
+  boot.extraModulePackages = with config.boot.kernelPackages; [ hid-tmff2 v4l2loopback.out ];
+  boot.extraModprobeConfig = ''
+    options v4l2loopback exclusive_caps=1 card_label="DROID Cam"
+  '';
+  boot.kernelParams = [ "clearcpuid=514" ];
 
   fileSystems."/" =
     { device = "/dev/disk/by-uuid/2033460c-cb0d-4ce0-88a2-da6ff72fc37c";
@@ -47,8 +51,12 @@
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-  hardware.opengl.enable = true;
-  hardware.opengl.driSupport32Bit = true;
+  hardware.graphics.enable = true;
+  hardware.graphics.enable32Bit = true;
+  hardware.graphics.extraPackages32 = with pkgs.pkgsi686Linux; [ libva ];
 
-  hardware.steam-hardware.enable = true;
+  hardware.nvidia = {
+    modesetting.enable = true;
+    open = false;
+  };
 }

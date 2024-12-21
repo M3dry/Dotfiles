@@ -1,6 +1,5 @@
-local actions = require "telescope.actions"
-local trouble = require "trouble.providers.telescope"
 local telescope = require "telescope"
+local actions = require "telescope.actions"
 
 telescope.setup {
     defaults = {
@@ -10,7 +9,6 @@ telescope.setup {
                 ["<C-k>"] = actions.move_selection_better,
                 ["<C-n>"] = actions.move_selection_worse + actions.toggle_selection,
                 ["<C-p>"] = actions.move_selection_better + actions.toggle_selection,
-                ["<C-o>"] = trouble.open_with_trouble,
                 ["<C-q>"] = actions.smart_send_to_qflist,
                 ["<C-S-Q>"] = actions.smart_add_to_qflist,
                 ["<C-l>"] = actions.smart_send_to_loclist,
@@ -20,7 +18,6 @@ telescope.setup {
                 ["<C-t>"] = require("telescope.actions.layout").toggle_preview,
             },
             n = {
-                ["<C-o>"] = trouble.open_with_trouble,
                 ["<C-q>"] = actions.smart_send_to_qflist,
                 ["<C-S-Q>"] = actions.smart_add_to_qflist,
                 ["<C-l>"] = actions.smart_send_to_loclist,
@@ -90,7 +87,7 @@ telescope.setup {
                 map("n", "<C-d>", actions.delete_buffer)
                 return true
             end,
-            previewer = false,
+            previewer = true,
         },
     },
     extensions = {
@@ -100,11 +97,10 @@ telescope.setup {
             override_file_sorter = true,
             case_mode = "smart_case",
         },
+        ["ui-select"] = {
+            require("telescope.themes").get_dropdown {},
+        },
     },
 }
 
 telescope.load_extension "ui-select"
-telescope.load_extension "dap"
-telescope.load_extension "fzf"
-telescope.load_extension "projects"
-telescope.load_extension "undo"

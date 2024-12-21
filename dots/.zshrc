@@ -58,6 +58,8 @@ bindkey '^k' autosuggest-accept
 bindkey '^ ' autosuggest-execute
 bindkey '^b' autosuggest-clear
 
+bindkey -s '^o' "tmxs^M"
+
 # You should use Plugin
 export YSU_MESSAGE_POSITION="after"
 export YSU_HARDCORE=0 # Hardcode mode

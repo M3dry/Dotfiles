@@ -16,10 +16,10 @@ function M.init()
         command = "!xrdb <afile>",
     })
 
-    au("BufNewFile", {
+    au({ "BufEnter", "CursorHold", "InsertLeave" }, {
         group = group,
         callback = function()
-            require("m3dry.templates").insert_template()
+            vim.lsp.codelens.refresh { bufnr = 0 }
         end,
     })
 end

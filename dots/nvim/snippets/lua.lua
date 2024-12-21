@@ -1,3 +1,13 @@
+local ls = require "luasnip"
+local s = ls.snippet
+local sn = ls.snippet_node
+local t = ls.text_node
+local i = ls.insert_node
+local f = ls.function_node
+local c = ls.choice_node
+local d = ls.dynamic_node
+local fmt = require("luasnip.extras.fmt").fmt
+
 local function ef(idx)
     return d(idx, function()
         return sn(
@@ -154,10 +164,8 @@ return {
 
                     if captured == "" then
                         return ""
-                    elseif snip.captures[2] ~= "" then
-                        return "local "
                     else
-                        return ""
+                        return "local "
                     end
                 end),
                 f(function(_, snip)
@@ -190,32 +198,4 @@ return {
             }
         )
     ),
-}, {
-    s(
-        {
-            trig = "https://github%.com/([%w-%._]+)/([%w-%._]+)!",
-            regTrig = true,
-            hidden = true,
-        },
-        fmt(
-            [[
-                use {{
-                    "{}"
-                }}
-            ]],
-            f(function(_, snip)
-                return snip.captures[1] .. "/" .. snip.captures[2]
-            end)
-        ),
-        {
-            condition = function()
-                if vim.fn.expand "%:t" == "plugins.lua" then
-                    local context = require("m3dry.utils").ts_context
-
-                    return not (context "string" or context "comment")
-                end
-                return false
-            end,
-        }
-    ),
-}
+}, {}

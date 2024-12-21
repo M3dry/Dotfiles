@@ -1,4 +1,4 @@
-{ config, pkgs, zigpkgs, nvim, eww, system, ... }:
+{ config, pkgs, zigpkgs, bqnlsp, taffybarr, nvim-nightly, system, ... }:
 let
   my-stuff = "$HOME/my-stuff";
 in
@@ -19,7 +19,6 @@ in
       XENVIRONMENT = "$HOME/.config/x11/xresources";
       XINITRC = "$HOME/.config/x11/xinitrc";
       XCOMPOSECACHE = "${config.xdg.cacheHome}/X11/xcompose";
-      XAUTHORITY="$HOME/.config/x11/Xauthority";
       WINEPREFIX = "${config.xdg.dataHome}/wine";
       RUSTUP_HOME = "${config.xdg.dataHome}/rustup";
       CARGO_HOME = "${config.xdg.dataHome}/cargo";
@@ -28,8 +27,8 @@ in
       DOCKER_CONFIG = "$HOME/.config/docker";
     };
     shellAliases = {
-      ll = "exa -lar --color=always --group-directories-first --icons";
-      lg = "exa -gar --color=always --group-directories-first --icons";
+      ll = "eza -lar --group-directories-first";
+      lg = "eza -gar --group-directories-first";
       rm = "rm -i";
       ka = "killall";
       v = "nvim";
@@ -64,7 +63,6 @@ in
       cc = "$HOME/.config/flake/dots";
       cf = "$HOME/.config/flake";
       cx = "$HOME/.config/flake/dots/xmonad";
-      ct = "$HOME/.config/flake/dots/taffybar";
       ce = "$HOME/.config/flake/dots/eww";
       cdo = "$HOME/.config/flake/dots/doom";
       cdw = "$HOME/.config/dwm";
@@ -92,22 +90,18 @@ in
       ".config/mimeapps.list".source = ./dots/mimeapps.list;
       ".config/proj.conf".source = ./dots/proj.conf;
       ".config/cmus/custom.theme".source = ./dots/cmus/custom.theme;
-      ".config/xmonad" = {
-        source = ./dots/xmonad;
-        recursive = true;
-      };
-      ".config/taffybar" = {
-        source = ./dots/taffybar;
-        recursive = true;
-      };
+      #".config/xmonad" = {
+      #  source = ./dots/xmonad;
+      #  recursive = true;
+      #};
       ".config/eww" = {
           source = ./dots/eww;
           recursive = true;
       };
-      ".config/nvim" = {
-        source = ./dots/nvim;
-        recursive = true;
-      };
+      # ".config/nvim" = {
+      #   source = ./dots/nvim;
+      #   recursive = true;
+      # };
       ".config/doom" = {
         source = ./dots/doom;
         recursive = true;
@@ -146,18 +140,20 @@ in
   xsession.profilePath = ".config/x11/xprofile";
   xsession.profileExtra = ''
   picom &
-  xwallpaper --stretch ~/my-stuff/Pictures/wallpapers/mementomori2.jpeg &
   setxkbmap us,cz ,qwerty -option 'ctrl:nocaps' 'grp:ctrls_toggle' &
   xcape -e 'Control_L=Escape' &
-  xrandr --output DP-0 --primary --output DP-2 --mode 1920x1200 --left-of DP-0
   xrdb .config/x11/xresources &
   xset r rate 400 60 &
-  eww open-many todos audio left --restart &
-  obsidian &
+  taffybarr &
+  xrandr --output DP-0 --primary --output DP-2 --mode 1920x1200 --right-of DP-0
+  eww open --screen DP-2 audio --restart &
+  eww open --screen DP-2 left &
+  nice xwinwrap -g 1920x1200+0+0 -b -s -fs -st -sp -ni -nf -ov -fdt -- mpv --loop -wid WID --really-quiet --framedrop=vo --no-audio --panscan="1.0" ~/my-stuff/Pictures/wallpapers/alonso.mp4 &
   '';
   xsession.windowManager.xmonad = {
       enable = true;
       enableContribAndExtras = true;
+      config = ./dots/xmonad/xmonad.hs;
   };
 
   programs.home-manager.enable = true;
@@ -185,7 +181,9 @@ in
     enable = true;
     viAlias = true;
     vimAlias = true;
-    package = nvim;
+    plugins = [
+      pkgs.vimPlugins.nvim-treesitter.withAllGrammars
+    ];
   };
   programs.emacs = {
     enable = true;
@@ -202,26 +200,31 @@ in
   };
 
   home.packages = with pkgs; [
+    sqlite
+    xournalpp
+    droidcam opentrack
+    taffybarr
+    librsvg
     nsxiv
     piper
     git gh
     pcmanfm
     zathura
-    anki-bin
     obsidian
     openjdk8
     nvimpager
     alacritty
     prismlauncher
     docker-compose
-    docker-machine
-    clang-tools_15
-    chromium
-    yt-dlp youtube-dl
-    gimp-with-plugins
-    ripgrep fd exa fzf bat
-    lutris steam grapejuice
+    clang-tools gcc13
+    chromium firefox
+    tree-sitter nodejs
+    yt-dlp
+    gimp
+    ripgrep fd eza fzf bat
+    lutris airshipper oversteer mangohud wineWowPackages.stagingFull winetricks mono path-of-building
     jq imagemagick trash-cli
+    man-pages man-pages-posix
     libqalculate qalculate-gtk
     numlockx xdo xdotool xorg.xkill
     xcape xorg.setxkbmap xorg.xrdb
@@ -261,7 +264,6 @@ in
     sqlite
     pdf2svg
     gnuplot
-    binutils
     texlive.combined.scheme-full
     (aspellWithDicts (dicts: with dicts; [
       en
@@ -277,43 +279,48 @@ in
     playerctl
     pulsemixer
     # RICING
-    eww.default
+    eww
     xwallpaper
     lxappearance
-    picom-jonaburg
+    picom
     # FONTs
     nerdfonts
     joypixels
     emacs-all-the-icons-fonts
     # LANGUAGEs
     go
-    (haskellPackages.ghcWithPackages (pkgs: with pkgs; [
+    (haskell.packages.ghc98.ghcWithPackages (pkgs: with pkgs; [
       cabal-install
+      haskell-language-server
+      hlint
+      fourmolu
+      hoogle
     ]))
     opam
     lua5_4
     python3
     zigpkgs.master
     babashka clojure leiningen
+    elmPackages.elm elmPackages.elm-test elmPackages.elm-live
+    elixir
     # RUST
     rustup
     cargo-insta
+    # BQN
+    cbqn bqn386 bqnlsp
     # LSPs
     taplo
     gopls
     clojure-lsp
-    haskell-language-server
     sumneko-lua-language-server
     nodePackages_latest.bash-language-server
-    python310Packages.python-lsp-server
     nodePackages_latest.svelte-language-server
     nodePackages_latest.typescript-language-server
-    nodePackages_latest.vscode-css-languageserver-bin
-    nodePackages_latest.vscode-json-languageserver-bin
-    nodePackages_latest.vscode-html-languageserver-bin
+    vscode-langservers-extracted
     nodePackages_latest."@tailwindcss/language-server"
+    elmPackages.elm-language-server
+    elixir-ls
     # LINTers
-    hlint
     statix
     shellcheck
     # DEBUGers
@@ -322,7 +329,7 @@ in
     stylua
     alejandra
     nodePackages.prettier
-    haskellPackages.fourmolu
+    elmPackages.elm-format
   ];
 
   fonts.fontconfig.enable = true;
@@ -330,14 +337,14 @@ in
   services.mpris-proxy.enable = true;
   services.playerctld.enable = true;
   services.emacs.enable = true;
-  services.taffybar.enable = true;
   services.status-notifier-watcher.enable = true;
   services.redshift = {
     enable = true;
-    provider = "geoclue2";
+    latitude = 49.337669373657114;
+    longitude = 18.004264670426636;
     temperature = {
       day = 5700;
-      night = 2000;
+      night = 3500;
     };
   };
 }

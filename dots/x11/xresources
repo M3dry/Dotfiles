@@ -29,7 +29,7 @@ Sxiv.font: ComicCodeLigatures Nerd Font:style=medium:size=12
 st.alpha: 0.9
 st.alphaUnfocused: 0.9
 st.ignoreselfg: 0
-st.font: ComicCodeLigatures Nerd Font:style=medium:size=12
+st.font: JuliaMono Nerd Font Mono:style=medium:size=13
 st.selectionbg: #1e1c31
 st.selectionfg: #ff5370
 

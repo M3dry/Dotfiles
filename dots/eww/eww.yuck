@@ -130,6 +130,7 @@
   :windowtype "dock"
   :wm-ignore true
   :geometry (geometry :x "50%" :y "96%" :width "50%" :height "4%")
+  :reserve (struts :distance "4%" :side "bottom")
   (box
     :class "left-box"
     :orientation "h"
@@ -145,10 +146,11 @@
   :stacking "fg"
   :windowtype "dock"
   :wm-ignore true
-  :geometry (geometry :x "25%" :y "96%" :width "50%" :height "4%")
+  :geometry (geometry :x "5px" :y "96%" :width "50%" :height "4%")
+  :reserve (struts :distance "4%" :side "bottom")
   (box
     :orientation "h"
-    :halign "center"
+    :halign "right"
     :class "audio-box"
     :space-evenly false
     (for player in audio-data

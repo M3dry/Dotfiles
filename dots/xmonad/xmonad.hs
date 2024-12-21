@@ -1,3 +1,5 @@
+import qualified Data.List as L
+import Data.Maybe
 import System.Exit
 import Control.Monad;
 import Control.Arrow (first)
@@ -49,12 +51,23 @@ import XMonad.Layout.WindowNavigation
 import XMonad.Layout.Minimize
 import XMonad.Layout.BoringWindows
 
+import XMonad.Util.NamedActions
 import XMonad.Util.EZConfig
 import XMonad.Util.SpawnOnce
 import XMonad.Util.NamedScratchpad
 import qualified XMonad.Util.ExtensibleState as XS
 
-import M3dry.KillOnWS
+killOnWS :: String -> X ()
+killOnWS t = do
+    XState { windowset = ws } <- get
+    let w = L.find (\w -> t == W.tag w) $ W.workspaces ws
+        in (when (isJust w) $ killWindows $ W.integrate' (W.stack $ fromJust w))
+  where
+    killWindows :: [Window] -> X ()
+    killWindows [x] = do killWindow x
+    killWindows (x:xs) = do
+        killWindow x
+        killWindows xs
 
 -- PROJECT TOGGLE
 newtype ProjectWSToggle = ProjectWSToggle Bool
@@ -104,8 +117,8 @@ monitorAction (generalKey, projectKey) func focus =
     , (k, sc) <- zip [", ", ". "] [screenBy (-1), screenBy 1]
     ]
 
-myTerminal = "st "
-myTerminalDir path = myTerminal ++ "-d " ++ path
+myTerminal = "st"
+myTerminalDir path = myTerminal ++ " -d " ++ path
 
 myEmacs = "emacsclient -c "
 myEmacsDir dir = myEmacs ++ "-e \"(dired \\\"" ++ dir ++ "\\\")\""
@@ -115,18 +128,20 @@ myFont size = "xft:ComicCodeLigatures Nerd Font:pixelsize=" ++ show size
 myModMask = mod4Mask
 
 myTopicItems =
-    [ inHome   "1"                                          (spawn "firefox")
+    [ inHome   "1"                                          (spawn "xmessage what do you think you're doing?" >> do
+                                                                                                                   Just t <- projectFromI 4 id
+                                                                                                                   windows $ W.greedyView t)
     , inHome   "2"                                          (spawn "chromium")
     , inHome   "3"                                          (spawn "spotify")
-    , TI       "4"          "."                             (spawn "obsidian")
-    , TI       "5"          "."                             (spawn "anki")
+    , inHome   "4"                                          (spawn "obsidian")
+    , noAction "5"          "."
     , noAction "6"          "."
     , noAction "7"          "."
     , noAction "8"          "."
     , noAction "9"          ".config/flake"
-    , noAction "List"       "my-stuff/Projects/Rust/list"
-    , noAction "Heffal"     "my-stuff/Projects/Haskell/heffal"
     , noAction "Nfetch"     "my-stuff/Projects/Rust/nfetch"
+    , noAction "Quandeth"   "my-stuff/Projects/Rust/nfetch"
+    , noAction "Nap"        "my-stuff/Projects/Rust/nfetch"
     ]
 
 myTopicConfig = def
@@ -189,11 +204,9 @@ spawnSelected' lst = gridselect conf lst >>= flip whenJust spawn
 gridSystem =
   [ ("St", "st")
   , ("Alacritty", "alacritty")
-  , ("Htop", myTerminal ++ "-e htop")
-  , ("Neovim", myTerminal ++ "-e neovim")
+  , ("Htop", myTerminal ++ " -e htop")
+  , ("Neovim", myTerminal ++ " -e neovim")
   , ("Emacs", myEmacs)
-  , ("Firefox", "firefox")
-  , ("Chromium", "chromium")
   , ("Pcmanfm", "pcmanfm")
   ]
 
@@ -229,11 +242,11 @@ myLayout = boringWindows (tile ||| ltile ||| centeredmaster ||| grid ||| bstack 
 
 myScratchpads =
   [ NS "terminal" (term "-t scratchpad" "") (findT "scratchpad") centerFloat
-  , NS "cmus" (term "-c cmuspad" "cmus") (findC "cmuspad") nonFloating
+  , NS "cmus" (term "-c cmuspad" "cmus") (findC "cmuspad") centerFloat
   , NS "qalc" (term "-t qalcpad" "qalc") (findT "qalcpad") centerFloat
   ]
   where
-    term x y = myTerminal ++ x ++ " -e " ++ y
+    term x y = myTerminal ++ " " ++ x ++ " -e " ++ y
     findT x = title =? x
     findC x = className =? x
     centerFloat =
@@ -243,8 +256,6 @@ myScratchpads =
           w = 0.7
           t = (1 - h) / 2
           l = (1 - h) / 2
-
--- UTIL funcs
 
 myKeys c =
     mkKeymap c $
@@ -262,7 +273,6 @@ myKeys c =
         , ("M-d c", spawn "calc")
         , ("M-d p", spawn "passmenu2 -F -p 'Passwords:'")
         , ("M-d q", spawn "shut")
-        , ("M1-C-s", spawn "spotify")
         , ("M-u", spawn "SNIPPATH=\"${HOME}/my-stuff/Pictures/snips/$(date +'%F-%T').png\"; import \"${SNIPPATH}\" && xclip -selection clipboard -t image/png \"${SNIPPATH}\"")
         , ("M1-C-l", spawn "slock")
         , ("<XF86AudioLowerVolume>", spawn "pamixer -d 1; audio update")
@@ -336,10 +346,6 @@ myKeys c =
         , ("M-] S-w", shiftTo Next emptyWS)
         , ("M-[ S-w", shiftTo Prev emptyWS)
         , ("M-p t", toggleProjectWS)
-        , ("M-c", do
-            windows $ W.view $ generalTopics !! 7
-            killAll
-            switchNthLastFocusedByScreen myTopicConfig 1)
         ]
         ++ projectToggleDo ("M-", "M-p ") toggleOrView
         ++ projectToggleDo ("M-S-", "M-p S-") (windows <=< shiftRLWhen refocusingIsActive)
@@ -351,17 +357,17 @@ myKeys c =
         ++ monitorAction ("S-f", "S-f p") (Just $ windows . W.shift) FocusNew
 
 myMouseBinds (XConfig {XMonad.modMask = modMask}) = M.fromList
-    [ ((modMask, button1), \w -> focus w >> mouseMoveWindow w)
-    , ((modMask, button2), windows . W.sink)
-    , ((modMask, button3), \w -> focus w >> Flex.mouseResizeWindow w)
+    [ ((modMask, button1), \w -> focus w >> mouseMoveWindow w >> windows W.shiftMaster)
+    , ((modMask, button2), windows . (W.shiftMaster .) . W.focusWindow)
+    , ((modMask .|. shiftMask, button2), windows . W.sink)
+    , ((modMask, button3), \w -> focus w >> Flex.mouseResizeWindow w >> windows W.shiftMaster)
     ]
 
 myLogHook =
     workspaceHistoryHook <>
     masterHistoryHook <>
     currentWorkspaceOnTop <>
-    refocusLastLogHook <>
-    updatePointer (0.5, 0.5) (0, 0)
+    refocusLastLogHook
 
 myHandleEventHook =
     refocusLastWhen (refocusingIsActive <||> isFloat) <>
@@ -373,37 +379,34 @@ myHandleEventHook =
 
 myManageHook =
     namedScratchpadManageHook myScratchpads <>
-    placeHook (inBounds (underMouse (0.5, 0.5))) <>
+    --placeHook (inBounds (underMouse (0.5, 0.5))) <>
     floatNextHook <>
     IP.insertPosition IP.Below IP.Newer <>
     composeAll
-    [ className =? "firefox"          --> doShift "1"
+    [ className =? "Navigator"        --> doShift "1"
     , className =? "Chromium-browser" --> doShift "2"
     , className =? "obsidian"         --> doShift "4"
     ]
 
 main = do
-    xmonad $
-        docks $
-            ewmhFullscreen $ setEwmhActivateHook doAskUrgent $ workspaceNamesEwmh $ ewmh $
-                pagerHints $
-                    def
-                        { terminal = myTerminal
-                        , modMask = myModMask
-                        , normalBorderColor = "#0f111b"
-                        , focusedBorderColor = "#c792ea"
-                        , workspaces = topicNames myTopicItems
-                        , borderWidth = 2
-                        , layoutHook = avoidStruts myLayout
-                        , handleEventHook = myHandleEventHook
-                        , startupHook =
-                            adjustEventInput <>
-                            (do
-                                Just t <- projectFromI 4 id
-                                windows $ W.greedyView t)
-                        , logHook = myLogHook
-                        , manageHook = myManageHook
-                        , keys = myKeys
-                        , mouseBindings = myMouseBinds
-                        , focusFollowsMouse = True
-                        }
+    xmonad $ docks $ ewmhFullscreen $ setEwmhActivateHook doAskUrgent $ workspaceNamesEwmh $ ewmh $ pagerHints $
+        def
+            { terminal = myTerminal
+            , modMask = myModMask
+            , normalBorderColor = "#0f111b"
+            , focusedBorderColor = "#c792ea"
+            , workspaces = topicNames myTopicItems
+            , borderWidth = 2
+            , layoutHook = avoidStruts myLayout
+            , handleEventHook = myHandleEventHook
+            , startupHook =
+                adjustEventInput <>
+                (do
+                    Just t <- projectFromI 4 id
+                    windows $ W.greedyView t)
+            , logHook = myLogHook
+            , manageHook = myManageHook
+            , keys = myKeys
+            , mouseBindings = myMouseBinds
+            , focusFollowsMouse = True
+            }

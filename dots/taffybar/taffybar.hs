@@ -25,3 +25,7 @@ main = do
                        , startWidgets = [ layout, workspaces, sniTrayNew ]
                        }
   simpleTaffybar simpleConfig
+
+
+
+
