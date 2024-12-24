@@ -62,30 +62,6 @@ proj() {
     cdProject
 }
 
-nv() {
-    local DEFDIR=$(pwd)  # get dir to fallback with
-    cd ~/.config/nvim/  # cd into nvim dir
-
-    local FILES=( $(rg --files --hidden | rg -ve "undo" -e ".luarc.json" -e "packer_compiled.lua") ) # get all nvim files and filter them
-
-    # add directories
-    local TMP=()
-    for i in ${FILES}
-    do
-        TMP+=$(echo ${i} | sed 's|\(.*/\).*|\1|g ; s/\n//g')
-    done
-
-    local FILESANDDIRS=$(echo "${FILES}\n$(echo ${TMP})" | sed "s/ /\n/g" | sort | uniq)
-    unset TMP
-    local DIR=$(echo ${FILESANDDIRS} | sort | fzf) # get user input
-
-    [ "${DIR}" = "" ] && cd ${DEFDIR} || cd $(echo ${DIR} | sed 's|\(.*\)/.*|\1|') # check if user input is empty if so fallback to ${DEFDIR}
-
-    # check if user input is a file and if so open it in $EDITOR
-    local FILE=$(echo ${DIR} | sed 's|.*/||')
-    [ -f "${FILE}" ] && ${EDITOR} ${FILE}
-}
-
 ex() {
     if [ -f $1 ] ; then
         case $1 in
@@ -114,7 +90,7 @@ f() {
     if [[ $# -eq 1  && ( -d "$1" || "$1" == "-" ) ]]
     then
         builtin cd "$1" || return
-        ls -bvxAF --color --group-directories-first
+        eza -gar --group-directories-first
     elif test $# -eq 0
     then
         builtin cd "$HOME" || return

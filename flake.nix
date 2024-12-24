@@ -8,7 +8,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     bqnlsp.url = "sourcehut:~detegr/bqnlsp";
-    taffybarr.url = "path:/home/m3/.config/taffybarr";
+    taffybarr.url = "path:./dots/taffybarr";
   };
 
   outputs = {

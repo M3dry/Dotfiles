@@ -41,3 +41,19 @@ export PS1="\[$(tput setaf 4)\][\[$(tput setaf 3)\]\u\[$(tput setaf 1)\]@\[$(tpu
 
 # Vi mode
 set -o vi
+
+f() {
+    if [[ $# -eq 1  && ( -d "$1" || "$1" == "-" ) ]]
+    then
+        builtin cd "$1" || return
+        eza -gar --group-directories-first
+    elif test $# -eq 0
+    then
+        builtin cd "$HOME" || return
+    elif test -f "$1" || test ! -e "$1" || test $# -gt 1
+    then
+        $EDITOR "$@"
+    else
+        printf "t: case not accounted for\n"
+    fi
+}

@@ -1,8 +1,13 @@
-{ config, pkgs, zigpkgs, bqnlsp, taffybarr, ... }:
-let
-  my-stuff = "$HOME/my-stuff";
-in
 {
+  config,
+  pkgs,
+  zigpkgs,
+  bqnlsp,
+  taffybarr,
+  ...
+}: let
+  my-stuff = "$HOME/my-stuff";
+in {
   home = {
     username = "m3";
     homeDirectory = "/home/m3";
@@ -32,7 +37,7 @@ in
       rm = "rm -i";
       ka = "killall";
       v = "nvim";
-      ".." = "cd .." ;
+      ".." = "cd ..";
       "..." = "cd ../..";
       mount = "doas mount ";
       umount = "doas umount ";
@@ -77,12 +82,11 @@ in
       "$HOME/.cargo/bin"
     ];
     file = {
-      ".bashrc".source = ./dots/.bashrc;
       "${config.xdg.dataHome}/paledeep".source = ./dots/paledeep;
       "${config.xdg.dataHome}/paledeep-icons".source = ./dots/paledeep-icons;
       ".local/bin" = {
-          source = ./dots/bin;
-          recursive = true;
+        source = ./dots/bin;
+        recursive = true;
       };
       ".config/picom/picom.conf".source = ./dots/picom.conf;
       ".config/alacritty/alacritty.yml".source = ./dots/alacritty.yml;
@@ -95,8 +99,8 @@ in
       #  recursive = true;
       #};
       ".config/eww" = {
-          source = ./dots/eww;
-          recursive = true;
+        source = ./dots/eww;
+        recursive = true;
       };
       # ".config/nvim" = {
       #   source = ./dots/nvim;
@@ -138,22 +142,22 @@ in
   xsession.numlock.enable = true;
   xsession.scriptPath = ".config/x11/xsession";
   xsession.profilePath = ".config/x11/xprofile";
-  xsession.profileExtra = ''
-  picom &
-  setxkbmap us,cz ,qwerty -option 'ctrl:nocaps' 'grp:ctrls_toggle' &
-  xcape -e 'Control_L=Escape' &
-  xrdb .config/x11/xresources &
-  xset r rate 400 60 &
-  taffybarr &
-  xrandr --output DP-0 --primary --output DP-2 --mode 1920x1200 --right-of DP-0
-  eww open --screen DP-2 audio --restart &
-  eww open --screen DP-2 left &
-  nice xwinwrap -g 1920x1200+0+0 -b -s -fs -st -sp -ni -nf -ov -fdt -- mpv --loop -wid WID --really-quiet --framedrop=vo --no-audio --panscan="1.0" ~/my-stuff/Pictures/wallpapers/alonso.mp4 &
+  xsession.profileExtra = /* bash */ ''
+    picom &
+    setxkbmap us,cz ,qwerty -option 'ctrl:nocaps' 'grp:ctrls_toggle' &
+    xcape -e 'Control_L=Escape' &
+    xrdb .config/x11/xresources &
+    xset r rate 400 60 &
+    taffybarr &
+    xrandr --output DP-0 --primary --output DP-2 --mode 1920x1200 --right-of DP-0
+    eww open --screen DP-2 audio --restart &
+    eww open --screen DP-2 left &
+    nice xwinwrap -g 1920x1200+0+0 -b -s -fs -st -sp -ni -nf -ov -fdt -- mpv --loop -wid WID --really-quiet --framedrop=vo --no-audio --panscan="1.0" ~/my-stuff/Pictures/wallpapers/alonso.mp4 &
   '';
   xsession.windowManager.xmonad = {
-      enable = true;
-      enableContribAndExtras = true;
-      config = ./dots/xmonad/xmonad.hs;
+    enable = true;
+    enableContribAndExtras = true;
+    config = ./dots/xmonad/xmonad.hs;
   };
 
   programs.home-manager.enable = true;
@@ -174,7 +178,7 @@ in
   };
   programs.browserpass = {
     enable = true;
-    browsers = [ "firefox" "chromium" ];
+    browsers = ["firefox" "chromium"];
   };
   programs.man.generateCaches = true;
   programs.neovim = {
@@ -187,27 +191,33 @@ in
   };
   programs.emacs = {
     enable = true;
-    extraPackages = epkgs: [ epkgs.vterm ];
+    extraPackages = epkgs: [epkgs.vterm];
   };
   programs.zsh = {
-      enable = true;
-      initExtraFirst = builtins.readFile ./dots/.zshrc;
-      dotDir = ".config/zsh";
-      history = {
-        path = "${config.xdg.dataHome}/zsh/zsh_history";
-        save = 10000000;
-      };
+    enable = true;
+    initExtraFirst = builtins.readFile ./dots/.zshrc;
+    dotDir = ".config/zsh";
+    history = {
+      path = "${config.xdg.dataHome}/zsh/zsh_history";
+      save = 10000000;
+    };
+  };
+  programs.bash = {
+    enable = true;
+    initExtra = builtins.readFile ./dots/.bashrc;
   };
 
   home.packages = with pkgs; [
     sqlite
     xournalpp
-    droidcam opentrack
+    droidcam
+    opentrack
     taffybarr
     librsvg
     nsxiv
     piper
-    git gh
+    git
+    gh
     pcmanfm
     zathura
     obsidian
@@ -216,19 +226,46 @@ in
     alacritty
     prismlauncher
     docker-compose
-    clang-tools gcc13 cmake
-    chromium firefox
-    tree-sitter nodejs
+    clang-tools
+    gcc13
+    cmake
+    chromium
+    firefox
+    tree-sitter
+    nodejs
     yt-dlp
     gimp
-    ripgrep fd eza fzf bat
-    lutris airshipper oversteer mangohud wineWowPackages.stagingFull winetricks mono path-of-building
-    jq imagemagick trash-cli
-    man-pages man-pages-posix
-    libqalculate qalculate-gtk
-    numlockx xdo xdotool xorg.xkill
-    xcape xorg.setxkbmap xorg.xrdb
-    xorg.xset xclip xsel xorg.xprop
+    ripgrep
+    fd
+    eza
+    fzf
+    bat
+    lutris
+    airshipper
+    oversteer
+    mangohud
+    wineWowPackages.stagingFull
+    winetricks
+    mono
+    path-of-building
+    jq
+    imagemagick
+    trash-cli
+    man-pages
+    man-pages-posix
+    libqalculate
+    qalculate-gtk
+    numlockx
+    xdo
+    xdotool
+    xorg.xkill
+    xcape
+    xorg.setxkbmap
+    xorg.xrdb
+    xorg.xset
+    xclip
+    xsel
+    xorg.xprop
     (retroarch.override {
       cores = with libretro; [
         mgba
@@ -240,7 +277,9 @@ in
         beetle-psx-hw
         pcsx2
       ];
-    }) duckstation pcsx2
+    })
+    duckstation
+    pcsx2
     (dmenu.overrideAttrs (oldAttrs: {
       src = builtins.fetchTarball {
         url = "https://github.com/m3dry/dmenu/archive/master.tar.gz";
@@ -252,9 +291,9 @@ in
         url = "https://github.com/m3dry/st/archive/master.tar.gz";
         sha256 = "1y04wfzryn2wlrgxldk74xvbj8f7vj31lrj2dlyw4sf31mcrymyb";
       };
-      makeFlags = oldAttrs.makeFlags ++ [ "PREFIX=$(out)" ];
-      buildInputs = oldAttrs.buildInputs ++ [ harfbuzz gd ];
-      nativeBuildInputs = oldAttrs.nativeBuildInputs ++ [ autoPatchelfHook ];
+      makeFlags = oldAttrs.makeFlags ++ ["PREFIX=$(out)"];
+      buildInputs = oldAttrs.buildInputs ++ [harfbuzz gd];
+      nativeBuildInputs = oldAttrs.nativeBuildInputs ++ [autoPatchelfHook];
     }))
     # TMUX
     tmux
@@ -265,11 +304,12 @@ in
     pdf2svg
     gnuplot
     texlive.combined.scheme-full
-    (aspellWithDicts (dicts: with dicts; [
-      en
-      en-computers
-      en-science
-    ]))
+    (aspellWithDicts (dicts:
+      with dicts; [
+        en
+        en-computers
+        en-science
+      ]))
     # AUDIO/VIDEO
     mpv
     cmus
@@ -288,25 +328,32 @@ in
     joypixels
     emacs-all-the-icons-fonts
     # LANGUAGEs
-    (haskell.packages.ghc98.ghcWithPackages (pkgs: with pkgs; [
-      cabal-install
-      haskell-language-server
-      hlint
-      fourmolu
-      hoogle
-    ]))
+    (haskell.packages.ghc98.ghcWithPackages (pkgs:
+      with pkgs; [
+        cabal-install
+        haskell-language-server
+        hlint
+        fourmolu
+        hoogle
+      ]))
     opam
     lua5_4
     python3
     zigpkgs.master
-    babashka clojure leiningen
-    elmPackages.elm elmPackages.elm-test elmPackages.elm-live
+    babashka
+    clojure
+    leiningen
+    elmPackages.elm
+    elmPackages.elm-test
+    elmPackages.elm-live
     elixir
     # RUST
     rustup
     cargo-insta
     # BQN
-    cbqn bqn386 bqnlsp
+    cbqn
+    bqn386
+    bqnlsp
     # LSPs
     clojure-lsp
     sumneko-lua-language-server

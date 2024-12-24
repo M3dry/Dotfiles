@@ -1,0 +1,26 @@
+cabal-version:      3.4
+name:               taffybarr
+version:            0.1.0.0
+license:            MIT
+license-file:       LICENSE
+author:             m3dry
+maintainer:         m3dry@tutamail.com
+build-type:         Simple
+
+common warnings
+    ghc-options: -Wall
+
+executable taffybarr
+    import:           warnings
+    main-is:          Main.hs
+    ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+    build-depends:       base
+                       , containers
+                       , directory
+                       , filepath
+                       , gtk3
+		       , data-default
+                       , taffybar >= 4.0.0
+                       , X11>=1.8
+    hs-source-dirs:   app
+    default-language: GHC2021
