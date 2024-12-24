@@ -9,6 +9,7 @@ require("nvim-treesitter.configs").setup {
         "scheme",
         "fennel",
         "lua",
+        "luadoc",
         "toml",
         "json",
         "yaml",

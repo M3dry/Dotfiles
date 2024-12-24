@@ -1,6 +1,6 @@
 { stdenv, lib, fetchFromGitHub, kernel, kmod }:
 
-stdenv.mkDerivation rec {
+stdenv.mkDerivation {
 	name = "hid-tmff2-${kernel.version}";
 	version = "0.8";
 

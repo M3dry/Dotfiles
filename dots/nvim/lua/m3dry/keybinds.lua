@@ -5,6 +5,8 @@ end
 map({ "n" }, "<Leader>qw", "<Cmd>wqa<CR>")
 map({ "n" }, "<Leader>qq", "<Cmd>qa!<CR>")
 
+map({ "n" }, "<Leader><Leader>", "<Cmd>wa | stop<CR>")
+
 map({ "n" }, "<Esc>", "<Cmd>nohlsearch<CR>")
 
 map({ "n" }, "<Leader>Q", "<Cmd>copen<CR>")
@@ -24,7 +26,7 @@ map({ "n" }, "<C-b>", "<C-b>zz")
 map({ "n" }, "H", "^")
 map({ "n" }, "L", "g_")
 map({ "n" }, "J", "mzJ`z")
-map({ "n" }, "<Leader><Leader>", "<C-^>")
+map({ "n" }, "<Leader>,", "<C-^>")
 
 map({ "v" }, "J", ":m '>+1<CR>gv")
 map({ "v" }, "K", ":m '<-2<CR>gv")
@@ -78,10 +80,10 @@ map({ "n" }, ",l", function()
     vim.diagnostic.setloclist { open = true }
 end)
 map({ "n" }, "]e", function()
-    vim.diagnostic.goto_next { float = { header = "" } }
+    vim.diagnostic.goto_next { float = false }
 end)
 map({ "n" }, "[e", function()
-    vim.diagnostic.goto_prev { float = { header = "" } }
+    vim.diagnostic.goto_prev { float = false }
 end)
 map({ "n" }, ",v", function()
     vim.diagnostic.open_float { header = "" }
@@ -98,8 +100,31 @@ map({ "n" }, ",e", "<Cmd>Telescope diagnostics bufnr=0<CR>")
 map({ "n" }, ",E", "<Cmd>Telescope diagnostics<CR>")
 map({ "n" }, ",a", "<Cmd>Inspect<CR>")
 
+map({ "n" }, ",<Leader>", "<Cmd>ClangdSwitchSourceHeader<CR>")
+map({ "x" }, ",i", ":TSCppDefineClassFunc<CR>")
+
 map({ "n" }, "<Leader>G", "<Cmd>Neogit<CR>")
-map({ "n" }, "<Leader>gd", "<Cmd>DiffViewOpen<CR>")
+map({ "n" }, "<Leader>gD", "<Cmd>DiffViewOpen<CR>")
+
+local gitsigns = require "gitsigns"
+map({ "n" }, "]h", function()
+    gitsigns.nav_hunk "next"
+end)
+map({ "n" }, "[h", function()
+    gitsigns.nav_hunk "prev"
+end)
+map({ "n" }, "<Leader>gp", gitsigns.preview_hunk)
+map({ "n" }, "<Leader>gb", gitsigns.toggle_current_line_blame)
+map({ "n" }, "<Leader>gd", gitsigns.diffthis)
+map({ "n" }, "<Leader>gs", gitsigns.stage_hunk)
+map({ "n" }, "<Leader>gS", gitsigns.stage_buffer)
+map({ "n" }, "<Leader>gr", gitsigns.reset_hunk)
+map({ "v" }, "<Leader>gs", function()
+    gitsigns.stage_hunk { vim.fn.line ".", vim.fn.line "v" }
+end)
+map({ "v" }, "<Leader>gr", function()
+    gitsigns.reset_hunk { vim.fn.line ".", vim.fn.line "v" }
+end)
 
 map({ "n" }, "]t", "<Cmd>tabnext<CR>")
 map({ "n" }, "[t", "<Cmd>tabprev<CR>")
@@ -109,5 +134,3 @@ map({ "n" }, "gtn", "<Cmd>tabnew<CR>")
 map({ "n" }, "gtc", "<Cmd>tabclose<CR>")
 map({ "n" }, "gt[", "<Cmd>tabfirst<CR>")
 map({ "n" }, "gt]", "<Cmd>tablast<CR>")
-
--- map({"n"}, "<C-w>r", nil)

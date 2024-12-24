@@ -109,3 +109,19 @@ ex() {
         echo "'$1' is not a valid file"
     fi
 }
+
+f() {
+    if [[ $# -eq 1  && ( -d "$1" || "$1" == "-" ) ]]
+    then
+        builtin cd "$1" || return
+        ls -bvxAF --color --group-directories-first
+    elif test $# -eq 0
+    then
+        builtin cd "$HOME" || return
+    elif test -f "$1" || test ! -e "$1" || test $# -gt 1
+    then
+        $EDITOR "$@"
+    else
+        printf "t: case not accounted for\n"
+    fi
+} 

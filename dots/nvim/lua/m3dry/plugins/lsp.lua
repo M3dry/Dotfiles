@@ -64,6 +64,26 @@ lspc.rust_analyzer.setup {
     capabilities = lsp.capabilities,
 }
 
+lspc.clangd.setup {
+    on_attach = lsp.on_attach,
+    capabilities = lsp.capabilities,
+}
+
+lspc.glsl_analyzer.setup {
+    on_attach = lsp.on_attach,
+    capabilities = lsp.capabilities,
+}
+
+lspc.neocmake.setup {
+    on_attach = lsp.on_attach,
+    capabilities = lsp.capabilities,
+}
+
+lspc.nixd.setup {
+    on_attach = lsp.on_attach,
+    capabilities = lsp.capabilities,
+}
+
 vim.fn.sign_define("DiagnosticSignError", { text = " " })
 vim.fn.sign_define("DiagnosticSignWarn", { text = " " })
 vim.fn.sign_define("DiagnosticSignWarning", { text = " " })

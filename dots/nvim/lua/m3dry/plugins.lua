@@ -52,6 +52,7 @@ require("pckr").add {
                         TelescopePromptCounter = { fg = colors.dark_bg },
 
                         ["@variable"] = { fg = colors.purple },
+                        ["@number"] = { fg = colors.cyan },
 
                         TabLine = { fg = colors.fg, bg = colors.bg },
                         TabLineSel = { fg = colors.dark_bg, bg = colors.fg },
@@ -85,6 +86,40 @@ require("pckr").add {
     "mbbill/undotree",
 
     {
+        "nvimtools/hydra.nvim",
+        config = function()
+            local hydra = require "hydra"
+            hydra {
+                name = "Window manager",
+                mode = "n",
+                body = "<Leader>w",
+                config = {
+                    invoke_on_body = true,
+                },
+                heads = {
+                    { "v", "<Cmd>wincmd v<CR>" },
+                    { "s", "<Cmd>wincmd s<CR>" },
+                    { "c", "<Cmd>wincmd c<CR>" },
+                    { "h", "<Cmd>wincmd h<CR>" },
+                    { "j", "<Cmd>wincmd j<CR>" },
+                    { "k", "<Cmd>wincmd k<CR>" },
+                    { "l", "<Cmd>wincmd l<CR>" },
+                    { "H", "<Cmd>wincmd H<CR>" },
+                    { "J", "<Cmd>wincmd J<CR>" },
+                    { "K", "<Cmd>wincmd K<CR>" },
+                    { "L", "<Cmd>wincmd L<CR>" },
+                    { "]", "<Cmd>wincmd ><CR>" },
+                    { "[", "<Cmd>wincmd <<CR>" },
+                    { "}", "<Cmd>wincmd +<CR>" },
+                    { "{", "<Cmd>wincmd -<CR>" },
+                    { "=", "<Cmd>wincmd =<CR>" },
+                    { "q", nil, { exit = true } },
+                },
+            }
+        end,
+    },
+
+    {
         "nvim-treesitter/nvim-treesitter",
         run = ":TSUpdate",
         config = function()
@@ -104,22 +139,28 @@ require("pckr").add {
 
     {
         "neovim/nvim-lspconfig",
-        requires = { "saghen/blink.cmp", "kosayanda/nvim-lightbulb" },
+        requires = {
+            "saghen/blink.cmp",
+            "kosayanda/nvim-lightbulb",
+            "p00f/clangd_extensions.nvim",
+            "artemave/workspace-diagnostics.nvim",
+        },
         config = function()
             require "m3dry.plugins.lsp"
         end,
     },
 
-    { "rachartier/tiny-inline-diagnostic.nvim",
+    {
+        "rachartier/tiny-inline-diagnostic.nvim",
         config = function()
-            vim.diagnostic.config({ virtual_text = false })
+            vim.diagnostic.config { virtual_text = false }
             require("tiny-inline-diagnostic").setup {
                 preset = "powerline",
                 hi = {
                     background = "#0f111b",
-                }
+                },
             }
-        end
+        end,
     },
 
     {
@@ -127,6 +168,7 @@ require("pckr").add {
         config = function()
             require("conform").setup {
                 formatters_by_ft = {
+                    cpp = { "clang-format" },
                     lua = { "stylua" },
                     haskell = { "fourmolu" },
                     rust = { "rustfmt" },
@@ -162,6 +204,19 @@ require("pckr").add {
             require("lazydev").setup {
                 path = "${3rd}/luv/library",
                 words = { "vim%.uv" },
+            }
+        end,
+    },
+
+    {
+        "Badhi/nvim-treesitter-cpp-tools",
+        requires = "nvim-treesitter/nvim-treesitter",
+        config = function()
+            require("nt-cpp-tools").setup {
+                preview = {
+                    quit = "q",
+                    accept = "<Tab>",
+                },
             }
         end,
     },
@@ -267,6 +322,15 @@ require("pckr").add {
                     telescope = true,
                     diffview = true,
                 },
+            }
+        end,
+    },
+
+    {
+        "lewis6991/gitsigns.nvim",
+        config = function()
+            require("gitsigns").setup {
+                numhl = true,
             }
         end,
     },

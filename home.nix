@@ -1,4 +1,4 @@
-{ config, pkgs, zigpkgs, bqnlsp, taffybarr, nvim-nightly, system, ... }:
+{ config, pkgs, zigpkgs, bqnlsp, taffybarr, ... }:
 let
   my-stuff = "$HOME/my-stuff";
 in
@@ -216,7 +216,7 @@ in
     alacritty
     prismlauncher
     docker-compose
-    clang-tools gcc13
+    clang-tools gcc13 cmake
     chromium firefox
     tree-sitter nodejs
     yt-dlp
@@ -241,13 +241,13 @@ in
         pcsx2
       ];
     }) duckstation pcsx2
-    (dmenu.overrideAttrs (oldAttrs: rec {
+    (dmenu.overrideAttrs (oldAttrs: {
       src = builtins.fetchTarball {
         url = "https://github.com/m3dry/dmenu/archive/master.tar.gz";
         sha256 = "1fv7ngsyvx1a0z9b52z46lvspwycs2vynri8wv11391zivig0j60";
       };
     }))
-    (st.overrideAttrs (oldAttrs: rec {
+    (st.overrideAttrs (oldAttrs: {
       src = builtins.fetchTarball {
         url = "https://github.com/m3dry/st/archive/master.tar.gz";
         sha256 = "1y04wfzryn2wlrgxldk74xvbj8f7vj31lrj2dlyw4sf31mcrymyb";
@@ -288,7 +288,6 @@ in
     joypixels
     emacs-all-the-icons-fonts
     # LANGUAGEs
-    go
     (haskell.packages.ghc98.ghcWithPackages (pkgs: with pkgs; [
       cabal-install
       haskell-language-server
@@ -309,26 +308,19 @@ in
     # BQN
     cbqn bqn386 bqnlsp
     # LSPs
-    taplo
-    gopls
     clojure-lsp
     sumneko-lua-language-server
     nodePackages_latest.bash-language-server
-    nodePackages_latest.svelte-language-server
-    nodePackages_latest.typescript-language-server
-    vscode-langservers-extracted
-    nodePackages_latest."@tailwindcss/language-server"
     elmPackages.elm-language-server
     elixir-ls
-    # LINTers
-    statix
-    shellcheck
+    glsl_analyzer
+    neocmakelsp
+    nixd
     # DEBUGers
     vscode-extensions.vadimcn.vscode-lldb
     # FORMATters
     stylua
     alejandra
-    nodePackages.prettier
     elmPackages.elm-format
   ];
 
